@@ -1,13 +1,16 @@
+from ioqueue import IO
 import cpu
 import random
 import process
 import escalonator
 
-escalonator_type = "RR"
-c = cpu.CPU(escalonator_type, True)
-for i in range(5):
-    p = process.Process(i, random.randint(1, 5), c)
-    c.queue(p)
-
-while len(c.ready_queue) > 0:
-    c.execute()
+l = [True, False]
+io = IO()
+escalonator = escalonator.Escalonator("RR")
+c = cpu.CPU(escalonator)
+escalonator.cpu = c
+for ll in range(3):
+    i = random.randint(1000, 3000)
+    bolean = True
+    p = process.Process(i, random.randint(1, 5), io, 1, 2, bolean)
+    escalonator.queue(p)    
