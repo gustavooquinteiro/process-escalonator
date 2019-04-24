@@ -18,12 +18,20 @@ class Escalonator():
         self.mutex.acquire()
         self.ready_queue.append(process)
         self.mutex.release()
-        self.cpu.cpuWorking.set()
         if self.algorithm == "SJF":
             self.ready_queue.sort(key=self.shortest)
-        return self.queue
+        if self.algorithm == "PQ":
+            self.ready_queue.sort(key=self.priority, reverse=True)
+        if self.algorithm == "EDF":
+            self.ready_queue.sort(key=self.deadline)
+        self.cpu.cpuWorking.set()
             
-        
+    def deadline(self, element):
+        return element.deadline
+    
+    def priority(self, element):
+        return element.priority
+    
     def shortest(self, element):
         return element.execution_time
     

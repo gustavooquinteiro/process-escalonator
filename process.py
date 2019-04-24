@@ -5,7 +5,7 @@ import ioqueue
 class Process():
     States = ["Bloqueado", "Pronto", "Executando"]
     
-    def __init__(self, id, execution_time, io, priority = 0, deadline = 0, needIO = False):
+    def __init__(self, id, start, execution_time, priority = 0, deadline = 0, needIO = False, io=None):
         super().__init__()
         self.id = id
         self.priority = priority
@@ -14,13 +14,14 @@ class Process():
         self.state = self.__class__.States[1]
         self.needIO = needIO
         self.io = io
+        time.sleep(start)
     
     def nextState(self):
         actual_index = self.__class__.States.index(self.state)
         index = (actual_index +1) % len(self.__class__.States)
         self.state = self.__class__.States[index]
         if self.state == self.__class__.States[0]:
-            self.io.enqueue(self)
+            self.io.enqueue(self)                  
      
     def prevState(self):
         actual_index = self.__class__.States.index(self.state)
