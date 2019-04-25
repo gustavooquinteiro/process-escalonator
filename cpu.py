@@ -9,8 +9,8 @@ class CPU():
         self.mutex = threading.Lock()
         self.cpuWorking = threading.Event()
         self.process = process
-        cpu = threading.Thread(target=self.execute)
-        cpu.start()
+        self.cpu = threading.Thread(target=self.execute)
+        self.cpu.start()
         
     def execute(self):
         while True:
@@ -20,7 +20,7 @@ class CPU():
                     self.process = self.escalonator.ready_queue[0]
                     self.mutex.release()
                     self.cpuWorking.clear()
-                    self.cpu_time = process.execution_time
+                    self.cpu_time = self.process.execution_time
                     self.process.execute(self.cpu_time)
                     self.escalonator.remove(self.process)
                 else:
@@ -34,3 +34,7 @@ class CPU():
                 print("CPU esperando por processos")
                 self.mutex.release()
                 self.cpuWorking.wait()
+  
+    def stop(self):
+        print("CPU encerrando")
+        self.cpu.join()
