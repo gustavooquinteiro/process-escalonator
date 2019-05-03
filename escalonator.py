@@ -13,28 +13,17 @@ class Escalonator():
         self.mutex = threading.Lock()
 
         
-    def queue(self, process):
-        print("Chegou o processo {}" .format(process.id))
-        self.mutex.acquire()
-        self.ready_queue.append(process)
-        self.mutex.release()
+    def queue(self):
+        if self.algorithm == "FCFS":
+            self.ready_queue.sort(key=lambda x: x.start)
         if self.algorithm == "SJF":
-            self.ready_queue.sort(key=self.shortest)
+            self.ready_queue.sort(key=lambda x: x.execution_time and x.start)
         if self.algorithm == "PQ":
-            self.ready_queue.sort(key=self.priority, reverse=True)
+            self.ready_queue.sort(key=lambda x: x.priority and x.start, reverse=True)
         if self.algorithm == "EDF":
-            self.ready_queue.sort(key=self.deadline)
+            self.ready_queue.sort(key=lambda x: x.deadline and x.start)
         self.cpu.cpuWorking.set()
-            
-    def deadline(self, element):
-        return element.deadline
-    
-    def priority(self, element):
-        return element.priority
-    
-    def shortest(self, element):
-        return element.execution_time
-    
+                
     def check(self):
         if self.algorithm == "FCFS" or self.algorithm == "SJF":
             return False
