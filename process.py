@@ -14,8 +14,7 @@ class Process():
         self.state = self.__class__.States[1]
         self.needIO = needIO
         self.io = io
-        if start > 0:
-            time.sleep(start)
+        self.start = start
     
     def nextState(self):
         actual_index = self.__class__.States.index(self.state)

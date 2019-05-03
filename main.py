@@ -4,25 +4,29 @@ import random
 import process
 import escalonator
 
-l = [True, False]
-io = IO()
-escalonator = escalonator.Escalonator("SJF")
+quantum = int(input("Quantum: "))
+override = int(input("Sobrecarga: "))
+escalonator = escalonator.Escalonator("SJF", quantum, override)
 c = cpu.CPU(escalonator)
 escalonator.cpu = c
+io = IO()
 io.escalonator = escalonator
 processes = []
-start = 0
-for i in range(3):
+
+n = int(input("Quantidade de processos: "))
+for i in range(n):
     id = random.randint(1000, 3000)
-    start = random.randint(start, 10)
-    execution_time =  random.randint(1, 5)
-    priority = random.randint(1, 10)
-    deadline = random.randint(1, 10)
-    needIO = random.choice(l)
+    start = int(input("Tempo de chegada: "))
+    execution_time = int(input("Tempo de execução: "))
+    deadline = int(input("Deadline: "))    
     
-    print("Criando o processo:\n\tID: {}\n\tTempo de inicio: {}\n\tTempo de execução: {}\n\tPrioridade: {}\n\tDeadline: {}\n\tPrecisa de IO: {}\n" .format(id, start, execution_time, priority, deadline, needIO                                                                                                                                                                                                                                                                  ))
-    
-    
-    p = process.Process(id, start, execution_time, priority, deadline, needIO, io)
-    escalonator.queue(p)    
+    print("Criando o processo:\n\tID: {}\n\tTempo de inicio: {}\n\tTempo de execução: {}\n\tDeadline: {}\n" .format(id, start, execution_time, deadline                                                                                                                                                                                                                                                  ))
+    p = process.Process(id, start, execution_time, deadline, io)
     processes.append(p)
+    
+for i in range(n):
+    print("Chegou o processo {}" .format(processes[i].id))
+    escalonator.ready_queue.append(processes[i])
+    
+escalonator.queue()
+    
