@@ -5,7 +5,7 @@ import ioqueue
 class Process():
     States = ["Bloqueado", "Pronto", "Executando"]
     
-    def __init__(self, id, start, execution_time, priority = 0, deadline = 0, needIO = False, io=None):
+    def __init__(self, id, start, execution_time, deadline = 0, io=None, needIO=False, priority=0):
         super().__init__()
         self.id = id
         self.priority = priority
@@ -40,14 +40,22 @@ class Process():
             print("Processo {} em estado de {}" .format(self.id, self.state))
             return False
      
-    def execute(self, cpu_time):
+    def execute(self, cpu):
         self.nextState()
         print("Processo {} em estado de {}" .format(self.id ,self.state))
-        if cpu_time > self.execution_time:
-            time.sleep(cpu_time - self.execution_time)    
-            print ("CPU executou {} que precisa de {}s por {}s" .format(self.id, self.execution_time, cpu_time - self.execution_time))
-            self.execution_time -= cpu_time - self.execution_time
+        if cpu.cpu_time > self.execution_time:
+            cpu.processing_time = cpu.cpu_time - self.execution_time  
         else:
-            time.sleep(cpu_time)
-            print ("CPU executou {} que precisa de {}s por {}s" .format(self.id, self.execution_time, cpu_time))
-            self.execution_time -= cpu_time
+            cpu.processing_time = cpu.cpu_time
+        time.sleep(cpu.processing_time)    
+        print ("CPU executou {} que precisa de {}s por {}s" .format(self.id, self.execution_time, cpu.processing_time))
+        self.execution_time -= cpu.processing_time
+        cpu.cpu_execution += cpu.processing_time
+        
+    def outOfTime(self):
+        if self.deadline <= 0:
+            return True
+        return False
+        
+    def __repr__(self):
+        return ("Processo {} com deadline de: {}; e tempo de execução de: {}" .format(self.id, self.deadline, self.execution_time))

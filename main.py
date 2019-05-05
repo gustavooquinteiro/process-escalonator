@@ -1,13 +1,13 @@
+from escalonator import Escalonator
+from process import Process
 from ioqueue import IO
-import cpu
+from cpu import CPU
 import random
-import process
-import escalonator
 
 quantum = int(input("Quantum: "))
 override = int(input("Sobrecarga: "))
-escalonator = escalonator.Escalonator("SJF", quantum, override)
-c = cpu.CPU(escalonator)
+escalonator = Escalonator("EDF", quantum, override)
+c = CPU(escalonator)
 escalonator.cpu = c
 io = IO()
 io.escalonator = escalonator
@@ -21,12 +21,8 @@ for i in range(n):
     deadline = int(input("Deadline: "))    
     
     print("Criando o processo:\n\tID: {}\n\tTempo de inicio: {}\n\tTempo de execução: {}\n\tDeadline: {}\n" .format(id, start, execution_time, deadline                                                                                                                                                                                                                                                  ))
-    p = process.Process(id, start, execution_time, deadline, io)
-    processes.append(p)
-    
-for i in range(n):
-    print("Chegou o processo {}" .format(processes[i].id))
-    escalonator.ready_queue.append(processes[i])
+    p = Process(id, start, execution_time, deadline, io)
+    escalonator.ready_queue.append(p)
     
 escalonator.queue()
     
