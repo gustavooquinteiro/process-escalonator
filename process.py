@@ -3,10 +3,20 @@ import random
 import ioqueue
 
 class Process():
-    States = ["Bloqueado", "Pronto", "Executando"]
+    """ Classe responsável pela instanciação dos processos """
+    States = ["Bloqueado", "Pronto", "Executando"]  # Estados de um processo
     
     def __init__(self, id, start, execution_time, deadline = 0, io=None, needIO=False, priority=0):
-        super().__init__()
+        """ Inicialização de um processo.
+        Args:
+            id(int): indentificador do processo
+            start(int): tempo de inicio do processo
+            execution_time(int): tempo necessário para o processo ser concluido
+            deadline(int): tempo limite máximo que o processo deve ser executado
+            io(IO): Objeto responsável pela fila de IO
+            needIO(bool): necessidade de IO 
+            priority(int): prioridade do processo
+        """        
         self.id = id
         self.priority = priority
         self.deadline = deadline
@@ -17,6 +27,7 @@ class Process():
         self.start = start
     
     def nextState(self):
+        """ Próximo estado do processo """
         actual_index = self.__class__.States.index(self.state)
         index = (actual_index +1) % len(self.__class__.States)
         self.state = self.__class__.States[index]
@@ -24,38 +35,31 @@ class Process():
             self.io.enqueue(self)                  
      
     def prevState(self):
+        """ Estado prévio do processo """
         actual_index = self.__class__.States.index(self.state)
         index = (actual_index - 1) % len(self.__class__.States)
         self.state = self.__class__.States[index]
         
        
     def finished(self):
+        """ Verificação de conclusão do processo """
         if self.execution_time == 0:
             return True
         else:
             if self.state == self.__class__.States[2] and self.needIO:
+                # Se estava no estado de Executando e precisa de IO então vá para o estado de Bloqueado
                 self.nextState()
-            else:
+            else: 
                 self.prevState()
             print("Processo {} em estado de {}" .format(self.id, self.state))
             return False
-     
-    def execute(self, cpu):
-        self.nextState()
-        print("Processo {} em estado de {}" .format(self.id ,self.state))
-        if cpu.cpu_time > self.execution_time:
-            cpu.processing_time = cpu.cpu_time - self.execution_time  
-        else:
-            cpu.processing_time = cpu.cpu_time
-        time.sleep(cpu.processing_time)    
-        print ("CPU executou {} que precisa de {}s por {}s" .format(self.id, self.execution_time, cpu.processing_time))
-        self.execution_time -= cpu.processing_time
-        cpu.cpu_execution += cpu.processing_time
         
     def outOfTime(self):
+        """ Verificação do tempo limite máximo """
         if self.deadline <= 0:
             return True
         return False
         
     def __repr__(self):
+        """ Representação do processo. Útil em print() """
         return ("Processo {} com deadline de: {}; e tempo de execução de: {}" .format(self.id, self.deadline, self.execution_time))

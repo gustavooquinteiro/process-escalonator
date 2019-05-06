@@ -3,17 +3,24 @@ import process
 import threading
 
 class Escalonator():
-    def __init__(self, typeof="FCFS", quantum =2, override = .015, cpu=None):
+    """ Classe responsável pela  gerência da fila de prontos """
+    def __init__(self, typeof="FCFS", override = .015, cpu=None):
+        """ Método de inicialização de um escalonador.
+        Args:
+            typeof (str): tipo de algoritmo de escalonamento que será utilizado
+            override (int): tempo necessário para a troca de contexto de processos
+            cpu (CPU): objeto da cpu responsável pela execução dos processos
+        
+        """
         self.ready_queue = []
         self.algorithm = typeof
-        self.quantum = quantum
-        self.override = override
-        self.preemptiveness = False if self.algorithm == "FCFS" or self.algorithm == "SJF" else True
+        self.override = override         
         self.cpu = cpu
         self.mutex = threading.Lock()
 
         
     def queue(self):
+        """ Ordena a fila de prontos de acordo com o algoritmo escolhido e inicia a execução na CPU """
         if self.algorithm == "FCFS" or self.algorithm == "RR":
             self.ready_queue.sort(key=lambda x: x.start)
         if self.algorithm == "SJF":
@@ -31,22 +38,27 @@ class Escalonator():
             print ("Processo {} agr com deadline de {}" .format(process.id, process.deadline))        
         
     def remove(self, process):
-        if self.preemptiveness:
+        """ Remove o processo da fila de prontos, se ele já estiver finalizado, e coloca o próximo da fila na frente.
+            Args:
+                process(Process): processo a ser removido da fila
+        """
+        if self.cpu.preemptiveness:
             if process.finished():
                 self.ready_queue.remove(process)
             else:
+                self.next_process()
+                time.sleep(self.override)
                 if process.needIO:
-                    self.ready_queue.remove(process)
-                else:
-                    self.next_process()
-                    time.sleep(self.override)
+                    self.ready_queue.remove(process)                    
+                self.cpu.cpu_execution += self.override
+                
             self.updateDeadline()
-            self.cpu.cpu_execution += self.override
             if process.outOfTime() and self.algorithm == "EDF":
                 print("Processo {} está fora do prazo" .format(process.id))
         else:
             self.ready_queue.remove(process)
 
     def next_process(self):
+        """ Atualiza a fila de prontos colocando o primeiro da fila no final da fila  """
         if len(self.ready_queue) > 1:
             self.ready_queue = self.ready_queue[1:]+[self.ready_queue[0]]

@@ -6,8 +6,8 @@ import random
 
 quantum = int(input("Quantum: "))
 override = int(input("Sobrecarga: "))
-escalonator = Escalonator("EDF", quantum, override)
-c = CPU(escalonator)
+escalonator = Escalonator("RR", override)
+c = CPU(escalonator, quantum)
 escalonator.cpu = c
 io = IO()
 io.escalonator = escalonator
