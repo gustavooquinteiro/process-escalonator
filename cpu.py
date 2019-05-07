@@ -16,50 +16,35 @@ class CPU():
         self.cpu_execution = 0      # Tempo que a CPU permaneceu ligada
         self.quantum = quantum
         self.escalonator = escalonator
-        self.mutex = threading.Lock()
-        self.cpuWorking = threading.Event()
         self.process = process        
-        self.cpu = threading.Thread(target=self.run)
-        self.cpu.start()
+        self.concluded_process_time = []
         
     def run(self):
         """ Método para execução da CPU """
         
         # Verificação de preemptividade
-        self.preemptiveness = False if self.escalonator.algorithm == "FCFS" or self.escalonator.algorithm == "SJF" else True
+        self.preemptiveness = False if self.escalonator.algorithm in self.escalonator.NON_PREEMPTIVE_ALGORITHMS else True
         
-        while True:
-            self.mutex.acquire()
-            if len(self.escalonator.ready_queue) > 0: 
-                # O modo de executar os processos da fila de prontos depende da preemptividade da CPU
-                if not self.preemptiveness:
-                    self.process = self.escalonator.ready_queue[0]
-                    self.mutex.release()
-                    self.cpuWorking.clear()
-                    # Caso o processo não começe exatamente quando a CPU iniciou 
-                    while self.cpu_execution < self.process.start:
-                        self.cpu_execution += 1
-                    self.cpu_time = self.process.execution_time
-                    self.execute()                    
-                    self.escalonator.remove(self.process)
-                else:
-                    self.cpu_time = self.quantum
-                    self.process = self.escalonator.ready_queue[0]
-                    self.mutex.release()
-                    self.cpuWorking.clear()
-                    if self.cpu_execution >= self.process.start:
-                        self.execute()
-                    else:
-                        if all(self.cpu_execution < process.start for process in self.escalonator.ready_queue):
-                            self.cpu_execution += 1
-                        else:
-                            self.escalonator.next_process()
-                    
-                    self.escalonator.remove(self.process)
-            else:         
-                print("CPU esperando por processos")
-                self.mutex.release()
-                self.cpuWorking.wait()
+        while len(self.escalonator.ready_queue) > 0:  
+            self.process = self.escalonator.ready_queue[0]
+            
+            # Caso o processo não começe exatamente onde a CPU está 
+            while self.cpu_execution < self.process.start:
+                self.cpu_execution += 1 
+                
+            # O tempo de execução dos processos da fila de prontos depende da preemptividade da CPU
+            if not self.preemptiveness:                
+                self.cpu_time = self.process.execution_time               
+            else:
+                self.cpu_time = self.quantum                
+                
+            self.execute()                    
+            self.escalonator.remove(self.process)
+            if not self.escalonator.ready_queue and self.escalonator.aux_queue:
+                self.escalonator.nextProcess()
+                
+
+        print("CPU executou todos os processos")                    
                 
     def execute(self):
         """ Método para executar um processo """
@@ -73,9 +58,3 @@ class CPU():
         print ("CPU executou {} que precisa de {}s por {}s" .format(self.process.id, self.process.execution_time, self.processing_time))
         self.process.execution_time -= self.processing_time
         self.cpu_execution += self.processing_time
-        
-        
-    def stop(self):
-        """ Método para desligar a CPU"""
-        print("CPU encerrando")
-        self.cpu.join()
