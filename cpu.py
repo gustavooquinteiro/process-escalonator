@@ -7,9 +7,9 @@ class CPU():
     def __init__(self, escalonator, quantum=0, process=None): 
         """ Inicialização com as caracteristicas de uma CPU
         Args:
-            escalonator(Escalonator): tipo de escalonador utilizado na CPU
-            quantum(int): quantidade de tempo destinado a execução do processo
-            process(Process): processo a ser executado na CPU
+            escalonator (Escalonator): tipo de escalonador utilizado na CPU
+            quantum (int): quantidade de tempo destinado a execução do processo
+            process (Process): processo a ser executado na CPU
         
         """
         self.cpu_time = 0           # Tempo que a CPU tem para cada processo

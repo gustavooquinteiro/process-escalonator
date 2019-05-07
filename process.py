@@ -9,13 +9,13 @@ class Process():
     def __init__(self, id, start, execution_time, deadline = 0, io=None, needIO=False, priority=0):
         """ Inicialização de um processo.
         Args:
-            id(int): indentificador do processo
-            start(int): tempo de inicio do processo
-            execution_time(int): tempo necessário para o processo ser concluido
-            deadline(int): tempo limite máximo que o processo deve ser executado
-            io(IO): Objeto responsável pela fila de IO
-            needIO(bool): necessidade de IO 
-            priority(int): prioridade do processo
+            id (int): indentificador do processo
+            start (int): tempo de inicio do processo
+            execution_time (int): tempo necessário para o processo ser concluido
+            deadline (int): tempo limite máximo que o processo deve ser executado
+            io (IO): Objeto responsável pela fila de IO
+            needIO (bool): necessidade de IO 
+            priority (int): prioridade do processo
         """        
         self.id = id
         self.priority = priority
@@ -54,11 +54,14 @@ class Process():
             print("Processo {} em estado de {}" .format(self.id, self.state))
             return False
         
-    def outOfTime(self):
-        """ Verificação do tempo limite máximo """
-        if self.deadline <= 0:
-            return True
-        return False
+    def outOfTime(self, clock):
+        """ Verificação do tempo limite máximo 
+        Args:
+            clock (int): tempo total de execução da CPU 
+        """
+        if clock <= self.start + self.deadline:
+            return False
+        return True
         
     def __repr__(self):
         """ Representação do processo. Útil em print() """
