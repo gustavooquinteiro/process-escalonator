@@ -59,10 +59,16 @@ class Process():
         Args:
             clock (int): tempo total de execução da CPU 
         """
-        if clock <= self.start + self.deadline:
-            return False
-        return True
-        
+        if clock > self.start + self.deadline:
+            return True
+        return False
+    
+    def isArrived(self, clock):
+        """ Verificação se um processo está apto a entrar na CPU  """
+        if clock >= self.start:
+            return True
+        return False
+    
     def __repr__(self):
         """ Representação do processo. Útil em print() """
-        return ("Processo {} com deadline de: {}; e tempo de execução de: {}" .format(self.id, self.deadline, self.execution_time))
+        return ("Processo {}\n\tStart: {}\n\tDeadline: {}\n\tTempo de execução: {}" .format(self.id, self.start, self.deadline, self.execution_time))
