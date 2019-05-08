@@ -51,7 +51,6 @@ class Process():
                 self.nextState()
             else: 
                 self.prevState()
-            print("Processo {} em estado de {}" .format(self.id, self.state))
             return False
         
     def outOfTime(self, clock):

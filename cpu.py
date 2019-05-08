@@ -40,7 +40,7 @@ class CPU():
                 
             self.execute()                    
             self.escalonator.remove(self.process)
-            if not self.escalonator.ready_queue and self.escalonator.aux_queue:
+            if self.preemptiveness and not self.escalonator.ready_queue and self.escalonator.not_arrived:
                 self.escalonator.nextProcess()
                 
 
@@ -49,7 +49,6 @@ class CPU():
     def execute(self):
         """ Método para executar um processo """
         self.process.nextState()
-        print("Processo {} em estado de {}" .format(self.process.id ,self.process.state))
         if self.cpu_time > self.process.execution_time:
             self.processing_time = self.cpu_time - self.process.execution_time  
         else:
