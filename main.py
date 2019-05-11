@@ -19,7 +19,7 @@ def main():
         print("Criando o processo {}: " .format(id))
         start = int(input("Tempo de chegada: "))
         execution_time = int(input("Tempo de execução: "))
-        deadline = int(input("Deadline: "))    
+        deadline = int(input("Deadline: "))
         p = Process(id, start, execution_time, deadline)
         escalonator.ready_queue.append(p)
         

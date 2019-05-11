@@ -27,17 +27,14 @@ class Escalonator():
         
     def queue(self):
         """ Ordena a fila de prontos de acordo com o algoritmo escolhido """
-        if self.algorithm in self.PREEMPTIVE_ALGORITHMS:            
-            processes_not_arrived = []
-            
-            for process in self.ready_queue:
-                if not process.isArrived(self.cpu.cpu_execution):
-                   self.not_arrived.append(process)
-                   processes_not_arrived.append(process)
-
-            for process in processes_not_arrived:
+        if self.algorithm in self.PREEMPTIVE_ALGORITHMS:
+            self.not_arrived = list(filter(
+                lambda x: not x.isArrived(self.cpu.cpu_execution),
+                self.ready_queue))
+                                    
+            for process in self.not_arrived:
                 self.ready_queue.remove(process)
-
+                
             if self.algorithm == "RR":
                 self.ready_queue.sort(key=lambda x: x.start)
                 self.not_arrived.sort(key=lambda x: x.start)
@@ -48,14 +45,11 @@ class Escalonator():
             if self.algorithm == "FCFS":
                 self.ready_queue.sort(key=lambda x: x.start)
             elif self.algorithm == "SJF":
-                processes_not_arrived = []
-            
-                for process in self.ready_queue:
-                    if not process.isArrived(self.cpu.cpu_execution):
-                        self.not_arrived.append(process)
-                        processes_not_arrived.append(process)
-
-                for process in processes_not_arrived:
+                self.not_arrived = list(filter(
+                    lambda x: not x.isArrived(self.cpu.cpu_execution),
+                    self.ready_queue))
+                                    
+                for process in self.not_arrived:
                     self.ready_queue.remove(process)
                 
                 self.ready_queue.sort(key=lambda x: (x.start, x.execution_time))
@@ -90,13 +84,13 @@ class Escalonator():
         """ Atualiza a fila de prontos colocando o primeiro da fila no final da fila ou reoordenando-a de acordo seus algoritmos  """
         
         ready_queue_empty = True if not self.ready_queue else False
-        not_keep = []
-        for process in self.not_arrived:
-            if process.isArrived(self.cpu.cpu_execution):
-                self.ready_queue.append(process)
-                not_keep.append(process)
-                    
-        for process in not_keep:
+        
+        arrived = list(filter(
+            lambda x: x.isArrived(self.cpu.cpu_execution),
+            self.not_arrived))
+
+        for process in arrived:
+            self.ready_queue.append(process)
             self.not_arrived.remove(process)
         
         if self.algorithm == "SJF":
@@ -106,8 +100,9 @@ class Escalonator():
             self.ready_queue.sort(key=lambda x: x.deadline)
             return
         
-        if self.not_arrived and not ready_queue_empty:
-            self.ready_queue = self.ready_queue[1:]+[self.ready_queue[0]]        
-        elif self.not_arrived and ready_queue_empty:
-            self.ready_queue.append(self.not_arrived.pop(0))
+        if self.not_arrived:
+            if not ready_queue_empty:
+                self.ready_queue = self.ready_queue[1:]+[self.ready_queue[0]]        
+            else:        
+                self.ready_queue.append(self.not_arrived.pop(0))
             
