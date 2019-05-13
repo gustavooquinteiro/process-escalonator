@@ -36,6 +36,11 @@ class MMU():
 
         self.pointer = 0
 
+    def incPointer(self):
+        self.pointer += 1
+        if (self.pointer >= 50):
+            self.pointer = 0
+
     def checkFaultPages(self, process):
         allocatedPages = process.getPages()
         numFault = process.getNumPages()
@@ -87,10 +92,20 @@ class MMU():
 
                     pages.insert(ind, self.mem_ram[leastIndex])
             elif (self.algorithm == 'FIFO'):
-                ind = 0
-                while (len(pages) > 0 and pages[ind].getNum() != -1):
-                    ind += 1
-                pages.insert(ind, self.mem_ram[self.pointer])
+                for i in range(count):
+                    while (self.mem_ram[self.pointer].getNum() == process.getId()):
+                        incPointer()
+                    
+                    self.mem_ram[self.pointer].setNum(process.getId())
+                    self.mem_ram[self.pointer].resetFreq()
+                    self.mem_ram[self.pointer].addFreq(1)
+
+                    ind = 0
+                    while (len(pages) > 0 and pages[ind].getNum() != -1):
+                        ind += 1
+                    pages.insert(ind, self.mem_ram[self.pointer])
+
+                    incPointer()
 
         process.setPages(pages)
 
