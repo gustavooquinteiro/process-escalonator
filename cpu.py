@@ -4,7 +4,7 @@ from escalonator import Escalonator
 
 class CPU():
     """ Classe responsável pela execução dos processos """
-    def __init__(self, escalonator, quantum=0, process=None): 
+    def __init__(self, escalonator, mmu, quantum=0, process=None): 
         """ Inicialização com as caracteristicas de uma CPU
         Args:
             escalonator (Escalonator): tipo de escalonador utilizado na CPU
@@ -18,7 +18,8 @@ class CPU():
         self.escalonator = escalonator
         self.process = process        
         self.concluded_process_time = []
-        
+        self.mmu = mmu
+
     def run(self):
         """ Método para execução da CPU """
         
@@ -37,9 +38,12 @@ class CPU():
                 self.cpu_time = self.process.execution_time               
             else:
                 self.cpu_time = self.quantum                
-                
+            
+            self.mmu.allocatePages(self.process)
             self.execute()                    
-            self.escalonator.remove(self.process)
+            if (self.escalonator.remove(self.process)):
+                self.mmu.deallocatePages(self.process)
+
             if self.preemptiveness and not self.escalonator.ready_queue and self.escalonator.not_arrived:
                 self.escalonator.nextProcess()
                 

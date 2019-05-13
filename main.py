@@ -2,6 +2,7 @@ from escalonator import Escalonator
 from process import Process
 from ioqueue import IO
 from cpu import CPU
+from mmu import MMU
 import random
 
 def main():
@@ -9,7 +10,8 @@ def main():
     override = int(input("Sobrecarga: "))
     type = str(input("Tipo de algoritmo de escalonamento (FCFS | SJF | RR | EDF): "))
     escalonator = Escalonator(type.upper(), override)
-    cpu = CPU(escalonator, quantum)
+    mmu = MMU()
+    cpu = CPU(escalonator, mmu, quantum)
     escalonator.cpu = cpu
     #io = IO()
     #io.escalonator = escalonator
@@ -20,7 +22,8 @@ def main():
         start = int(input("Tempo de chegada: "))
         execution_time = int(input("Tempo de execução: "))
         deadline = int(input("Deadline: "))    
-        p = Process(id, start, execution_time, deadline)
+        numPages = int(input("Numero de Paginas: "))    
+        p = Process(id, start, execution_time, numPages, deadline)
         escalonator.ready_queue.append(p)
         
     escalonator.queue()
