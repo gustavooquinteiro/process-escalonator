@@ -36,39 +36,69 @@ Esse sistema deve implementar os algoritmos de substituição de páginas:
 
 ## Requisitos
 
-* Cada processo deve ter até 10 páginas (entrada do usuário). Cada página tem 4K de
-tamanho. A RAM tem 200 K de memória.  
+* Cada página tem 4K de tamanho. A RAM tem 200 K de memória.  
 * Crie a abstração de DISCO para utilização da memória virtual.  
   + Caso ocorra falta de página, utilize N unidades de tempo para o uso do Disco.  
 * O grupo está livre para a criação de qualquer abstração extra que se mostrar
 necessária.  
-* ** Os processos só executam se todas as suas páginas estiverem na RAM.**
+* __ Os processos só executam se todas as suas páginas estiverem na RAM.__
 * Deve-se criar:  
   + [Gráfico de Gantt](https://pt.wikipedia.org/wiki/Diagrama_de_Gantt) para mostrar as execuções dos processos,
   + Visualização da CPU e da RAM  
 * Deve-se criar o gráfico de uso da RAM e do Disco, mostrando as página presentes em
 tempo real.  
-* A resposta deve ser dada em função do turn-around médio (tempo de espera + tempo
-de execução)  
 * Colocar delay para verificar a execução  
+
+## Entrada 
+
+O usuário deve entrar com um inteiro  ``` Q ```, representando o quantum do sistema, e um inteiro ``` S ```, representando a sobrecarga do sistema.  
+Além disso ele deve fornecer um inteiro ``` N ```, representando o número de processos, e após isso devem ser informados ``` N ``` inteiros:  
+
+* ``` 0 <= C  ```: O tempo de chegada na CPU;   
+* ``` 0 < E ```: O tempo de execução do processo;  
+* ``` 0 < D ```: O deadline do processo e;  
+* ``` 0 < P <= 10 ```: O número de páginas que o processo precisa.  
+
+Deve ser informado também o tipo de escalonamento de processo:
+
+* ``` FCFS (First Come First Served) ``` ou;  
+* ``` SJF (Shortest Job First) ``` ou;
+* ``` RR (Round-Robin)``` ou;
+* ``` EDF (Earliest Deadline First) ```;
+
+E o tipo de paginação:
+
+* ``` FIFO (First-In First-Out) ``` ou  
+* ``` LRU (Least Recently Used) ```
+
+## Saída 
+
+A resposta deve ser dada em função do ** turn-around médio ** (tempo de espera + tempo de execução), o ** gráfico de Gantt correspondente ** às execuções dos processos e o ** estado da RAM **, antes, durante e após a execução dos processos
 
 ## Convenções adotadas
 
-* Utilizamos a notação ``` FCFS (First Come First Served)``` para nomear o algoritmo de escalonamento para desambiguar da notação FIFO (algoritmo de paginação)  
-* Como o tamanho da memória virtual ficou a critério do grupo optamos por utilizar uma memória virtual de XK  
+* Utilizamos a notação ``` FCFS (First Come First Served)```, no código, para nomear o algoritmo de escalonamento de processos e desambiguar da notação ``` FIFO  (First-In First-Out) ```, utiizada para nomear o algoritmo de paginação  
+* Utilizamos uma memória virtual de X K  
+* Em caso de ``` page fault ``` utilizamos X s para uso do disco
 
+## Uso do programa
 
-## Recomendações de uso 
-+ Usar Python 3.7.2 ou superior  
+### Requisito mínimo 
++ Usar Python 3
+
+### Requisito recomendado
++ Usar Python 3.7 ou superior  
+
+### Requisito obrigatório
 + Instalar as bibliotecas necessárias presentes no arquivo [requirements.txt](requirements.txt)  
 
-## Como usar 
+### Como usar 
 
-> Execute os comando tendo a pasta ``` process-escalonator/ ``` como diretório corrente  
+> Execute os comandos tendo a pasta ``` process-escalonator/ ``` como diretório corrente  
 
 Em plataformas UNIX:
 
-```py
+```sh
   python3 -m venv env
   source env/bin/activate  
   pip install -r requirements.txt
@@ -77,7 +107,7 @@ Em plataformas UNIX:
 
 Em plataformas Windows:
 
-```py
+```sh
   python -m venv env
   env\Scripts\activate
   pip install -r requirements.txt
