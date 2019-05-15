@@ -21,9 +21,9 @@ def main():
         execution_time = int(input("Tempo de execução: "))
         deadline = int(input("Deadline: "))
         p = Process(id, start, execution_time, deadline)
-        escalonator.ready_queue.append(p)
+        escalonator.appendProcess(p)
         
-    escalonator.queue()
+    escalonator.sortQueue()
     cpu.run()
     
     turnaround = sum(cpu.concluded_process_time)/n

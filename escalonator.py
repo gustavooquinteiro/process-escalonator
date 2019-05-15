@@ -23,37 +23,25 @@ class Escalonator():
         self.override = override         
         self.cpu = cpu
         
-
-        
-    def queue(self):
-        """ Ordena a fila de prontos de acordo com o algoritmo escolhido """
-        if self.algorithm in self.PREEMPTIVE_ALGORITHMS:
-            self.not_arrived = list(filter(
-                lambda x: not x.isArrived(self.cpu.cpu_execution),
-                self.ready_queue))
-                                    
-            for process in self.not_arrived:
-                self.ready_queue.remove(process)
-                
-            if self.algorithm == "RR":
-                self.ready_queue.sort(key=lambda x: x.start)
-                self.not_arrived.sort(key=lambda x: x.start)
-            elif self.algorithm == "EDF":
-                self.ready_queue.sort(key=lambda x: (x.start, x.deadline))
-                self.not_arrived.sort(key=lambda x: (x.start, x.deadline))
+    def appendProcess(self, process):
+        if process.isArrived(self.cpu.cpu_execution) or self.algorithm == "FCFS":
+            self.ready_queue.append(process)
         else:
-            if self.algorithm == "FCFS":
-                self.ready_queue.sort(key=lambda x: x.start)
-            elif self.algorithm == "SJF":
-                self.not_arrived = list(filter(
-                    lambda x: not x.isArrived(self.cpu.cpu_execution),
-                    self.ready_queue))
-                                    
-                for process in self.not_arrived:
-                    self.ready_queue.remove(process)
-                
-                self.ready_queue.sort(key=lambda x: (x.start, x.execution_time))
-                self.not_arrived.sort(key=lambda x: (x.start, x.execution_time))
+            self.not_arrived.append(process)
+
+    def sortQueue(self):
+        """ Ordena a fila de prontos de acordo com o algoritmo escolhido """
+        if self.algorithm == "RR":
+            self.ready_queue.sort(key=lambda x: x.start)
+            self.not_arrived.sort(key=lambda x: x.start)
+        elif self.algorithm == "EDF":
+            self.ready_queue.sort(key=lambda x: (x.start, x.deadline))
+            self.not_arrived.sort(key=lambda x: (x.start, x.deadline))
+        elif self.algorithm == "FCFS":
+            self.ready_queue.sort(key=lambda x: x.start)
+        elif self.algorithm == "SJF":
+            self.ready_queue.sort(key=lambda x: (x.start, x.execution_time))
+            self.not_arrived.sort(key=lambda x: (x.start, x.execution_time))
                 
     def updateDeadline(self):
         for process in self.ready_queue:
@@ -68,7 +56,7 @@ class Escalonator():
             self.ready_queue.remove(process)
             self.cpu.concluded_process_time.append(self.cpu.cpu_execution - process.start)
             
-            if self.algorithm == "SJF":
+            if self.algorithm == "SJF" or self.algorithm == "EDF":
                 self.nextProcess()
             
         elif self.cpu.preemptiveness:
