@@ -1,0 +1,8 @@
+Click==7.0
+PyQt5==5.11.3
+PyQt5-sip==4.19.17
+pyqt5-tools==5.11.3.1.4
+PySide2==5.12.3
+python-dotenv==0.10.1
+shiboken2==5.12.3
+sip==4.19.8
