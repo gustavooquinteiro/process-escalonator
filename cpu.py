@@ -39,9 +39,7 @@ class CPU():
                 self.cpu_time = self.quantum                
                 
             self.execute()                    
-            self.escalonator.remove(self.process)
-            if self.preemptiveness and not self.escalonator.ready_queue and self.escalonator.not_arrived:
-                self.escalonator.nextProcess()
+            self.escalonator.manageQueue(self.process)
                 
 
         print("CPU executou todos os processos")                    
@@ -57,3 +55,6 @@ class CPU():
         print ("CPU executou {} que precisa de {}s por {}s" .format(self.process.id, self.process.execution_time, self.processing_time))
         self.process.execution_time -= self.processing_time
         self.cpu_execution += self.processing_time
+        if self.process.isFinished():
+            self.concluded_process_time.append(self.cpu_execution - self.process.start)
+

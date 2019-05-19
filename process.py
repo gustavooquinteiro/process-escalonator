@@ -32,7 +32,7 @@ class Process():
         index = (actual_index +1) % len(self.States)
         self.state = self.States[index]
         if self.state == self.States[0]:
-            self.io .enqueue(self)                  
+            self.io.enqueue(self)                  
      
     def prevState(self):
         """ Estado prévio do processo """
@@ -41,7 +41,7 @@ class Process():
         self.state = self.States[index]
         
        
-    def finished(self):
+    def isFinished(self):
         """ Verificação de conclusão do processo """
         if self.execution_time == 0:
             return True
