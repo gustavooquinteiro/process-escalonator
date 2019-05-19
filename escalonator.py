@@ -1,6 +1,5 @@
 import time
 import process
-import threading
 
 class Escalonator():
     """ Classe responsável pela  gerência da fila de prontos """
@@ -100,9 +99,8 @@ class Escalonator():
             self.ready_queue.sort(key=lambda x: x.deadline)
             return
         
-        if self.not_arrived:
-            if not ready_queue_empty:
-                self.ready_queue = self.ready_queue[1:]+[self.ready_queue[0]]        
-            else:        
-                self.ready_queue.append(self.not_arrived.pop(0))
+        if not ready_queue_empty:
+            self.ready_queue = self.ready_queue[1:]+[self.ready_queue[0]]        
+        elif self.not_arrived and ready_queue_empty:
+            self.ready_queue.append(self.not_arrived.pop(0))
             
