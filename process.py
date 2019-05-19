@@ -6,7 +6,7 @@ class Process():
     """ Classe responsável pela instanciação dos processos """
     States = ["Bloqueado", "Pronto", "Executando"]  # Estados de um processo
     
-    def __init__(self, id, start, execution_time, deadline = 0, io=None, need_io=False, priority=0):
+    def __init__(self, id, start, execution_time, numpages, deadline = 0, io=None, need_io=False, priority=0):
         """ Inicialização de um processo.
         Args:
             id (int): indentificador do processo
@@ -25,6 +25,13 @@ class Process():
         self.need_io = need_io
         self.io = io
         self.start = start
+        self.numpages = numpages
+        self.pages = []
+
+    def getPages(self): return self.pages
+    def setPages(self, list_pages): self.pages = list_pages
+    
+    def getNumPages(self): return self.numpages
     
     def nextState(self):
         """ Próximo estado do processo """
@@ -32,7 +39,7 @@ class Process():
         index = (actual_index +1) % len(self.States)
         self.state = self.States[index]
         if self.state == self.States[0]:
-            self.io .enqueue(self)                  
+            self.io.enqueue(self)                  
      
     def prevState(self):
         """ Estado prévio do processo """

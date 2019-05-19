@@ -4,7 +4,7 @@ from escalonator import Escalonator
 
 class CPU():
     """ Classe responsável pela execução dos processos """
-    def __init__(self, escalonator, quantum=0, process=None): 
+    def __init__(self, escalonator, mmu, ioqueue, quantum=0, process=None): 
         """ Inicialização com as caracteristicas de uma CPU
         Args:
             escalonator (Escalonator): tipo de escalonador utilizado na CPU
@@ -18,6 +18,8 @@ class CPU():
         self.escalonator = escalonator
         self.process = process        
         self.concluded_process_time = []
+        self.mmu = mmu
+        self.ioqueue = ioqueue
         
     def run(self):
         """ Método para execução da CPU """
@@ -33,16 +35,29 @@ class CPU():
                 self.cpu_execution += 1 
                 
             # O tempo de execução dos processos da fila de prontos depende da preemptividade da CPU
-            if not self.preemptiveness:                
+            if not self.preemptiveness:
                 self.cpu_time = self.process.execution_time               
             else:
-                self.cpu_time = self.quantum                
-                
-            self.execute()                    
-            self.escalonator.remove(self.process)
-            if self.preemptiveness and not self.escalonator.ready_queue and self.escalonator.not_arrived:
-                self.escalonator.nextProcess()
-                
+                self.cpu_time = self.quantum     
+
+            isAlloc = self.mmu.isAllocated(self.process)
+
+            if self.ioqueue.isOnQueue(self.process) == False and isAlloc == False:
+                self.ioqueue.enqueue(self.process)
+            elif isAlloc:
+                self.execute()
+
+                if self.preemptiveness:
+                    if self.escalonator.remove(self.process):
+                        self.mmu.deallocate(self.process)
+                    if self.preemptiveness and not self.escalonator.ready_queue and self.escalonator.not_arrived:
+                        self.escalonator.nextProcess()
+            
+            if not self.preemptiveness:
+                if self.escalonator.remove(self.process):
+                    self.mmu.deallocate(self.process)
+                if self.preemptiveness and not self.escalonator.ready_queue and self.escalonator.not_arrived:
+                    self.escalonator.nextProcess()
 
         print("CPU executou todos os processos")                    
                 

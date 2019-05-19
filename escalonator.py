@@ -76,6 +76,8 @@ class Escalonator():
             
             if self.algorithm == "SJF":
                 self.nextProcess()
+
+            return True
             
         elif self.cpu.preemptiveness:
             self.nextProcess()
@@ -85,6 +87,8 @@ class Escalonator():
             
             if self.algorithm == "EDF" and process.isOutDeadline():
                 print("\nProcesso {} está fora do prazo" .format(process))
+
+        return False
 
     def nextProcess(self):
         """ Atualiza a fila de prontos colocando o primeiro da fila no final da fila ou reoordenando-a de acordo seus algoritmos  """

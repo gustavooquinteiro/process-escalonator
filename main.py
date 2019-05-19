@@ -2,17 +2,21 @@ from escalonator import Escalonator
 from process import Process
 from ioqueue import IO
 from cpu import CPU
+from mmu import MMU, VirtualMemory
 import random
 
 def main():
     quantum = int(input("Quantum: "))
     override = int(input("Sobrecarga: "))
     type = str(input("Tipo de algoritmo de escalonamento (FCFS | SJF | RR | EDF): "))
+    typeMMU = str(input("Algoritmo de substituição de página (FIFO | LRU ): "))
     escalonator = Escalonator(type.upper(), override)
-    cpu = CPU(escalonator, quantum)
+    vm = VirtualMemory(100)
+    mmu = MMU(vm, typeMMU.upper())
+    io = IO(mmu)
+    io.escalonator = escalonator
+    cpu = CPU(escalonator, mmu, io, quantum)
     escalonator.cpu = cpu
-    #io = IO()
-    #io.escalonator = escalonator
     n = int(input("Quantidade de processos: "))
     for i in range(n):
         id = i 

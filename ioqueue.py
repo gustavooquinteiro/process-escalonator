@@ -5,8 +5,9 @@ import process
 import escalonator 
 
 class IO(): 
-    def __init__(self, escalonator = None):
+    def __init__(self, mmu, escalonator = None):
         self.queue = []
+        self.mmu = mmu
         self.mutex = threading.Condition()
         self.ioWorking = threading.Event()
         io = threading.Thread(target=self.run)
@@ -30,12 +31,21 @@ class IO():
         self.queue.append(process)
         self.mutex.release()
         self.ioWorking.set()
+
+    def isOnQueue(self, process):
+        if process in self.queue:
+            return True
+        return False
         
     def wait_for_resource(self):
         
         process = self.queue[0]
         print ("Processo {} na fila de Bloqueados " .format(process.id))
         time.sleep(random.randint(5, 10))
+        if process.getPages() == []:
+            process.setPages(self.mmu.giveMemAddr(process))
+        else:
+            self.mmu.reallocate(process)
         process.nextState()
         if process.state == process.__class__.States[1]:
             self.escalonator.queue(process)
