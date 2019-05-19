@@ -41,7 +41,7 @@ Esse sistema deve implementar os algoritmos de substituição de páginas:
   + Caso ocorra falta de página, utilize N unidades de tempo para o uso do Disco.  
 * O grupo está livre para a criação de qualquer abstração extra que se mostrar
 necessária.  
-* __ Os processos só executam se todas as suas páginas estiverem na RAM.__
+* **Os processos só executam se todas as suas páginas estiverem na RAM.**
 * Deve-se criar:  
   + [Gráfico de Gantt](https://pt.wikipedia.org/wiki/Diagrama_de_Gantt) para mostrar as execuções dos processos,
   + Visualização da CPU e da RAM  
@@ -73,13 +73,13 @@ E o tipo de paginação:
 
 ## Saída 
 
-A resposta deve ser dada em função do ** turn-around médio ** (tempo de espera + tempo de execução), o ** gráfico de Gantt correspondente ** às execuções dos processos e o ** estado da RAM **, antes, durante e após a execução dos processos
+A resposta deve ser dada em função do **turn-around médio** (tempo de espera + tempo de execução), o **gráfico de Gantt correspondente** às execuções dos processos e o **estado da RAM**, antes, durante e após a execução dos processos
 
 ## Convenções adotadas
 
-* Utilizamos a notação ``` FCFS (First Come First Served)```, no código, para nomear o algoritmo de escalonamento de processos e desambiguar da notação ``` FIFO  (First-In First-Out) ```, utiizada para nomear o algoritmo de paginação  
-* Utilizamos uma memória virtual de X K  
-* Em caso de ``` page fault ``` utilizamos X s para uso do disco
+* Utilizamos a notação ``` FCFS (First Come, First Served)```, no código, para nomear o algoritmo de escalonamento de processos e desambiguar da notação ``` FIFO  (First In, First Out) ```, utiizada para nomear o algoritmo de paginação  
+* Utilizamos uma memória virtual de 400 K  
+* Em caso de ``` page fault ``` utilizamos ```2 * Q``` s para uso do disco
 
 ## Uso do programa
 
