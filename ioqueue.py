@@ -10,9 +10,9 @@ class IO():
         self.mmu = mmu
         self.mutex = threading.Condition()
         self.ioWorking = threading.Event()
-        io = threading.Thread(target=self.run)
+        self.io = threading.Thread(target=self.run)
         self.escalonator = escalonator
-        io.start()
+        self.io.start()
         
     def run(self):
         while True:
@@ -44,10 +44,11 @@ class IO():
         time.sleep(random.randint(5, 10))
         if process.getPages() == []:
             process.setPages(self.mmu.giveMemAddr(process))
-        else:
+        elif process.execution_time != 0:
             self.mmu.reallocate(process)
-        process.nextState()
-        if process.state == process.__class__.States[1]:
-            self.escalonator.queue(process)
-            print ("Processo {} na fila de Pronto " .format(process.id))
+            process.nextState(self.mmu)
+            if process.state == process.__class__.States[1]:
+                self.escalonator.ready_queue.append(process)
+                # self.escalonator.queue()
+                print ("Processo {} na fila de Pronto " .format(process.id))
         del self.queue[0]

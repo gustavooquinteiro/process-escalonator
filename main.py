@@ -24,12 +24,12 @@ def main():
         start = int(input("Tempo de chegada: "))
         execution_time = int(input("Tempo de execução: "))
         deadline = int(input("Deadline: "))    
-        p = Process(id, start, execution_time, deadline)
+        p = Process(id, start, execution_time, deadline, io=io)
         escalonator.ready_queue.append(p)
         
     escalonator.queue()
     cpu.run()
-    
+    io.io.join(1)
     turnaround = sum(cpu.concluded_process_time)/n
     print("Turnaround == {}" .format(turnaround))
 

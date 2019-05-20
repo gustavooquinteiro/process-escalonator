@@ -8,14 +8,11 @@ class Page():
     def getNum(self): return self.num
     def setNum(self, n): self.num = n
 
-    def getIndex(self): return self.index
-    def setIndex(self, ind): self.index = ind
-
     def getFreq(self): return self.freq
     def setFreq(self, freq): self.freq = freq
 
     def isAllocated(self):
-        if self.num and self.index == None and self.freq == 0:
+        if self.num and self.freq == 0:
             return False
         return True
 
@@ -23,8 +20,8 @@ class RAM():
     def __init__(self):
         self.algorithm = 'FIFO'
         self.queue = []
-        page = Page()
         for i in range(50):
+            page = Page()
             self.queue.append(page)
         self.ram_pointer = 0
 
@@ -98,8 +95,11 @@ class VirtualMemory():
             ret = False
 
         for ref in process.getPages():
-            if self.mem_vm[ref][0] == None or self.mem_ram.queue[self.mem_vm[ref][0]].getNum() != process.id:
-                self.mem_vm[ref] = None
+            if self.mem_vm[ref][0] == None:
+                self.mem_vm[ref] = [None, 0]
+                ret = False
+            elif self.mem_ram.queue[self.mem_vm[ref][0]].getNum() != process.id:
+                self.mem_vm[ref] = [None, 0]
                 ret = False
 
         return ret

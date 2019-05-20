@@ -21,7 +21,7 @@ class Process():
         self.priority = priority
         self.deadline = deadline
         self.execution_time = execution_time
-        self.state = self.States[1]
+        self.state = self.States[2]
         self.need_io = need_io
         self.io = io
         self.start = start
@@ -40,7 +40,9 @@ class Process():
         self.state = self.States[index]
         isAlloc = mmu.isAllocated(self)
         if self.state == self.States[0] and isAlloc == False:
-            self.io.enqueue(self)                  
+            self.io.enqueue(self)
+        # while mmu.isAllocated(self) == False:
+            # continue
      
     def prevState(self):
         """ Estado prévio do processo """
@@ -54,7 +56,7 @@ class Process():
         if self.execution_time == 0:
             return True
         else:
-            if self.state == self.States[2] and self.need_io:
+            if self.state == self.States[2]:
                 # Se estava no estado de Executando e precisa de IO então vá para o estado de Bloqueado
                 self.nextState(mmu)
             else: 
