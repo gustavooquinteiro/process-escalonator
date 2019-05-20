@@ -40,20 +40,14 @@ class CPU():
             else:
                 self.cpu_time = self.quantum     
 
-            isAlloc = self.mmu.isAllocated(self.process)
+            self.execute()
 
-            if self.ioqueue.isOnQueue(self.process) == False and isAlloc == False:
-                self.ioqueue.enqueue(self.process)
-            elif isAlloc:
-                self.execute()
-
-                if self.preemptiveness:
-                    if self.escalonator.remove(self.process):
-                        self.mmu.deallocate(self.process)
-                    if self.preemptiveness and not self.escalonator.ready_queue and self.escalonator.not_arrived:
-                        self.escalonator.nextProcess()
-            
-            if not self.preemptiveness:
+            if self.preemptiveness:
+                if self.escalonator.remove(self.process):
+                    self.mmu.deallocate(self.process)
+                if self.preemptiveness and not self.escalonator.ready_queue and self.escalonator.not_arrived:
+                    self.escalonator.nextProcess()
+            else:
                 if self.escalonator.remove(self.process):
                     self.mmu.deallocate(self.process)
                 if self.preemptiveness and not self.escalonator.ready_queue and self.escalonator.not_arrived:
@@ -63,7 +57,7 @@ class CPU():
                 
     def execute(self):
         """ Método para executar um processo """
-        self.process.nextState()
+        self.process.nextState(self.mmu)
         if self.cpu_time > self.process.execution_time:
             self.processing_time = self.cpu_time - self.process.execution_time  
         else:

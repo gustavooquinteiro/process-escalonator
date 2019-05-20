@@ -33,12 +33,13 @@ class Process():
     
     def getNumPages(self): return self.numpages
     
-    def nextState(self):
+    def nextState(self, mmu):
         """ Próximo estado do processo """
         actual_index = self.States.index(self.state)
         index = (actual_index +1) % len(self.States)
         self.state = self.States[index]
-        if self.state == self.States[0]:
+        isAlloc = mmu.isAllocated(self)
+        if self.state == self.States[0] and isAlloc == False:
             self.io.enqueue(self)                  
      
     def prevState(self):
@@ -48,14 +49,14 @@ class Process():
         self.state = self.States[index]
         
        
-    def finished(self):
+    def finished(self, mmu):
         """ Verificação de conclusão do processo """
         if self.execution_time == 0:
             return True
         else:
             if self.state == self.States[2] and self.need_io:
                 # Se estava no estado de Executando e precisa de IO então vá para o estado de Bloqueado
-                self.nextState()
+                self.nextState(mmu)
             else: 
                 self.prevState()
             return False

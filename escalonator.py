@@ -70,7 +70,7 @@ class Escalonator():
             Args:
                 process (Process): processo a ser removido da fila
         """
-        if process.finished():            
+        if process.finished(self.cpu.mmu):            
             self.ready_queue.remove(process)
             self.cpu.concluded_process_time.append(self.cpu.cpu_execution - process.start)
             
