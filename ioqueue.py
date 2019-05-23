@@ -38,10 +38,13 @@ class IO():
         return False
         
     def wait_for_resource(self):
-        
         process = self.queue[0]
         print ("Processo {} na fila de Bloqueados " .format(process.id))
-        time.sleep(random.randint(5, 10))
+        
+        time = time.time()
+        while time.time() - time < 5:
+            continue
+
         if process.getPages() == []:
             process.setPages(self.mmu.giveMemAddr(process))
         elif process.execution_time != 0:

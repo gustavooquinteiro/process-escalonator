@@ -82,13 +82,17 @@ class Escalonator():
         elif self.cpu.preemptiveness:
             self.nextProcess()
             time.sleep(self.override)
-            self.cpu.cpu_execution += self.override            
-            self.updateDeadline()   
+            self.cpu.cpu_execution += self.override
+            self.updateDeadline()
             
             if self.algorithm == "EDF" and process.isOutDeadline():
                 print("\nProcesso {} está fora do prazo" .format(process))
 
         return False
+
+    def forceRemove(self, process):
+        self.ready_queue.remove(process)
+        self.nextProcess()
 
     def nextProcess(self):
         """ Atualiza a fila de prontos colocando o primeiro da fila no final da fila ou reoordenando-a de acordo seus algoritmos  """

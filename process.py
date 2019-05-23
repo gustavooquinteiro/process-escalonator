@@ -38,9 +38,6 @@ class Process():
         actual_index = self.States.index(self.state)
         index = (actual_index +1) % len(self.States)
         self.state = self.States[index]
-        isAlloc = mmu.isAllocated(self)
-        if self.state == self.States[0] and isAlloc == False:
-            self.io.enqueue(self)
         # while mmu.isAllocated(self) == False:
             # continue
      

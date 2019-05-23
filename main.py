@@ -24,9 +24,24 @@ def main():
         start = int(input("Tempo de chegada: "))
         execution_time = int(input("Tempo de execução: "))
         deadline = int(input("Deadline: "))    
-        p = Process(id, start, execution_time, deadline, io=io)
-        escalonator.ready_queue.append(p)
+        numpages = int(input("Número de páginas: "))
+        p = Process(id, start, execution_time, numpages, deadline=deadline, io=io)
+        escalonator.not_arrived.append(p)
+        escalonator.not_arrived.sort(key=lambda x: x.start)
+    
+    clock = 0
+    while system.hasProcess():
+        while escalonator.not_arrived[0].start == clock:
+            escalonator.ready_queue.append(escalonator.not_arrived[0])
+            escalonator.not_arrived.pop(0)
+        escalonator.queue()
+
         
+
+        clock += 1
+
+
+
     escalonator.queue()
     cpu.run()
     io.io.join(1)
