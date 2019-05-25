@@ -6,6 +6,8 @@ from escalonator import Escalonator
 
 class CPU():
     """ Classe responsável pela execução dos processos """
+    State = ['Ocioso', 'Executando', 'Pronto', 'Sobrecarga', 'PosSobrecarga', 'PreSobrecarga']
+    
     def __init__(self, escalonator, mmu, ioqueue, quantum=0, process=None): 
         """ Inicialização com as caracteristicas de uma CPU
         Args:
@@ -14,14 +16,17 @@ class CPU():
             process (Process): processo a ser executado na CPU
         
         """
-        self.cpu_time = 0           # Tempo que a CPU tem para cada processo
-        self.cpu_execution = 0      # Tempo que a CPU permaneceu ligada
+        
+        self.clock = 0              # Tempo que a CPU permaneceu ligada
         self.quantum = quantum
         self.escalonator = escalonator
         self.process = process        
+        self.processing_time = 0
         self.concluded_process_time = []
         self.mmu = mmu
         self.ioqueue = ioqueue
+        self.override_time = 0
+        self.state = CPU.State[0]
         
     def run(self):
         """ Método para execução da CPU """
@@ -29,7 +34,7 @@ class CPU():
         # Verificação de preemptividade
         self.preemptiveness = False if self.escalonator.algorithm in self.escalonator.NON_PREEMPTIVE_ALGORITHMS else True       
 
-        if process == None:
+        if self.process == None:
             print('ID: None')
         else:
             print('ID: %s' %self.process.id)
@@ -40,8 +45,8 @@ class CPU():
             self.process = self.escalonator.ready_queue[0]
             
             # Caso o processo não começe exatamente onde a CPU está 
-            while self.cpu_execution < self.process.start:
-                self.cpu_execution += 1 
+            while self.clock < self.process.start:
+                self.clock += 1 
                 
             # O tempo de execução dos processos da fila de prontos depende da preemptividade da CPU
             if not self.preemptiveness:
@@ -53,7 +58,7 @@ class CPU():
             print('Block: %s' %self.ioqueue.queue)
             print('Pronto: %s' %self.escalonator.ready_queue)
 
-            isAlloc = mmu.isAllocated(self)
+            isAlloc = self.mmu.isAllocated(self)
             if self.process.state == Process.States[0] and isAlloc == False:
                 self.io.enqueue(self.process)
                 self.escalonator.forceRemove(self.process)
@@ -79,46 +84,68 @@ class CPU():
         
         # Verificação de preemptividade
         self.preemptiveness = False if self.escalonator.algorithm in self.escalonator.NON_PREEMPTIVE_ALGORITHMS else True       
+        #self.escalonator.nextProcess()
         
-        self.process = self.escalonator.ready_queue[0]
-            # # Caso o processo não começe exatamente onde a CPU está 
-            # while self.cpu_execution < self.process.start:
-            #     self.cpu_execution += 1 
-                
-        # O tempo de execução dos processos da fila de prontos depende da preemptividade da CPU
-        if not self.preemptiveness:
-            self.cpu_time = self.process.execution_time               
-        else:
-            self.cpu_time = self.quantum     
-
-        isAlloc = mmu.isAllocated(self)
-        if self.process.state == Process.States[0] and isAlloc == False:
-            self.io.enqueue(self.process)
-            self.escalonator.forceRemove(self.process)
-            if len(escalonator.ready_queue) > 0:
-                self.process = self.escalonator.ready_queue[0]
+        if self.state == CPU.State[5]:
+            self.state = CPU.State[3]
+        
+        if self.state == CPU.State[2] or self.state == CPU.State[4]:
+            self.state = CPU.State[0]
+            
+        
+        while self.state == CPU.State[0]:
+            if self.escalonator.ready_queue:
+                self.state = CPU.State[1]
+                self.process = self.escalonator.ready_queue.pop(0)
             else:
-                return
+                return 
+            isAlloc = self.mmu.isAllocated(self.process)
+            self.process.nextState(self.mmu)
 
-        self.execute()
+            if self.process.state == Process.States[0] and isAlloc == False:
+                self.ioqueue.enqueue(self.process)
+                self.state = CPU.State[0]
+            else:
+                self.processing_time = 0
 
         if self.preemptiveness:    
-            if process.finished():
+            
+            if self.state != CPU.State[3]:
+                self.execute()
+                if self.quantum - self.processing_time == 0:
+                    self.state = CPU.State[5]
+                
+            
+            if self.process.finished(self.mmu):
                 self.mmu.deallocate(self.process)
-                # self.removeProcess()
-            elif self.cpu_time - self.processing_time == 0:
-                self.escalonator.ready_queue.append(self.process)
-                self.escalonator.queue()
+                self.concluded_process_time.append(self.clock - self.process.start)
+                self.state = CPU.State[2]
+                
+            elif self.quantum - self.processing_time == 0:
+                
+                if self.escalonator.override - self.override_time == 0:
+                    self.state = CPU.State[4]
+                    self.escalonator.updateDeadline()
+                    self.escalonator.ready_queue.append(self.process)
+                    self.override_time = 0
+                else:
+                    self.override_time += 1
+                    return
                 # self.removeProcess()
         else:
-            if process.finished():
+            self.execute()
+            if self.process.finished():
                 self.mmu.deallocate(self.process)
-                # self.removeProcess()
-
+                self.concluded_process_time.append(self.clock - self.process.start)
+                self.state = CPU.State[2]
+                #self.removeProcess()
+                
+                
+        
     def execute(self):
         """ Método para executar um processo """
         self.process.nextState(self.mmu)
         self.processing_time += 1
         time.sleep(self.processing_time)
-        # print ("CPU executou {} que precisa de {}s por {}s" .format(self.process.id, self.process.execution_time, self.processing_time))
+        print ("CPU executou {} que precisa de {}s por {}s" .format(self.process.id, self.process.execution_time, self.processing_time))
         self.process.execution_time -= 1

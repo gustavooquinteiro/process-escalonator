@@ -26,27 +26,23 @@ def main():
         deadline = int(input("Deadline: "))    
         numpages = int(input("Número de páginas: "))
         p = Process(id, start, execution_time, numpages, deadline=deadline, io=io)
-        escalonator.not_arrived.append(p)
-        escalonator.not_arrived.sort(key=lambda x: x.start)
-    
-    clock = 0
-    while system.hasProcess():
-        while escalonator.not_arrived[0].start == clock:
-            escalonator.ready_queue.append(escalonator.not_arrived[0])
-            escalonator.not_arrived.pop(0)
-        escalonator.queue()
-
+        escalonator.insertProcess(p)
         
-
-        clock += 1
-
-
-
+    escalonator.not_arrived.sort(key=lambda x: x.start)
     escalonator.queue()
-    cpu.run()
+      
+    while n-1 != len(cpu.concluded_process_time):
+        escalonator.nextProcess()
+        cpu.runClock()
+        #print(cpu.state)
+        cpu.clock += 1
+
+    #escalonator.queue()
+    #cpu.run()
     io.io.join(1)
     turnaround = sum(cpu.concluded_process_time)/n
     print("Turnaround == {}" .format(turnaround))
 
 if __name__ == "__main__":
     main()
+    

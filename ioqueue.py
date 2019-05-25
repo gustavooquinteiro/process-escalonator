@@ -1,8 +1,8 @@
 import time 
 import random
 import threading
-import process 
 import escalonator 
+import process
 
 class IO(): 
     def __init__(self, mmu, escalonator = None):
@@ -16,13 +16,13 @@ class IO():
         
     def run(self):
         while True:
-            self.mutex.acquire()
-            if len(self.queue) > 0:
+            if self.queue:
+                self.mutex.acquire()
+                print('wait_for_resource')
                 self.wait_for_resource()
                 self.mutex.release()
                 self.ioWorking.clear()
-            else:
-                self.mutex.release()
+            else:            
                 self.ioWorking.wait()
                 
             
@@ -41,8 +41,8 @@ class IO():
         process = self.queue[0]
         print ("Processo {} na fila de Bloqueados " .format(process.id))
         
-        time = time.time()
-        while time.time() - time < 5:
+        time_now = time.time()
+        while time.time() - time_now < 0.001:
             continue
 
         if process.getPages() == []:
@@ -50,7 +50,8 @@ class IO():
         elif process.execution_time != 0:
             self.mmu.reallocate(process)
             process.nextState(self.mmu)
-            if process.state == process.__class__.States[1]:
+            print(process)
+            if process.state == Process.States[1]:
                 self.escalonator.ready_queue.append(process)
                 # self.escalonator.queue()
                 print ("Processo {} na fila de Pronto " .format(process.id))

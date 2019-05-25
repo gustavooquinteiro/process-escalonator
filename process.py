@@ -66,7 +66,7 @@ class Process():
     
     def isArrived(self, clock):
         """ Verificação se um processo está apto a entrar na CPU  """
-        return clock >= self.start
+        return clock == self.start
     
     def __repr__(self):
         """ Representação do processo. Útil em print() """
