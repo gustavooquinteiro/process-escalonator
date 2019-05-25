@@ -31,7 +31,7 @@ def main():
     escalonator.not_arrived.sort(key=lambda x: x.start)
     escalonator.queue()
       
-    while n-1 != len(cpu.concluded_process_time):
+    while n != len(cpu.concluded_process_time):
         escalonator.nextProcess()
         cpu.runClock()
         #print(cpu.state)

@@ -3,34 +3,17 @@ import random
 import threading
 import escalonator 
 import process
+import mmu
 
 class IO(): 
     def __init__(self, mmu, escalonator = None):
         self.queue = []
         self.mmu = mmu
-        self.mutex = threading.Condition()
-        self.ioWorking = threading.Event()
-        self.io = threading.Thread(target=self.run)
         self.escalonator = escalonator
-        self.io.start()
-        
-    def run(self):
-        while True:
-            if self.queue:
-                self.mutex.acquire()
-                print('wait_for_resource')
-                self.wait_for_resource()
-                self.mutex.release()
-                self.ioWorking.clear()
-            else:            
-                self.ioWorking.wait()
-                
             
-    def enqueue(self, process):
-        self.mutex.acquire()
+    def enqueue(self, process):       
         self.queue.append(process)
-        self.mutex.release()
-        self.ioWorking.set()
+        self.wait_for_resource()
 
     def isOnQueue(self, process):
         if process in self.queue:
@@ -42,17 +25,17 @@ class IO():
         print ("Processo {} na fila de Bloqueados " .format(process.id))
         
         time_now = time.time()
-        while time.time() - time_now < 0.001:
+        while time.time() - time_now < 1:
             continue
-
+        print("passou do while")
         if process.getPages() == []:
+            print("entro aqu")
             process.setPages(self.mmu.giveMemAddr(process))
         elif process.execution_time != 0:
             self.mmu.reallocate(process)
-            process.nextState(self.mmu)
-            print(process)
-            if process.state == Process.States[1]:
-                self.escalonator.ready_queue.append(process)
-                # self.escalonator.queue()
-                print ("Processo {} na fila de Pronto " .format(process.id))
+        process.nextState(self.mmu)
+        if process.state == process.__class__.States[1]:
+            self.escalonator.ready_queue.append(process)
+            # self.escalonator.queue()
+            print ("Processo {} na fila de Pronto " .format(process.id))
         del self.queue[0]
