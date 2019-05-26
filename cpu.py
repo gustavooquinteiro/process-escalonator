@@ -102,7 +102,7 @@ class CPU():
             isAlloc = self.mmu.isAllocated(self.process)
             self.process.nextState(self.mmu)
 
-            if self.process.state == Process.States[0] and isAlloc == False:
+            if isAlloc == False:
                 self.ioqueue.enqueue(self.process)
                 self.state = CPU.State[0]
             else:

@@ -39,7 +39,7 @@ def main():
 
     #escalonator.queue()
     #cpu.run()
-    io.io.join(1)
+    # io.io.join(1)
     turnaround = sum(cpu.concluded_process_time)/n
     print("Turnaround == {}" .format(turnaround))
 

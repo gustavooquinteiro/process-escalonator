@@ -30,12 +30,12 @@ class IO():
         print("passou do while")
         if process.getPages() == []:
             print("entro aqu")
-            process.setPages(self.mmu.giveMemAddr(process))
-        elif process.execution_time != 0:
-            self.mmu.reallocate(process)
+            process.setPages(self.mmu.allocate(process))
+        else:
+            self.mmu.allocate(process)
         process.nextState(self.mmu)
-        if process.state == process.__class__.States[1]:
-            self.escalonator.ready_queue.append(process)
+        # if process.state == process.__class__.States[1]:
+        self.escalonator.ready_queue.append(process)
             # self.escalonator.queue()
-            print ("Processo {} na fila de Pronto " .format(process.id))
+        print ("Processo {} na fila de Pronto " .format(process.id))
         del self.queue[0]
