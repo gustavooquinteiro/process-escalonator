@@ -2,32 +2,61 @@ from escalonator import Escalonator
 from process import Process
 from ioqueue import IO
 from cpu import CPU
+from mmu import MMU, VirtualMemory
 import random
+import time 
 
 def main():
     quantum = int(input("Quantum: "))
     override = int(input("Sobrecarga: "))
     type = str(input("Tipo de algoritmo de escalonamento (FCFS | SJF | RR | EDF): "))
+    typeMMU = str(input("Algoritmo de substituição de página (FIFO | LRU ): "))
     escalonator = Escalonator(type.upper(), override)
-    cpu = CPU(escalonator, quantum)
+    vm = VirtualMemory(100)
+    mmu = MMU(vm, typeMMU.upper())
+    io = IO(mmu)
+    io.escalonator = escalonator
+    cpu = CPU(escalonator, mmu, io, quantum)
     escalonator.cpu = cpu
-    #io = IO()
-    #io.escalonator = escalonator
     n = int(input("Quantidade de processos: "))
     for i in range(n):
         id = i 
         print("Criando o processo {}: " .format(id))
         start = int(input("Tempo de chegada: "))
         execution_time = int(input("Tempo de execução: "))
-        deadline = int(input("Deadline: "))
-        p = Process(id, start, execution_time, deadline)
-        escalonator.appendProcess(p)
+        deadline = int(input("Deadline: "))    
+        numpages = int(input("Número de páginas: "))
+        p = Process(id, start, execution_time, numpages, deadline=deadline, io=io)
+        escalonator.insertProcess(p)
         
-    escalonator.sortQueue()
-    cpu.run()
-    
+    escalonator.not_arrived.sort(key=lambda x: x.start)
+    escalonator.queue()
+      
+    while n != len(cpu.concluded_process_time):
+        escalonator.nextProcess()
+        cpu.runClock()
+        io.wait_for_resource(cpu)
+        
+        print('Prontos: ', end='')
+        for proc in escalonator.ready_queue:
+            print(proc.id, end=' ')
+        print()
+        print('Bloqueados: ', end='')
+        for proc in io.queue:
+            print(proc.id, end=' ')
+        print()
+        
+        #print(cpu.state)
+        cpu.clock += 1
+        time.sleep(1)
+
+    #escalonator.queue()
+    #cpu.run()
+    # io.io.join(1)
+
     turnaround = sum(cpu.concluded_process_time)/n
     print("Turnaround == {0:.2f}" .format(turnaround))
 
 if __name__ == "__main__":
     main()
+    

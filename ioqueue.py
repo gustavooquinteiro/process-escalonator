@@ -1,43 +1,47 @@
 import time 
 import random
 import threading
-import process 
 import escalonator 
+import process
+import mmu
 
 class IO(): 
-    def __init__(self, escalonator = None):
+    def __init__(self, mmu, escalonator = None):
         self.queue = []
-        self.mutex = threading.Condition()
-        self.ioWorking = threading.Event()
-        io = threading.Thread(target=self.run)
+        self.mmu = mmu
         self.escalonator = escalonator
-        io.start()
-        
-    def run(self):
-        while True:
-            self.mutex.acquire()
-            if len(self.queue) > 0:
-                self.wait_for_resource()
-                self.mutex.release()
-                self.ioWorking.clear()
-            else:
-                self.mutex.release()
-                self.ioWorking.wait()
-                
             
-    def enqueue(self, process):
-        self.mutex.acquire()
+    def enqueue(self, process):       
         self.queue.append(process)
-        self.mutex.release()
-        self.ioWorking.set()
+        # self.wait_for_resource()
+
+    def isOnQueue(self, process):
+        if process in self.queue:
+            return True
+        return False
         
-    def wait_for_resource(self):
-        
-        process = self.queue[0]
-        print ("Processo {} na fila de Bloqueados " .format(process.id))
-        time.sleep(random.randint(5, 10))
-        process.nextState()
-        if process.state == process.__class__.States[1]:
-            self.escalonator.queue(process)
-            print ("Processo {} na fila de Pronto " .format(process.id))
-        del self.queue[0]
+    def wait_for_resource(self, cpu):
+        if len(self.queue) > 0:
+            process = self.queue[0]
+            print ("Processo {} na fila de Bloqueados " .format(process.id))
+            
+            # time_now = time.time()
+            # while time.time() - time_now < 1:
+            #     continue
+
+            for i in range(min(2, process.numpages - len(process.pages))):
+                process.addPages(self.mmu.allocatePage(process, cpu.process))
+
+            if self.mmu.isAllocated(process):
+                process.nextState(self.mmu)
+                # if process.state == process.__class__.States[1]:
+                self.escalonator.ready_queue.append(process)
+                    # self.escalonator.queue()
+                print ("Processo {} na fila de Pronto " .format(process.id))
+                del self.queue[0]
+                
+            # if process.getPages() == []:
+            #     print("entro aqu")
+            #     process.setPages(self.mmu.allocate(process))
+            # else:
+            #     self.mmu.allocate(process)
