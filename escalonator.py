@@ -1,6 +1,5 @@
 import time
 import process
-import threading
 
 class Escalonator():
     """ Classe responsável pela  gerência da fila de prontos """
@@ -47,8 +46,8 @@ class Escalonator():
         for process in self.ready_queue:
             process.deadline = process.deadline - self.cpu.clock + process.start
             
-    def remove(self, process):
-        """ Remove o processo da fila de prontos, se ele já estiver finalizado, e coloca o próximo da fila na frente.
+    def manageQueue(self, process):
+        """ Gerencia a fila de prontos de acordo o estado do processo no inicio da fila
             Args:
                 process (Process): processo a ser removido da fila
         """
@@ -59,14 +58,12 @@ class Escalonator():
 
             return True
             
-        elif self.cpu.preemptiveness:
+        elif self.algorithm in self.PREEMPTIVE_ALGORITHMS:
             self.nextProcess()
             time.sleep(self.override)
             self.cpu.clock += self.override
             self.updateDeadline()
             
-            if self.algorithm == "EDF" and process.isOutDeadline():
-                print("\nProcesso {} está fora do prazo" .format(process))
 
         return False
 
@@ -75,30 +72,24 @@ class Escalonator():
         self.nextProcess()
 
     def nextProcess(self):
-        """ Atualiza a fila de prontos colocando o primeiro da fila no final da fila ou reoordenando-a de acordo seus algoritmos  """
-        
-        ready_queue_empty = True if not self.ready_queue else False
-        not_keep = []
-        for process in self.not_arrived:
-            if process.isArrived(self.cpu.clock):
-                self.ready_queue.append(process)
-                not_keep.append(process)
-                    
-        for process in not_keep:
+        """ Adiciona processos, que chegaram, à fila de prontos e reordena-a, se necessário  """
+
+        arrived = list(filter(
+            lambda x: x.isArrived(self.cpu.clock),
+            self.not_arrived))
+
+        for process in arrived:
+            self.ready_queue.append(process)
             self.not_arrived.remove(process)
             
         if len(self.ready_queue) > 1:
-        
             if self.algorithm == "FCFS":
                 self.ready_queue.sort(key=lambda x: x.start)
                 return
-            
             if self.algorithm == "SJF":
                 self.ready_queue.sort(key=lambda x: x.execution_time)
                 return 
-            if self.algorithm == "EDF":
+            elif self.algorithm == "EDF":
                 self.ready_queue.sort(key=lambda x: x.deadline)
                 return
-        
-            # [2 3]
-            # [2 3 1]
+  

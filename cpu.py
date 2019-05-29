@@ -76,7 +76,6 @@ class CPU():
                     self.mmu.deallocate(self.process)
                 if self.preemptiveness and not self.escalonator.ready_queue and self.escalonator.not_arrived:
                     self.escalonator.nextProcess()
-
         print("CPU executou todos os processos")                    
 
     def runClock(self):
