@@ -20,7 +20,7 @@ class IO():
             return True
         return False
         
-    def wait_for_resource(self):
+    def wait_for_resource(self, cpu):
         if len(self.queue) > 0:
             process = self.queue[0]
             print ("Processo {} na fila de Bloqueados " .format(process.id))
@@ -30,7 +30,7 @@ class IO():
             #     continue
 
             for i in range(min(2, process.numpages - len(process.pages))):
-                process.addPages(self.mmu.allocatePage(process))
+                process.addPages(self.mmu.allocatePage(process, cpu.process))
 
             if self.mmu.isAllocated(process):
                 process.nextState(self.mmu)
@@ -45,4 +45,3 @@ class IO():
             #     process.setPages(self.mmu.allocate(process))
             # else:
             #     self.mmu.allocate(process)
-            

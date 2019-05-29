@@ -35,7 +35,8 @@ def main():
     while n != len(cpu.concluded_process_time):
         escalonator.nextProcess()
         cpu.runClock()
-        io.wait_for_resource()
+        io.wait_for_resource(cpu)
+        
         print('Prontos: ', end='')
         for proc in escalonator.ready_queue:
             print(proc.id, end=' ')
@@ -44,6 +45,7 @@ def main():
         for proc in io.queue:
             print(proc.id, end=' ')
         print()
+        
         #print(cpu.state)
         cpu.clock += 1
         time.sleep(1)
