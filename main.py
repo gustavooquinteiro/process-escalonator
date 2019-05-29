@@ -4,6 +4,7 @@ from ioqueue import IO
 from cpu import CPU
 from mmu import MMU, VirtualMemory
 import random
+import time 
 
 def main():
     quantum = int(input("Quantum: "))
@@ -34,8 +35,18 @@ def main():
     while n != len(cpu.concluded_process_time):
         escalonator.nextProcess()
         cpu.runClock()
+        io.wait_for_resource()
+        print('Prontos: ', end='')
+        for proc in escalonator.ready_queue:
+            print(proc.id, end=' ')
+        print()
+        print('Bloqueados: ', end='')
+        for proc in io.queue:
+            print(proc.id, end=' ')
+        print()
         #print(cpu.state)
         cpu.clock += 1
+        time.sleep(1)
 
     #escalonator.queue()
     #cpu.run()

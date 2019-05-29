@@ -211,8 +211,32 @@ class MMU():
         self.vm.mem_ram.setAlgorithm(algorithm)
 
     def isAllocated(self, process):
-        print('Processo %d esta alocado? %s' %(process.id, self.vm.isAllocated(process)))
+        # print('Processo %d esta alocado? %s' %(process.id, self.vm.isAllocated(process)))
         return self.vm.isAllocated(process)
+
+    def allocatePage(self, process):
+        pages = []
+
+        if len(process.pages) != process.numpages:
+            ref = self.vm.allocatePage(process, None)
+            # print(self.vm.mem_ram.queue[self.vm.mem_vm[ref][0]].num, end=':')
+            # print(self.vm.mem_vm[ref][0], end='-')
+            pages.append(ref)
+        else:
+            for ref in process.pages:
+                if self.vm.isPageAllocated(process, ref) == False:
+                    self.vm.allocatePage(process, ref)
+                    break
+
+        # print('allocate: ', end='')
+
+        # print(pages)
+        return pages
+
+    def referentiate(self, process):
+        for ref in process.pages:
+            self.vm.mem_vm[ref][1] += 1
+
 
     # def giveMemAddr(self, process):
     #     pages = []
@@ -282,7 +306,6 @@ class MMU():
         for ref in process.getPages():
             newPage = Page()
             print('Desalocou %d, pagina %d' %(process.id, ref))
-            print(self.vm.mem_vm[ref])
             if self.vm.isPageAllocated(process, ref):
                 self.vm.mem_ram.queue[self.vm.mem_vm[ref][0]] = newPage
                 self.vm.mem_vm[ref] = [None, 0]

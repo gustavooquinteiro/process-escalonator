@@ -30,6 +30,9 @@ class Process():
 
     def getPages(self): return self.pages
     def setPages(self, list_pages): self.pages = list_pages
+    def addPages(self, list_pages):
+        for data in list_pages:
+            self.pages.append(data)
     
     def getNumPages(self): return self.numpages
     

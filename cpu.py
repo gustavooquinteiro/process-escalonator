@@ -92,21 +92,22 @@ class CPU():
         if self.state == CPU.State[2] or self.state == CPU.State[4]:
             self.state = CPU.State[0]
             
-        
-        while self.state == CPU.State[0]:
-            if self.escalonator.ready_queue:
-                self.state = CPU.State[1]
-                self.process = self.escalonator.ready_queue.pop(0)
-            else:
-                return 
-            isAlloc = self.mmu.isAllocated(self.process)
-            self.process.nextState(self.mmu)
+        # while self.state == CPU.State[0]:
+        if self.escalonator.ready_queue:
+            self.state = CPU.State[1]
+            self.process = self.escalonator.ready_queue.pop(0)
+        else:
+            return
+        isAlloc = self.mmu.isAllocated(self.process)
+        self.process.nextState(self.mmu)
 
-            if isAlloc == False:
-                self.ioqueue.enqueue(self.process)
-                self.state = CPU.State[0]
-            else:
-                self.processing_time = 0
+        if isAlloc == False:
+            self.ioqueue.enqueue(self.process)
+            self.state = CPU.State[0]
+            return
+        else:
+            self.processing_time = 0
+            self.mmu.referentiate(self.process)
 
         if self.preemptiveness:    
             
