@@ -4,18 +4,21 @@ from PyQt5.QtWidgets import (QWidget, QPushButton, QLineEdit, QLayout, QGridLayo
                              QInputDialog,QFrame, QColorDialog, QApplication, QFontDialog, QMessageBox,
                              QSizePolicy,QDialog,  QLabel, QTextEdit, QAction, QFileDialog, QMainWindow, QVBoxLayout, QSpinBox)
 from PyQt5.QtGui import QColor, QIcon
-from pescalonator.process import Process
+from process import Process
 
 class Window_Process(QDialog):
-    def __init__(self, id, process):
-        super().__init__()
+    def __init__(self, id, process, parent):
+        super().__init__(parent)
 
         self.id = id
         self.startTime = 0
         self.executionTime = 1
         self.deadlineTime = 1
         self.priorityTime = 0
+        self.pagesNumber = 1
         self.process = process
+
+        self.setWindowIcon(QIcon('feature.png'))
 
         layout = QGridLayout()
 
@@ -37,6 +40,12 @@ class Window_Process(QDialog):
         self.priority.setAlignment(Qt.AlignCenter)
         self.priority_sp = QSpinBox()
 
+        self.pages = QLabel("Pages")
+        self.pages.setAlignment(Qt.AlignCenter)
+        self.pages_sp = QSpinBox()
+        self.pages_sp.setMaximum(10)
+        self.pages_sp.setMinimum(1)
+
         self.btnOK = QPushButton('Create', self)
         self.btnOK.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
 
@@ -55,6 +64,8 @@ class Window_Process(QDialog):
         layout.addWidget(self.deadline_sp)
         layout.addWidget(self.priority)
         layout.addWidget(self.priority_sp)
+        layout.addWidget(self.pages)
+        layout.addWidget(self.pages_sp)
         layout.addItem(layoutBtn)
 
 
@@ -62,12 +73,12 @@ class Window_Process(QDialog):
         self.execution_sp.valueChanged.connect(self.executionvalue)
         self.deadline_sp.valueChanged.connect(self.deadlinevalue)
         self.priority_sp.valueChanged.connect(self.priorityvalue)
+        self.pages_sp.valueChanged.connect(self.pagesvalue)
         self.btnOK.clicked.connect(self.createProcess)
         self.btnCancel.clicked.connect(self.cancelProcess)
 
 
         self.setLayout(layout)
-        self.setGeometry(300, 300, 500, 200)
         self.setWindowTitle("Process "+ str(id))
 
 
@@ -90,13 +101,17 @@ class Window_Process(QDialog):
         self.priority.setText("Priority Value : " + str(self.priority_sp.value()))
         self.priorityTime = self.priority_sp.value()
 
+    def pagesvalue(self):
+        self.pages.setText("Pages : " + str(self.pages_sp.value()))
+        self.pagesNumber = self.pages_sp.value()
+
     def createProcess(self):
         reply = QMessageBox.question(self, 'Create',
                                      "Are you sure to create ? ", QMessageBox.Yes |
                                      QMessageBox.No, QMessageBox.Yes)
 
         if reply == QMessageBox.Yes:
-            self.process = Process(self.id, self.startTime, self.executionTime, self.deadlineTime, priority=self.priorityTime)
+            self.process = Process(self.id, self.startTime, self.executionTime,self.pagesNumber, self.deadlineTime, priority=self.priorityTime)
 
             self.close()
 
