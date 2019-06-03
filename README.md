@@ -1,115 +1,240 @@
 # process-escalonator
-Escalonador de processos em Python desenvolvido como parte da avaliação da matéria MATA58 - Sistemas Operacionais, do Departamento de Ciência da Computação da Universidade Federal da Bahia, ministrada por Maycon Leone Maciel Peixoto 
 
-## Autores
-* [Giuseppe Mareschi](https://github.com/GiuseppeXD)
-* [Gustavo Quinteiro](https://github.com/gustavooquinteiro)
-* [Victor Pinheiro](https://github.com/vpinheiro38)
+![Supported Python Version](https://img.shields.io/pypi/pyversions/django.svg) ![PyQt version](https://img.shields.io/badge/pyqt-5.11.3-brightgreen.svg) ![Supported Platforms](https://img.shields.io/badge/platform-win--64%20%7C%20linux--64-red.svg) ![License](https://img.shields.io/cocoapods/l/afn.svg)
 
-## Situação
+Simulador de execução de processos de um sistema operacional em Python desenvolvido como parte da avaliação da matéria MATA58 - Sistemas Operacionais, do Departamento de Ciência da Computação da Universidade Federal da Bahia, ministrada por Maycon Leone Maciel Peixoto.
+
+***
+## Sumário
+
+1. [Situação](#Situação)  
+2. [Funcionamento](#Funcionamento)  
+. [Back-end](#Back-end)  
+. [Front-end](#Front-end)
+3. [Requisitos do trabalho](#Requisitos)
+4. [Entrada](#Entrada)
+5. [Saída](#Saida)
+6. [Convenções adotadas](#Convenções)
+7. [Adicionais](#Adicionais)
+8. [Uso do programa](#Uso)  
+. [Requisitos para execução do programa](#Requisitos)  
+. [Instalação dos requisitos](#Start)  
+. [Execução do programa](#Execução)
+9. [Desenvolvimento](#Autores)
+
+***
+
+<div id='Situação'/>  
+
+## :clipboard: Situação  
+
 Considere um sistema operacional que implementa o escalonamento de processos. O funcionamento esperado é que esse ambiente tenha ``` N ``` (número previamente informado pelo usuário) processos que podem chegar em tempos distintos para execução. Para cada processo, deve ser informado:  
 
-* Tempo de chegada  
-* Tempo de execução  
-* Deadline  
+- Tempo de chegada  
+- Tempo de execução  
+- Deadline  
 
-Para o sistema como um todo deve se informar o tempo do **quantum do sistema** e o **tempo da sobrecarga**, na troca de processos, do sistema.
+Para o sistema como um todo deve se informar o tempo do **quantum do sistema** e
+ o **tempo da sobrecarga**, na troca de processos, do sistema.
 
-## Funcionamento  
-Esse sistema deve implementar os algoritmos de escalonamento:  
+<div id='Funcionamento'/>
 
-* [FIFO](https://pt.wikipedia.org/wiki/FIFO)
-  + Um algoritmo de escalonamento para estruturas de dados do tipo fila.  
-* [SJF](https://pt.wikipedia.org/wiki/Shortest_job_first)
-  + Um algoritmo de escalonamento que ordena os processos por tempo de execução de forma crescente.  
-* [Round Robin](https://pt.wikipedia.org/wiki/Round-robin)
-  + O nome do algoritmo vem do princípio round-robin conhecido de outros campos, onde cada pessoa pega um compartilhamento de algo igual por vez.  
-* [EDF](https://pt.wikipedia.org/wiki/Sistema_operacional_de_tempo-real#Escalonamento)
-  + Um algoritmo que escolhe na fila de prontos o processo que tenha o prazo de vencimento mais curto  
+## :computer: Funcionamento
 
-Esse sistema deve implementar os algoritmos de substituição de páginas:
+Esse sistema deve ter:
 
-* FIFO  
-  + Algoritmo baseado na idade das páginas na memória, ou seja, páginas mais antigas serão removidas primeiro.  
-* Menos Recentemente Utilizado  
-  + Algoritmo que escolhe preferencialmente páginas antigas e menos usadas para remoção.  
+<div id='Back-end'/>
 
-## Requisitos
+### Back-end
 
-* Cada página tem 4K de tamanho. A RAM tem 200 K de memória.  
-* Crie a abstração de DISCO para utilização da memória virtual.  
-  + Caso ocorra falta de página, utilize N unidades de tempo para o uso do Disco.  
-* O grupo está livre para a criação de qualquer abstração extra que se mostrar
-necessária.  
-* **Os processos só executam se todas as suas páginas estiverem na RAM.**
-* Deve-se criar:  
-  + [Gráfico de Gantt](https://pt.wikipedia.org/wiki/Diagrama_de_Gantt) para mostrar as execuções dos processos,
-  + Visualização da CPU e da RAM  
-* Deve-se criar o gráfico de uso da RAM e do Disco, mostrando as página presentes em
-tempo real.  
-* Colocar delay para verificar a execução  
+> A implementação de todos os algoritmos, tanto de escalonamento quanto de paginação, citados abaixo é obrigatória para avaliação do trabalho
 
-## Entrada 
+#### [Algoritmos de escalonamento](https://pt.wikipedia.org/wiki/Escalonamento_de_processos)
 
-O usuário deve entrar com um inteiro  ``` Q ```, representando o quantum do sistema, e um inteiro ``` S ```, representando a sobrecarga do sistema.  
-Além disso ele deve fornecer um inteiro ``` N ```, representando o número de processos, e após isso devem ser informados ``` N ``` inteiros:  
+-   [FCFS (First Come First Served)](https://pt.wikipedia.org/wiki/FIFO)
+    -  Um algoritmo de escalonamento para estruturas de dados do tipo fila.
+-   [SJF (Shortest Job First)](https://pt.wikipedia.org/wiki/Shortest_job_first)
+    -  Um algoritmo de escalonamento que ordena os processos por tempo de execução de forma crescente.
+-   [Round Robin](https://pt.wikipedia.org/wiki/Round-robin)
+    -  O nome do algoritmo vem do princípio onde cada pessoa pega um compartilhamento de algo igual por vez.
 
-* ``` 0 <= C  ```: O tempo de chegada na CPU;   
-* ``` 0 < E ```: O tempo de execução do processo;  
-* ``` 0 < D ```: O deadline do processo e;  
-* ``` 0 < P <= 10 ```: O número de páginas que o processo precisa.  
+-   [EDF (Earliest Deadline First)](https://pt.wikipedia.org/wiki/Sistema_operacional_de_tempo-real#Escalonamento)
+    - Um algoritmo que escolhe na fila de prontos o processo que tenha o prazo de vencimento mais curto
 
-Deve ser informado também o tipo de escalonamento de processo:
+#### [Algoritmos de substituição de páginas](http://escalonamentoprocessos.blogspot.com/2010/12/memoria-virtual-paginacao-por-demanda-e.html)
 
-* ``` FCFS (First Come First Served) ``` ou;  
-* ``` SJF (Shortest Job First) ``` ou;
-* ``` RR (Round-Robin)``` ou;
-* ``` EDF (Earliest Deadline First) ```;
+-   FIFO (First In First Out)
+    - Algoritmo baseado na idade das páginas na memória, ou seja, páginas mais antigas serão removidas primeiro.
+-   LRU (Least Recently Used)
+    -  Algoritmo que escolhe preferencialmente páginas antigas e menos usadas para remoção.
 
-E o tipo de paginação:
+Todos os algoritmos acima citados, basicamente funções de ordenação com variados critérios, foram implementados em Python utilizando suas funções _built-in_ por praticidade e facilidade.
 
-* ``` FIFO (First-In First-Out) ``` ou  
-* ``` LRU (Least Recently Used) ```
+<div id='Front-end'/>
 
-## Saída 
+### Front-end
 
-A resposta deve ser dada em função do **turn-around médio** (tempo de espera + tempo de execução), o **gráfico de Gantt correspondente** às execuções dos processos e o **estado da RAM**, antes, durante e após a execução dos processos
+Esse sistema deve implementar interface gráfica, onde deve-se criar:
 
-## Convenções adotadas
+-   [Gráfico de Gantt](https://pt.wikipedia.org/wiki/Diagrama_de_Gantt) para mostrar as execuções dos processos
 
-* Utilizamos a notação ``` FCFS (First Come, First Served)```, no código, para nomear o algoritmo de escalonamento de processos e desambiguar da notação ``` FIFO  (First In, First Out) ```, utiizada para nomear o algoritmo de paginação  
-* Utilizamos uma memória virtual de 400 K  
-* Em caso de ``` page fault ``` utilizamos ```2 * Q``` s para uso do disco
+-   **Visualização da CPU e da RAM**
 
-## Uso do programa
+-   Deve-se criar o gráfico de uso da RAM e do Disco, mostrando as página presentes em tempo real.  
 
-### Requisito mínimo 
-+ Usar Python 3
+-   Colocar _delay_ para verificar a execução  
 
-### Requisito recomendado
-+ Usar Python 3.7 ou superior  
+Para tal utilizamos a biblioteca [PyQt5](https://pypi.org/project/PyQt5/) que nos fornece vários elementos para que compuséssemos a interface e os gráficos pedidos.
 
-### Requisito obrigatório
-+ Instalar as bibliotecas necessárias presentes no arquivo [requirements.txt](requirements.txt)  
+<div id='Requisitos'/>
 
-### Como usar 
+## :ballot_box_with_check: Requisitos do trabalho
 
-> Execute os comandos tendo a pasta ``` process-escalonator/ ``` como diretório corrente  
+-   Cada página tem **4 K** de tamanho. A RAM tem **200 K** de memória.
 
-Em plataformas UNIX:
+-   Crie a abstração de **Disco** para utilização da memória virtual.  
+
+-   Caso ocorra falta de página, utilize _N_ unidades de tempo para o uso do Disco.  
+
+-   O grupo está livre para a criação de qualquer abstração extra que se mostrar necessária.  
+
+-   **Os processos só executam se todas as suas páginas estiverem na RAM.**
+
+<div id='Entrada'/>
+
+## :inbox_tray: Entrada
+
+O usuário deve entrar com um inteiro `Q`, representando o quantum do sistema, e um inteiro ``` S ```, representando a sobrecarga do sistema. Além disso deve ser fornecido `N`, representando o número de processos, inteiros:  
+
+-   `C`, representando o tempo de criação do processo, onde `C >= 0`;   
+
+-   `E`, representando o tempo de execução do processo, onde `E > 0`;  
+
+-   `D`, representando o deadline do processo, onde `D >= E`;  
+
+-   `B`, representando o número de páginas que o processo precisa, onde `0 < B <= 10 `, e;  
+
+-   `P`, representando a prioridade do processo, onde `P >= 0`
+
+Deve ser escolhido um dos algoritmos de escalonamento de processo ofertados
+
+- ``` FCFS (First Come First Served) ```;  
+- ``` SJF (Shortest Job First) ```;
+- ``` RR (Round-Robin)```;
+- ``` EDF (Earliest Deadline First) ```;
+- ``` SPN (Shortest Process Next) ```;
+- ``` LOT (Loteria) ```;
+- ``` PRIO (Prioridade) ```;
+
+ > Os três últimos algoritmos foram adicionalmente implementados. Mais informações, sobre eles, [aqui](#Adicionais)
+
+Deve ser escolhido um dos algoritmos de paginação:
+
+- ``` FIFO (First-In First-Out) ```;  
+- ``` LRU (Least Recently Used) ```
+
+<div id='Saída'/>
+
+## :outbox_tray: Saída
+
+A resposta deve ser dada em função do **turn-around médio** (tempo de espera + tempo de execução), o **gráfico de Gantt correspondente** às execuções dos processos, e o **estado da RAM**, durante a execução dos processos, de acordo o algoritmo de escalonamento e o algoritmo de paginação escolhidos
+
+<div id='Convenções'/>
+
+## :pushpin: Convenções adotadas
+
+-   Utilizamos a notação ``` FCFS (First Come, First Served)```, no código, para nomear o algoritmo de escalonamento de processos e desambiguar da notação ``` FIFO  (First In, First Out) ```, utilizada para nomear o algoritmo de paginação, embora os dois algoritmos tenham o mesmo funcionamento  
+
+-   Utilizamos uma **memória virtual** com o dobro de capacidade da memória RAM, ou seja,  **400 K**  
+
+-   Em caso de ``` page fault ``` utilizamos ``` teto ((B - A) / W) ``` **_tiques_ de clock** para uso do disco, onde:
+
+    -   `A` é o **número de páginas, desse processo, já alocadas na RAM** e;  
+
+    -   `W ` é a **quantidade de páginas, escritas na RAM, por segundo**, em nossa implementação, escolhemos o valor de ```2 páginas por segundo```  
+
+- A implementação utilizada, para o algoritmo de ``escalonamento por prioridades``, foi a qual a CPU **diminui a prioridade do processo à sua metade**, após executá-lo: `P = P / 2`. A fila de prontos é então reordenada pela prioridade dos processos, de forma decrescente
+
+<div id='Adicionais'/>
+
+## :heavy_plus_sign: Adicionais
+
+Para acrescentar tanto em conhecimento sobre escalonamento de processos quanto em nota, decidimos implementar os seguintes algoritmos:
+
+- Escalonamento por prioridades
+   - Algoritmo que ordena a fila de prontos pela prioridade do processo, de forma decrescente
+- Shortest Process Next
+   - Algoritmo similar ao [SJF](https://pt.wikipedia.org/wiki/Shortest_job_first) porém preemptivo
+- Escalonamento por loteria
+   - Algoritmo preemptivo onde a escolha de processos é aleatória
+
+<div id='Uso'/>
+
+## :gear: Uso do programa
+
+<div id='Requisitos'/>
+
+### Requisitos
+
+- Ter o Python, versão 3.x, instalado na sua máquina<sup><a href="#footnote">1</a></sup>
+- Instalar as bibliotecas listadas em [requirements.txt](requirements.txt)  
+
+<div id='Start'/>
+
+### Instalação dos requisitos
+
+Execute os comandos a seguir dentro da pasta ``` process-escalonator/ ```:  
+> :warning: É recomendado que se instale as bibliotecas em um ambiente virtual, evitando conflitos de versões das bibliotecas instaladas localmente no seu computador. Para tal siga as instruções a seguir de acordo sua plataforma.
+
+- UNIX:
 
 ```sh
   python3 -m venv env
   source env/bin/activate  
   pip install -r requirements.txt
-  python3 main.py
 ```
 
-Em plataformas Windows:
+- Windows:
 
 ```sh
   python -m venv env
   env\Scripts\activate
   pip install -r requirements.txt
-  python main.py
 ```
+
+> Caso não queira criar um ambiente virtual, somente dê o comando ``` pip install -r requirements.txt ```, independentemente da sua plataforma
+
+<div id='Execução'/>
+
+### Execução do programa
+
+Para executar basta dar o comando:
+
+```sh
+  python interface.py
+```
+
+Em plataformas UNIX é bom especificar a versão do Python, já que em algumas o Python 2.x ainda vem como padrão, dando o comando:
+
+```sh
+  python3 interface.py
+```
+
+Em plataformas Windows, também é válido dar duplo-clique no arquivo ``` interface.py ```
+
+<div id='Autores'/>
+
+## :octocat: Desenvolvimento
+
+Maiores detalhes e/ou dúvidas sobre o desenvolvimento desse trabalho, considere ver o [log](https://github.com/gustavooquinteiro/process-escalonator/commits/master) desse repositório, ou entrar em contato com os autores abaixo listados:
+
+- [Giuseppe Mareschi](https://github.com/GiuseppeXD)
+- [Gustavo Quinteiro](https://github.com/gustavooquinteiro)
+- [Victor Pinheiro](https://github.com/vpinheiro38)
+
+***
+<div id='footnote'/>
+
+<sup>1</sup>: Verifique com o comando ``` python --version ``` em seu Terminal ou Prompt de Comando, caso:
+-  o comando ``python`` não seja conhecido pelo sistema, instale-o [aqui](https://www.python.org/downloads/)
+- sua versão do Python seja inferior a requisitada, considere atualizá-la
