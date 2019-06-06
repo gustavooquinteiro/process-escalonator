@@ -9,6 +9,7 @@ from escalonator import Escalonator
 from process import Process
 from ioqueue import IO
 from cpu import CPU
+from disk import Disk
 from mmu import MMU, VirtualMemory
 import random
 import time
@@ -174,11 +175,13 @@ class Main_Window(QMainWindow):
         io = IO(mmu)
         io.escalonator = escalonator
         cpu = CPU(escalonator, mmu, io, self.quantum)
+        disk = Disk()
         escalonator.cpu = cpu
         n = len(self.processes)
         for i in self.processes:
             i.io = io
             escalonator.insertProcess(i)
+            disk.putProcess(i)
 
         escalonator.not_arrived.sort(key=lambda x: x.start)
         escalonator.queue()
