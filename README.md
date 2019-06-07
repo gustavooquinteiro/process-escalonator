@@ -34,8 +34,7 @@ Considere um sistema operacional que implementa o escalonamento de processos. O 
 - Tempo de execução  
 - Deadline  
 
-Para o sistema como um todo deve se informar o tempo do **quantum do sistema** e
- o **tempo da sobrecarga**, na troca de processos, do sistema.
+Para o sistema como um todo deve se informar o tempo do **quantum do sistema** e o **tempo da sobrecarga**, na troca de processos, do sistema.
 
 <div id='Funcionamento'/>
 
@@ -90,11 +89,13 @@ Para tal utilizamos a biblioteca [PyQt5](https://pypi.org/project/PyQt5/) que no
 
 ## :ballot_box_with_check: Requisitos do trabalho
 
--   Cada página tem **4 K** de tamanho. A RAM tem **200 K** de memória.
+-   Cada página tem **4 K** de tamanho.
+
+-   A RAM tem **200 K** de memória.
 
 -   Crie a abstração de **Disco** para utilização da memória virtual.  
 
--   Caso ocorra falta de página, utilize _N_ unidades de tempo para o uso do Disco.  
+-   Caso ocorra falta de página (_page fault_), utilize _N_ unidades de tempo para o uso do Disco.  
 
 -   O grupo está livre para a criação de qualquer abstração extra que se mostrar necessária.  
 
@@ -126,7 +127,7 @@ Deve ser escolhido um dos algoritmos de escalonamento de processo ofertados
 - ``` LOT (Loteria) ```;
 - ``` PRIO (Prioridade) ```;
 
- > Os três últimos algoritmos foram adicionalmente implementados. Mais informações, sobre eles, [aqui](#Adicionais)
+ > Os três últimos algoritmos foram adicionalmente implementados. Mais informações [aqui](#Adicionais)
 
 Deve ser escolhido um dos algoritmos de paginação:
 
@@ -143,17 +144,17 @@ A resposta deve ser dada em função do **turn-around médio** (tempo de espera 
 
 ## :pushpin: Convenções adotadas
 
--   Utilizamos a notação ``` FCFS (First Come, First Served)```, no código, para nomear o algoritmo de escalonamento de processos e desambiguar da notação ``` FIFO  (First In, First Out) ```, utilizada para nomear o algoritmo de paginação, embora os dois algoritmos tenham o mesmo funcionamento  
+-   Utilizamos a notação ``` FCFS (First Come, First Served)```, no código, para nomear o algoritmo de escalonamento de processos e desambiguar da notação ``` FIFO  (First In, First Out) ```, utilizada para nomear o algoritmo de paginação, pois embora os dois algoritmos tenham teoricamente o mesmo funcionamento o escopo deles é diferente.  
 
 -   Utilizamos uma **memória virtual** com o dobro de capacidade da memória RAM, ou seja,  **400 K**  
 
--   Em caso de ``` page fault ``` utilizamos ``` teto ((B - A) / W) ``` **_tiques_ de clock** para uso do disco, onde:
+- A **capacidade do disco** é o somatório de `B`<sub>i</sub> para i variando de 1 a ``N``, ou seja, assumimos que o disco comporta todas as páginas de todos os processos criados.
+
+-   Em caso de _page fault_ utilizamos ``` teto ((B - A) / W) ``` **_tiques_ de clock** para uso do disco, onde:
 
     -   `A` é o **número de páginas, desse processo, já alocadas na RAM** e;  
 
     -   `W ` é a **quantidade de páginas, escritas na RAM, por segundo**, em nossa implementação, escolhemos o valor de ```2 páginas por segundo```  
-
-- A implementação utilizada, para o algoritmo de ``escalonamento por prioridades``, foi a qual a CPU **diminui a prioridade do processo à sua metade**, após executá-lo: `P = P / 2`. A fila de prontos é então reordenada pela prioridade dos processos, de forma decrescente
 
 <div id='Adicionais'/>
 
@@ -163,8 +164,11 @@ Para acrescentar tanto em conhecimento sobre escalonamento de processos quanto e
 
 - Escalonamento por prioridades
    - Algoritmo que ordena a fila de prontos pela prioridade do processo, de forma decrescente
-- Shortest Process Next
+   > A implementação utilizada, foi a qual a CPU **diminui a prioridade do processo à sua metade**, após executá-lo: `P = P / 2`. A fila de prontos é então reordenada pelo critério do algoritmo
+
+- SPN (Shortest Process Next)
    - Algoritmo similar ao [SJF](https://pt.wikipedia.org/wiki/Shortest_job_first) porém preemptivo
+
 - Escalonamento por loteria
    - Algoritmo preemptivo onde a escolha de processos é aleatória
 
@@ -172,30 +176,35 @@ Para acrescentar tanto em conhecimento sobre escalonamento de processos quanto e
 
 ## :gear: Uso do programa
 
+É suposto que esse trabalho funcione em qualquer plataforma que tenha Python, porém a  [release](https://github.com/gustavooquinteiro/process-escalonator/releases/) mais recente só funciona em plataforma Windows, pois o requisito: `pyqt5-tools` somente pode ser instalado pelo `pip` da plataforma, mas que para o escopo do trabalho é mais que o suficiente.
+Futuras releases tratarão esse problema.    
+
 <div id='Requisitos'/>
 
 ### Requisitos
 
-- Ter o Python, versão 3.x, instalado na sua máquina<sup><a href="#footnote">1</a></sup>
+- Ter o [Python versão 3.x](https://www.python.org/downloads/) instalado na sua máquina
+- Ter o `pip` instalado   
 - Instalar as bibliotecas listadas em [requirements.txt](requirements.txt)  
 
 <div id='Start'/>
 
 ### Instalação dos requisitos
 
-Execute os comandos a seguir dentro da pasta ``` process-escalonator/ ```:  
-> :warning: É recomendado que se instale as bibliotecas em um ambiente virtual, evitando conflitos de versões das bibliotecas instaladas localmente no seu computador. Para tal siga as instruções a seguir de acordo sua plataforma.
+- Abra um Terminal ou Prompt de Comando dentro da pasta ``` process-escalonator/ ```:  
 
-- UNIX:
+> :warning: É recomendado que se instale as bibliotecas em um ambiente virtual, evitando conflitos de versões das bibliotecas instaladas localmente no seu computador. Para tal siga as instruções a seguir, de acordo sua plataforma.
 
+- UNIX:  
+![Requirements UNIX](https://img.shields.io/badge/requirements-1%20not%20found-red.svg) ![Build UNIX](https://img.shields.io/badge/build-failing-orange.svg)
 ```sh
   python3 -m venv env
   source env/bin/activate  
-  pip install -r requirements.txt
+  pip3 install -r requirements.txt
 ```
 
-- Windows:
-
+- Windows:  
+![Requirements Windows](https://img.shields.io/badge/requirements-up%20to%20date-brightgreen.svg) ![Build Windows](https://img.shields.io/badge/build-passing-green.svg)
 ```sh
   python -m venv env
   env\Scripts\activate
@@ -211,16 +220,16 @@ Execute os comandos a seguir dentro da pasta ``` process-escalonator/ ```:
 Para executar basta dar o comando:
 
 ```sh
-  python interface.py
+  python InterFace.py
 ```
 
-Em plataformas UNIX é bom especificar a versão do Python, já que em algumas o Python 2.x ainda vem como padrão, dando o comando:
+Em plataformas UNIX é bom especificar a versão do Python, já que em algumas o Python 2.x ainda vem como padrão, com o comando:
 
 ```sh
-  python3 interface.py
+  python3 InterFace.py
 ```
 
-Em plataformas Windows, também é válido dar duplo-clique no arquivo ``` interface.py ```
+Em plataformas Windows, também é válido dar duplo-clique no arquivo ``` InterFace.py ```
 
 <div id='Autores'/>
 
@@ -231,10 +240,3 @@ Maiores detalhes e/ou dúvidas sobre o desenvolvimento desse trabalho, considere
 - [Giuseppe Mareschi](https://github.com/GiuseppeXD)
 - [Gustavo Quinteiro](https://github.com/gustavooquinteiro)
 - [Victor Pinheiro](https://github.com/vpinheiro38)
-
-***
-<div id='footnote'/>
-
-<sup>1</sup>: Verifique com o comando ``` python --version ``` em seu Terminal ou Prompt de Comando, caso:
--  o comando ``python`` não seja conhecido pelo sistema, instale-o [aqui](https://www.python.org/downloads/)
-- sua versão do Python seja inferior a requisitada, considere atualizá-la
