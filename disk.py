@@ -7,9 +7,9 @@ class Disk():
     def __init__(self):
         self.memory = []
 
-    def putProcess(self, process):
-        for i in range(process.numpages):
-            page = Page(process.id, allocated=True)
+    def putProcess(self, id, qnt):
+        for i in range(qnt):
+            page = Page(id, allocated=True)
             self.memory.append(page)
 
     def remProcess(self, process, qnt):

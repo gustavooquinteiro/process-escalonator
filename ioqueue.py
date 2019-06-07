@@ -6,10 +6,11 @@ import process
 import mmu
 
 class IO(): 
-    def __init__(self, mmu, escalonator = None):
+    def __init__(self, mmu, disk, escalonator = None):
         self.queue = []
         self.mmu = mmu
         self.escalonator = escalonator
+        self.disk = disk
             
     def enqueue(self, process):       
         self.queue.append(process)
@@ -30,7 +31,7 @@ class IO():
             #     continue
 
             for i in range(min(2, process.numpages - len(process.pages))):
-                process.addPages(self.mmu.allocatePage(process, cpu.process))
+                process.addPages(self.mmu.allocatePage(process, cpuProcess=cpu.process))
 
             if self.mmu.isAllocated(process):
                 process.nextState(self.mmu)

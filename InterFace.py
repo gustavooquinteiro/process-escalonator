@@ -170,18 +170,18 @@ class Main_Window(QMainWindow):
         self.typeMMU = self.comboMem.currentText()
         escalonator = Escalonator(self.type.upper(), self.override)
         self.processes = self.listProcess
-        vm = VirtualMemory(100)
-        mmu = MMU(vm, self.typeMMU.upper())
-        io = IO(mmu)
-        io.escalonator = escalonator
-        cpu = CPU(escalonator, mmu, io, self.quantum)
         disk = Disk()
+        vm = VirtualMemory(100, disk)
+        mmu = MMU(vm, self.typeMMU.upper(), disk)
+        io = IO(mmu, disk)
+        io.escalonator = escalonator
+        cpu = CPU(escalonator, mmu, io, self.quantum, disk=disk)
         escalonator.cpu = cpu
         n = len(self.processes)
         for i in self.processes:
             i.io = io
             escalonator.insertProcess(i)
-            disk.putProcess(i)
+            disk.putProcess(i, process.numpages)
 
         escalonator.not_arrived.sort(key=lambda x: x.start)
         escalonator.queue()

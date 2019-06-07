@@ -8,7 +8,7 @@ class CPU():
     """ Classe responsável pela execução dos processos """
     State = ['Ocioso', 'Executando', 'Pronto', 'Sobrecarga', 'PosSobrecarga', 'PreSobrecarga']
     
-    def __init__(self, escalonator, mmu, ioqueue, quantum=0, process=None): 
+    def __init__(self, escalonator, mmu, ioqueue, quantum=0, process=None, disk=None): 
         """ Inicialização com as caracteristicas de uma CPU
         Args:
             escalonator (Escalonator): tipo de escalonador utilizado na CPU
@@ -27,6 +27,7 @@ class CPU():
         self.ioqueue = ioqueue
         self.override_time = 0
         self.state = CPU.State[0]
+        self.disk = disk
         
     def run(self):
         """ Método para execução da CPU """
