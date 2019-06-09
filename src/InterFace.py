@@ -25,7 +25,7 @@ class Main_Window(QMainWindow):
         self.process = None
         self.listProcess = []
 
-        self.setWindowIcon(QIcon('computer.png'))
+        self.setWindowIcon(QIcon('resources/computer.png'))
 
         self.setGeometry(300, 300, 900, 400)
         self.setWindowTitle('OS SIMULATOR')
@@ -33,17 +33,17 @@ class Main_Window(QMainWindow):
 
         self.statusBar()
 
-        openFile = QAction(QIcon('openThing.png'), '&Open', self)
+        openFile = QAction(QIcon('resources/openThing.png'), '&Open', self)
         openFile.setShortcut('Ctrl+O')
         openFile.setStatusTip('Open File')
         openFile.triggered.connect(self.file_open)
 
-        saveFile = QAction(QIcon('saveThing.png'), '&Save', self)
+        saveFile = QAction(QIcon('resources/saveThing.png'), '&Save', self)
         saveFile.setShortcut("Ctrl+S")
         saveFile.setStatusTip('Save File')
         saveFile.triggered.connect(self.file_save)
 
-        addProcess = QAction(QIcon('newThing.png'), '&NewProcess', self)
+        addProcess = QAction(QIcon('resources/newThing.png'), '&NewProcess', self)
         addProcess.setShortcut('Ctrl+N')
         addProcess.setStatusTip('New Process')
         addProcess.triggered.connect(self.new_Process)
@@ -106,7 +106,7 @@ class Main_Window(QMainWindow):
         Override = QWidget()
         Override.setLayout(OverrideLayout)
 
-        Run = QAction(QIcon('run.png'), '&Run', self)
+        Run = QAction(QIcon('resources/run.png'), '&Run', self)
         Run.triggered.connect(self.run)
 
         self.toolbar = self.addToolBar('Process')
