@@ -113,6 +113,7 @@ class CPU():
             
             if self.state != CPU.State[3]:
                 self.execute()
+                self.process.priority /= 2
                 if self.quantum - self.processing_time == 0:
                     self.state = CPU.State[5]
                 
