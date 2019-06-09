@@ -15,15 +15,29 @@ class Window_Gantt(QWidget):
         self.tableWidget = QTableWidget()
         self.tableWidget.setRowCount(len(processes))
         self.tableWidget.setColumnCount(1)
+
+        nameMem = QTableWidgetItem()
+        nameMem.setText("RAM")
+
+        nameDisk = QTableWidgetItem()
+        nameDisk.setText("Disk")
+
         self.tableMem = QTableWidget()
         self.tableMem.setRowCount(50)
         self.tableMem.setColumnCount(1)
+        self.tableMem.setHorizontalHeaderItem(0, nameMem)
         self.tableMem.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
+        self.tableDisk = QTableWidget()
+        self.tableDisk.setRowCount(len(cpu.disk.memory))
+        self.tableDisk.setColumnCount(1)
+        self.tableDisk.setHorizontalHeaderItem(0, nameDisk)
+        self.tableDisk.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
         self.dicionary = {}
         index = 0
         for i in processes:
             self.dicionary[i.id] = index
             index+=1
+
         self.setWindowTitle("Gantt Processes")
         self.layout = QVBoxLayout()
         self.tickRun = QPushButton( "Tick", self)
@@ -87,12 +101,65 @@ class Window_Gantt(QWidget):
         layoutTables = QHBoxLayout()
         layoutTables.addWidget(self.tableWidget)
         layoutTables.addWidget(self.tableMem)
+        layoutTables.addWidget(self.tableDisk)
         B = QWidget()
         B.setLayout(layoutTables)
         self.layout.addWidget(B)
         self.LastLabel = QLabel("Running")
+        G = QWidget()
+        layoutLegenda = QHBoxLayout()
+        tableLegenda = QTableWidget()
+        tableLegenda.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        tableLegenda.setRowCount(1)
+        tableLegenda.setColumnCount(6)
+
+        teste = QTableWidgetItem()
+        teste.setText("in IO list")
+        tableLegenda.setItem(0, 0, QTableWidgetItem())
+        tableLegenda.item(0, 0).setBackground(QColor(139,0,0))
+        tableLegenda.item(0, 0).setFlags(Qt.NoItemFlags)
+        tableLegenda.setHorizontalHeaderItem(0, teste)
+        #tableLegenda.takeHorizontalHeaderItem(0).setFlags(Qt.NoItemFlags)
+        teste1 = QTableWidgetItem()
+        teste1.setText("Override")
+        tableLegenda.setItem(0, 1, QTableWidgetItem())
+        tableLegenda.item(0, 1).setBackground(Qt.red)
+        tableLegenda.item(0, 1).setFlags(Qt.NoItemFlags)
+        tableLegenda.setHorizontalHeaderItem(1, teste1)
+
+        teste2 = QTableWidgetItem()
+        teste2.setText("Executing")
+        tableLegenda.setItem(0, 2, QTableWidgetItem())
+        tableLegenda.item(0, 2).setBackground(Qt.green)
+        tableLegenda.item(0, 2).setFlags(Qt.NoItemFlags)
+        tableLegenda.setHorizontalHeaderItem(2, teste2)
+
+        teste3 = QTableWidgetItem()
+        teste3.setText("Executing, dead")
+        tableLegenda.setItem(0, 3, QTableWidgetItem())
+        tableLegenda.item(0, 3).setBackground(QColor(0,100,0))
+        tableLegenda.item(0, 3).setFlags(Qt.NoItemFlags)
+        tableLegenda.setHorizontalHeaderItem(3, teste3)
+
+        teste4 = QTableWidgetItem()
+        teste4.setText("in Ready")
+        tableLegenda.setItem(0, 4, QTableWidgetItem())
+        tableLegenda.item(0, 4).setBackground(Qt.yellow)
+        tableLegenda.item(0, 4).setFlags(Qt.NoItemFlags)
+        tableLegenda.setHorizontalHeaderItem(4, teste4)
+
+        teste5 = QTableWidgetItem()
+        teste5.setText("in Ready, dead")
+        tableLegenda.setItem(0, 5, QTableWidgetItem())
+        tableLegenda.item(0, 5).setBackground(QColor(189,183,107))
+        tableLegenda.item(0, 5).setFlags(Qt.NoItemFlags)
+        tableLegenda.setHorizontalHeaderItem(5, teste5)
+
+        layoutLegenda.addWidget(tableLegenda)
+        G.setLayout(layoutLegenda)
+        self.layout.addWidget(G)
         self.layout.addWidget(self.LastLabel)
-        self.setGeometry(300, 300, 1000, 600)
+        self.setGeometry(300, 300, 1400, 1000)
         self.setLayout(self.layout)
         self.setWindowIcon(QIcon('edit-image.png'))
         self.show()
@@ -114,21 +181,31 @@ class Window_Gantt(QWidget):
             self.tableWidget.item(i, tick).setFlags(Qt.NoItemFlags)
 
         for i in escalonator.ready_queue:
-            self.tableWidget.setItem(self.dicionary[i.id], tick, QTableWidgetItem())
-            self.tableWidget.item(self.dicionary[i.id], tick).setBackground(Qt.yellow)
-            self.tableWidget.item(self.dicionary[i.id], tick).setFlags(Qt.NoItemFlags)
+            if i.deadline <= 0:
+                self.tableWidget.setItem(self.dicionary[i.id], tick, QTableWidgetItem())
+                self.tableWidget.item(self.dicionary[i.id], tick).setBackground(QColor(189,183,107))
+                self.tableWidget.item(self.dicionary[i.id], tick).setFlags(Qt.NoItemFlags)
+            else:
+                self.tableWidget.setItem(self.dicionary[i.id], tick, QTableWidgetItem())
+                self.tableWidget.item(self.dicionary[i.id], tick).setBackground(Qt.yellow)
+                self.tableWidget.item(self.dicionary[i.id], tick).setFlags(Qt.NoItemFlags)
         for i in io.queue:
             self.tableWidget.setItem(self.dicionary[i.id], tick, QTableWidgetItem())
-            self.tableWidget.item(self.dicionary[i.id], tick).setBackground(Qt.red)
+            self.tableWidget.item(self.dicionary[i.id], tick).setBackground(QColor(139,0,0))
             self.tableWidget.item(self.dicionary[i.id], tick).setFlags(Qt.NoItemFlags)
         #print(cpu.state)
         if cpu.state == "Executando" or cpu.state == "PreSobrecarga" or cpu.state == "Pronto" :
-            self.tableWidget.setItem(self.dicionary[cpu.process.id], tick, QTableWidgetItem())
-            self.tableWidget.item(self.dicionary[cpu.process.id], tick).setBackground(Qt.green)
-            self.tableWidget.item(self.dicionary[cpu.process.id], tick).setFlags(Qt.NoItemFlags)
+            if cpu.process.deadline <= 0:
+                self.tableWidget.setItem(self.dicionary[cpu.process.id], tick, QTableWidgetItem())
+                self.tableWidget.item(self.dicionary[cpu.process.id], tick).setBackground(QColor(0,100,0))
+                self.tableWidget.item(self.dicionary[cpu.process.id], tick).setFlags(Qt.NoItemFlags)
+            else:
+                self.tableWidget.setItem(self.dicionary[cpu.process.id], tick, QTableWidgetItem())
+                self.tableWidget.item(self.dicionary[cpu.process.id], tick).setBackground(Qt.green)
+                self.tableWidget.item(self.dicionary[cpu.process.id], tick).setFlags(Qt.NoItemFlags)
         if cpu.state == "PosSobrecarga"  or cpu.state == "Sobrecarga":
             self.tableWidget.setItem(self.dicionary[cpu.process.id], tick, QTableWidgetItem())
-            self.tableWidget.item(self.dicionary[cpu.process.id], tick).setBackground(QColor(255,165,0))
+            self.tableWidget.item(self.dicionary[cpu.process.id], tick).setBackground(Qt.red)
             self.tableWidget.item(self.dicionary[cpu.process.id], tick).setFlags(Qt.NoItemFlags)
         if self.n != len(self.cpu.concluded_process_time):
             self.tableWidget.setColumnCount(self.tableWidget.columnCount()+1)
@@ -148,6 +225,24 @@ class Window_Gantt(QWidget):
                 self.tableMem.item(index, 0).setBackground(Qt.gray)
                 self.tableMem.item(index, 0).setFlags(Qt.NoItemFlags)
             index+=1
+
+    def updateDisk(self):
+        index = 0
+        #print("TAMANHO DA LISTA MEMORY DO DISCO")
+        #print(len(self.cpu.disk.memory))
+        for i in self.cpu.disk.memory:
+            if i.isAllocated:
+                self.tableDisk.setItem(index, 0, QTableWidgetItem())
+                self.tableDisk.item(index, 0).setBackground(QColor(30, 144, 255))
+                self.tableDisk.item(index, 0).setForeground(Qt.yellow)
+                self.tableDisk.item(index, 0).setTextAlignment(Qt.AlignHCenter)
+                self.tableDisk.item(index, 0).setText(str(i.proc_id))
+                self.tableDisk.item(index, 0).setFlags(Qt.NoItemFlags)
+            else:
+                self.tableDisk.setItem(index, 0, QTableWidgetItem())
+                self.tableDisk.item(index, 0).setBackground(Qt.gray)
+                self.tableDisk.item(index, 0).setFlags(Qt.NoItemFlags)
+            index += 1
 
 
 
@@ -178,6 +273,7 @@ class Window_Gantt(QWidget):
         # print(cpu.state)
         self.updategantt(self.cpu.clock, self.escalonator, self.io, self.cpu)
         self.updateMem()
+        self.updateDisk()
         self.cpu.clock += 1
         self.tickClock = self.cpu.clock
 

@@ -3,20 +3,31 @@ class Page():
         self.proc_id = proc_id
         self.isAllocated = allocated
 
+
 class Disk():
     def __init__(self):
         self.memory = []
 
     def putProcess(self, id, qnt):
-        for i in range(qnt):
+        count = qnt
+        for index in range(len(self.memory)):
+            if count == 0:
+                break
+
+            if self.memory[index].proc_id == id and self.memory[index].isAllocated == False:
+                self.memory[index].isAllocated = True
+                count -= 1
+
+        for i in range(count):
             page = Page(id, allocated=True)
             self.memory.append(page)
 
     def remProcess(self, process, qnt):
+        count = qnt
         for index in range(len(self.memory)):
-            if qnt == 0:
+            if count == 0:
                 break
-            
-            if self.memory[index].proc_id == process.id:
+
+            if self.memory[index].proc_id == process.id and self.memory[index].isAllocated == True:
                 self.memory[index].isAllocated = False
-                qnt -= 1
+                count -= 1
