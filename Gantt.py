@@ -1,6 +1,6 @@
 import sys
 from PyQt5 import QtTest
-from PyQt5.QtCore import Qt, QTime
+from PyQt5.QtCore import Qt, QTime, QSize
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QColor, QIcon, QBrush, QPalette
 from escalonator import Escalonator
@@ -111,7 +111,7 @@ class Window_Gantt(QWidget):
         tableLegenda = QTableWidget()
         tableLegenda.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         tableLegenda.setRowCount(1)
-        tableLegenda.setColumnCount(6)
+        tableLegenda.setColumnCount(7)
 
         teste = QTableWidgetItem()
         teste.setText("in IO list")
@@ -119,7 +119,7 @@ class Window_Gantt(QWidget):
         tableLegenda.item(0, 0).setBackground(QColor(139,0,0))
         tableLegenda.item(0, 0).setFlags(Qt.NoItemFlags)
         tableLegenda.setHorizontalHeaderItem(0, teste)
-        #tableLegenda.takeHorizontalHeaderItem(0).setFlags(Qt.NoItemFlags)
+
         teste1 = QTableWidgetItem()
         teste1.setText("Override")
         tableLegenda.setItem(0, 1, QTableWidgetItem())
@@ -155,6 +155,19 @@ class Window_Gantt(QWidget):
         tableLegenda.item(0, 5).setFlags(Qt.NoItemFlags)
         tableLegenda.setHorizontalHeaderItem(5, teste5)
 
+        teste6 = QTableWidgetItem()
+        teste6.setText("Not Started/ Finished")
+        tableLegenda.setItem(0, 6, QTableWidgetItem())
+        tableLegenda.item(0, 6).setBackground(Qt.gray)
+        tableLegenda.item(0, 6).setFlags(Qt.NoItemFlags)
+        tableLegenda.setColumnWidth(6, 240)
+        tableLegenda.setHorizontalHeaderItem(6, teste6)
+
+        self.tableDisk.setColumnWidth(0, 100)
+        self.tableDisk.setFixedWidth(180)
+        self.tableMem.setColumnWidth(0, 100)
+        self.tableMem.setFixedWidth(180)
+
         layoutLegenda.addWidget(tableLegenda)
         G.setLayout(layoutLegenda)
         self.layout.addWidget(G)
@@ -175,6 +188,7 @@ class Window_Gantt(QWidget):
 
 
     def updategantt(self, tick, escalonator, io, cpu):
+
         for i in range(self.tableWidget.rowCount()):
             self.tableWidget.setItem(i, tick, QTableWidgetItem())
             self.tableWidget.item(i, tick,).setBackground(Qt.gray)
@@ -193,7 +207,7 @@ class Window_Gantt(QWidget):
             self.tableWidget.setItem(self.dicionary[i.id], tick, QTableWidgetItem())
             self.tableWidget.item(self.dicionary[i.id], tick).setBackground(QColor(139,0,0))
             self.tableWidget.item(self.dicionary[i.id], tick).setFlags(Qt.NoItemFlags)
-        #print(cpu.state)
+
         if cpu.state == "Executando" or cpu.state == "PreSobrecarga" or cpu.state == "Pronto" :
             if cpu.process.deadline <= 0 and escalonator.algorithm == "EDF":
                 self.tableWidget.setItem(self.dicionary[cpu.process.id], tick, QTableWidgetItem())
@@ -228,8 +242,7 @@ class Window_Gantt(QWidget):
 
     def updateDisk(self):
         index = 0
-        #print("TAMANHO DA LISTA MEMORY DO DISCO")
-        #print(len(self.cpu.disk.memory))
+
         for i in self.cpu.disk.memory:
             if i.isAllocated:
                 self.tableDisk.setItem(index, 0, QTableWidgetItem())
@@ -255,22 +268,12 @@ class Window_Gantt(QWidget):
             self.LastLabel.setText("TURNAROUND: " + str(turnaround))
             text = " Algoritmo CPU: " + self.SO.type + "\n Algoritmo Mem: " + self.SO.typeMMU +  "\n Quantum: " + str(self.SO.quantum) + "\n Sobrecarga: " + str(self.SO.override) + "\n TURNAROUND: "+ str(turnaround)
             reply = QMessageBox.information(self, 'FINISHED', text, QMessageBox.Ok)
-            #print("JA FOI")
+
             return
         self.escalonator.nextProcess()
         self.io.wait_for_resource(self.cpu)
         self.cpu.runClock()
 
-        #print('Prontos: ', end='')
-        #for proc in self.escalonator.ready_queue:
-            #print(proc.id, end=' ')
-        #print()
-        #print('Bloqueados: ', end='')
-        #for proc in self.io.queue:
-            #print(proc.id, end=' ')
-        #print()
-
-        # print(cpu.state)
         self.updategantt(self.cpu.clock, self.escalonator, self.io, self.cpu)
         self.updateMem()
         self.updateDisk()

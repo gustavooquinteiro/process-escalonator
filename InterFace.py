@@ -1,3 +1,4 @@
+
 import sys
 import os
 from PyQt5.QtCore import Qt
@@ -42,7 +43,7 @@ class Main_Window(QMainWindow):
         saveFile.setStatusTip('Save File')
         saveFile.triggered.connect(self.file_save)
 
-        addProcess = QAction(QIcon('newThing.png'),'&NewProcess', self)
+        addProcess = QAction(QIcon('newThing.png'), '&NewProcess', self)
         addProcess.setShortcut('Ctrl+N')
         addProcess.setStatusTip('New Process')
         addProcess.triggered.connect(self.new_Process)
@@ -105,7 +106,6 @@ class Main_Window(QMainWindow):
         Override = QWidget()
         Override.setLayout(OverrideLayout)
 
-
         Run = QAction(QIcon('run.png'), '&Run', self)
         Run.triggered.connect(self.run)
 
@@ -122,48 +122,20 @@ class Main_Window(QMainWindow):
         self.toolbar.addAction(Run)
 
         self.path = os.path.abspath("Interface.py")
-        #print(self.path)
+
 
         menuBar = self.menuBar()
         fileMenu = menuBar.addMenu('&File')
         fileMenu.addAction(openFile)
         fileMenu.addAction(saveFile)
 
-        """        while n != len(cpu.concluded_process_time):
-            escalonator.nextProcess()
-            io.wait_for_resource(cpu)
-            cpu.runClock()
-
-
-            print('Prontos: ', end='')
-            for proc in escalonator.ready_queue:
-                print(proc.id, end=' ')
-            print()
-            print('Bloqueados: ', end='')
-            for proc in io.queue:
-                print(proc.id, end=' ')
-            print()
-
-            # print(cpu.state)
-            self.gantt.updategantt(cpu.clock, escalonator, io, cpu)
-            cpu.clock += 1
-            time.sleep(1)
-
-
-
-        # escalonator.queue()
-        # cpu.run()
-        # io.io.join(1)
-
-        turnaround = sum(cpu.concluded_process_time) / n
-        print("Turnaround == {0:.2f}".format(turnaround))"""
 
     def run(self):
         if self.listProcess == []:
             reply = QMessageBox.information(self, 'NO PROCESSES', "Insert Processes to Run", QMessageBox.Ok)
             return
         self.file_open(True)
-        #print(len(self.listProcess))
+
         self.quantum = self.quantum_sp.value()
         self.override = self.override_sp.value()
         self.type = self.comboCPU.currentText()
@@ -186,44 +158,42 @@ class Main_Window(QMainWindow):
         escalonator.not_arrived.sort(key=lambda x: x.start)
         escalonator.queue()
         self.hide()
-        self.gantt = Window_Gantt(n, cpu, escalonator, io,self.processes, self)
+        self.gantt = Window_Gantt(n, cpu, escalonator, io, self.processes, self)
 
-
-    def file_save(self, auto = False):
+    def file_save(self, auto=False):
         if not auto:
             name = QFileDialog.getSaveFileName(self, 'Save File')
         else:
-            name = "('" +self.path[:-12] + 'autosave' + "', " + "'All Files (*)')"
-        #print(name)
+            name = "('" + self.path[:-12] + 'autosave' + "', " + "'All Files (*)')"
+
         if name[0]:
 
-            # def __init__(self, id, start, execution_time, deadline = 0, io=None, need_io=False, priority=0):
+
             file = open(name[0], 'w')
             with file:
                 for i in self.listProcess:
-                    file.write(str(i.id) + ' ' + str(i.start) + ' ' + str(i.execution_time) + ' ' + str(i.numpages) + ' ' + str(i.deadline) + ' ' +
+                    file.write(str(i.id) + ' ' + str(i.start) + ' ' + str(i.execution_time) + ' ' + str(
+                        i.numpages) + ' ' + str(i.deadline) + ' ' +
                                "None" + ' ' + str(i.need_io) + ' ' + str(i.priority) + '\n')
 
-
-
-    def file_open(self, auto = False):
+    def file_open(self, auto=False):
         if not auto:
             fname = QFileDialog.getOpenFileName(self, 'Open file', '/home')
         else:
-            fname = "('" +self.path[:-12] + 'autosave' + "', " + "'All Files (*)')"
-        #print(fname)
+            fname = "('" + self.path[:-12] + 'autosave' + "', " + "'All Files (*)')"
+
         self.listProcess = []
-        #print(fname)
+
         if fname[0]:
             f = open(fname[0], 'r')
             with f:
                 data = f.read().split('\n')
-                index = 0 # def __init__(self, id, start, execution_time, deadline = 0, io=None, need_io=False, priority=0):
+                index = 0
                 for a in data:
                     if a == '':
                         break
                     i = a.split(' ')
-                    #print(i)
+
                     processo = Process(int(i[0]), int(i[1]), int(i[2]), int(i[3]), int(i[4]))
                     if i[6] == "True":
                         processo.need_io = True
@@ -233,17 +203,14 @@ class Main_Window(QMainWindow):
                     self.listProcess.append(processo)
             self.printProcesses()
 
-
-
-
     def new_Process(self):
-        #print("rola")
+
         self.processAux = Window_Process(self.idProcess, self.process, self)
         self.processAux.exec_()
         self.process = self.processAux.process
         if self.process:
             self.listProcess.append(self.process)
-            self.idProcess+= 1
+            self.idProcess += 1
         self.printProcesses()
 
     def editProcess(self):
@@ -279,15 +246,13 @@ class Main_Window(QMainWindow):
             self.janelaUi(i)
             self.numberTab += 1
 
-
         self.setCentralWidget(self.lista)
-
 
     def janelaUi(self, processo):
         layout = QFormLayout()
         linhaStart = QLabel()
         linhaStart.setText(str(processo.start))
-        layout.addRow("StartTime" , linhaStart)
+        layout.addRow("StartTime", linhaStart)
 
         linhaExec = QLabel()
         linhaExec.setText(str(processo.execution_time))
@@ -316,8 +281,6 @@ class Main_Window(QMainWindow):
 
         self.lista.setTabText(self.numberTab, "Process " + str(processo.id))
         self.janela.setLayout(layout)
-
-
 
 
 if __name__ == '__main__':
