@@ -27,7 +27,7 @@ class Main_Window(QMainWindow):
         self.setWindowIcon(QIcon('computer.png'))
 
         self.setGeometry(300, 300, 900, 400)
-        self.setWindowTitle('SO SIMULATOR')
+        self.setWindowTitle('OS SIMULATOR')
         self.show()
 
         self.statusBar()
@@ -61,10 +61,10 @@ class Main_Window(QMainWindow):
         self.comboMem.addItem("LRU")
 
         linhaCPU = QLabel()
-        linhaCPU.setText("Algoritm Scalonitro")
+        linhaCPU.setText("Scheduling Algorithm")
 
         linhaMem = QLabel()
-        linhaMem.setText("Pagination Algortim")
+        linhaMem.setText("Paging Algorithm")
 
         layoutC = QGridLayout()
         layoutC.addWidget(linhaCPU)
