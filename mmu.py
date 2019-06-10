@@ -174,7 +174,7 @@ class VirtualMemory():
             ind = self.vm_pointer
 
             while self.mem_ram.queue[self.mem_vm[ind][0]].num == process.id or (
-                    cpuProcess != None and cpuProcess.pages.count(self.mem_ram.queue[self.mem_vm[ind][0]].num) > 0):
+                    cpuProcess != None and ind in cpuProcess.pages):
                 self.vm_pointer += 1
                 if self.vm_pointer >= VirtualMemory.SIZE: self.vm_pointer = 0
                 ind = self.vm_pointer
