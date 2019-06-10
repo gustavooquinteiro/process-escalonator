@@ -18,6 +18,8 @@ class Disk():
                 self.memory[index].isAllocated = True
                 count -= 1
 
+    def insertProcess(self, id, qnt):
+        count = qnt
         for i in range(count):
             page = Page(id, allocated=True)
             self.memory.append(page)

@@ -109,6 +109,7 @@ class RAM():
         free_list = list(filter(lambda page: not self.isAllocated(self.queue[page]), selec_list))
         print(len(free_list))
         print(free_list)
+        
         if len(free_list) > 0:
             rand = random.choice(free_list)
 
@@ -230,7 +231,7 @@ class VirtualMemory():
 
         else:
             ram_ind, oldIndex = self.mem_ram.allocatePage(process, ref, cpuProcess=cpuProcess, hadSubstitution=False)
-            
+
             if oldIndex != -1 and oldIndex != None:
                 self.mem_vm[oldIndex] = [None, 0]
 

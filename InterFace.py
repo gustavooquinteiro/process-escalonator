@@ -153,7 +153,7 @@ class Main_Window(QMainWindow):
         for i in self.processes:
             i.io = io
             escalonator.insertProcess(i)
-            disk.putProcess(i.id, i.numpages)
+            disk.insertProcess(i.id, i.numpages)
 
         escalonator.not_arrived.sort(key=lambda x: x.start)
         escalonator.queue()
