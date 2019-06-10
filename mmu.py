@@ -53,8 +53,9 @@ class RAM():
     def substitutePage(self, process, ind, cpuProcess=None, hadSubstitution=False):
         if self.algorithm == 'FIFO':
             ref_ram = self.ram_pointer
+
             while self.queue[ref_ram].num == process.id or (
-                    cpuProcess != None and not cpuProcess.pages.count(self.queue[ref_ram].num)):
+                    cpuProcess != None and self.queue[ref_ram].index in cpuProcess.pages):
                 self.ram_pointer += 1
                 if self.ram_pointer >= RAM.SIZE:
                     self.ram_pointer = 0
@@ -74,15 +75,23 @@ class RAM():
 
             return ref_ram, oldIndex
         elif self.algorithm == 'LRU':
-            selec_list = transformList(list(range(RAM.SIZE)), cpuProcess, self.vm)
-            selec_list = list(filter(lambda page: self.queue[page].num != process.id, selec_list))
+            range_list = list(range(RAM.SIZE))
+            if cpuProcess != None:
+                for ref in cpuProcess.pages:
+                    range_list.remove(self.vm[ref][0])
 
-            leastFreq = self.queue[0]
+            selec_list = []
+            for ind in range_list:
+                if self.queue[ind].num != process.id:
+                    selec_list.append(ind)
+            # selec_list = list(filter(lambda page: self.queue[page].num != process.id, selec_list))
+            
+            index = selec_list[0]
             for page in selec_list:
-                if leastFreq.freq > self.queue[page].freq:
-                    leastFreq = self.queue[page]
+                if self.queue[index].freq > self.queue[page].freq:
+                    index = page
 
-            ref_ram = self.queue.index(leastFreq)
+            ref_ram = index
             oldIndex = self.queue[ref_ram].index
 
             if not hadSubstitution:
@@ -95,7 +104,6 @@ class RAM():
             return ref_ram, oldIndex
 
     def allocatePage(self, process, ind, cpuProcess=None, hadSubstitution=False):
-        print('a')
         selec_list = transformList(list(range(RAM.SIZE)), cpuProcess, self.vm)
         free_list = list(filter(lambda page: not self.isAllocated(self.queue[page]), selec_list))
         print(len(free_list))
@@ -110,6 +118,11 @@ class RAM():
             return rand, -1
         else:
             return self.substitutePage(process, ind, cpuProcess, hadSubstitution)
+
+    def clear(self):
+        for ind in range(RAM.SIZE):
+            newPage = Page()
+            self.queue[ind] = newPage
 
 
 class VirtualMemory():
@@ -160,8 +173,8 @@ class VirtualMemory():
         if self.algorithm == 'FIFO':
             ind = self.vm_pointer
 
-            while self.mem_ram.queue[self.mem_vm[ind][0]] == process.id or (
-                    cpuProcess != None and not cpuProcess.pages.count(self.mem_ram.queue[ind].num)):
+            while self.mem_ram.queue[self.mem_vm[ind][0]].num == process.id or (
+                    cpuProcess != None and cpuProcess.pages.count(self.mem_ram.queue[self.mem_vm[ind][0]].num) > 0):
                 self.vm_pointer += 1
                 if self.vm_pointer >= VirtualMemory.SIZE: self.vm_pointer = 0
                 ind = self.vm_pointer
@@ -222,10 +235,11 @@ class VirtualMemory():
             self.mem_vm[ref][0] = ram_ind
             self.mem_vm[ref][1] = 0
 
-            # print(self.mem_vm[ref])
-
             return ref
 
+    def clear(self):
+        for ind in range(VirtualMemory.SIZE):
+            self.mem_vm[ind] = [None, 0]
 
 class MMU():
     def __init__(self, vm, algorithm, disk):
@@ -235,7 +249,6 @@ class MMU():
         self.disk = disk
 
     def isAllocated(self, process):
-        # print('Processo %d esta alocado? %s' %(process.id, self.vm.isAllocated(process)))
         return self.vm.isAllocated(process)
 
     def allocatePage(self, process, cpuProcess=None):
@@ -262,14 +275,6 @@ class MMU():
         self.disk.putProcess(process.id, len(process.pages))
         for ref in process.getPages():
             newPage = Page()
-            # print('Desalocou %d, pagina %d' %(process.id, ref))
             if self.vm.isPageAllocated(process, ref):
                 self.vm.mem_ram.queue[self.vm.mem_vm[ref][0]] = newPage
                 self.vm.mem_vm[ref] = [None, 0]
-            # else:
-            # print('not')
-            # if self.vm.mem_vm[ref][0] != None:
-            #     if self.vm.mem_ram.queue[self.vm.mem_vm[ref][0]].num == process.id:
-
-            #     else:
-            #         print('not')

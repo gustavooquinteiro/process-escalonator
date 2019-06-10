@@ -225,12 +225,6 @@ class Window_Gantt(QWidget):
             self.tableWidget.setColumnCount(self.tableWidget.columnCount()+1)
 
     def updateMem(self):
-        print("Ram:", end=' ')
-        for page in self.cpu.mmu.vm.mem_ram.queue:
-            print(page.num, " ", page.freq, " ", page.index, end=', ')
-        print()
-        print("VM:", end=' ')
-        print(self.cpu.mmu.vm.mem_vm)
 
         index = 0
         for i in self.cpu.mmu.vm.mem_ram.queue:
@@ -268,6 +262,8 @@ class Window_Gantt(QWidget):
 
     def tick(self):
         if self.n == len(self.cpu.concluded_process_time):
+            self.cpu.mmu.vm.mem_ram.clear()
+            self.cpu.mmu.vm.clear()
             if self.ticksQuant.value() > 1:
                 self.ticksQuant.setValue(1)
             self.checkAutoTick.setChecked(False)

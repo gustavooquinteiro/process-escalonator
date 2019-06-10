@@ -1,7 +1,6 @@
 import time
 import threading
 from process import Process
-from execqueue import ExecQueue
 from escalonator import Escalonator
 
 class CPU():
