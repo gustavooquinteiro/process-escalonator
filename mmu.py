@@ -78,7 +78,8 @@ class RAM():
             range_list = list(range(RAM.SIZE))
             if cpuProcess != None:
                 for ref in cpuProcess.pages:
-                    range_list.remove(self.vm[ref][0])
+                    if self.vm[ref][0] in range_list:
+                        range_list.remove(self.vm[ref][0])
 
             selec_list = []
             for ind in range_list:
@@ -273,7 +274,12 @@ class MMU():
 
     def deallocate(self, process):
         self.disk.putProcess(process.id, len(process.pages))
-        for ref in process.getPages():
+        for ind in range(RAM.SIZE):
+            newPage = Page()
+            if self.vm.mem_ram.queue[ind].num == process.id:
+                self.vm.mem_ram.queue[ind] = newPage
+
+        for ref in process.pages:
             newPage = Page()
             if self.vm.isPageAllocated(process, ref):
                 self.vm.mem_ram.queue[self.vm.mem_vm[ref][0]] = newPage
