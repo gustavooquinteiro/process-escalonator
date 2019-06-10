@@ -230,6 +230,7 @@ class VirtualMemory():
 
         else:
             ram_ind, oldIndex = self.mem_ram.allocatePage(process, ref, cpuProcess=cpuProcess, hadSubstitution=False)
+            
             if oldIndex != -1 and oldIndex != None:
                 self.mem_vm[oldIndex] = [None, 0]
 
