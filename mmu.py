@@ -1,12 +1,13 @@
 import random
 
 
-def transformList(lista, process):
+def transformList(mem, process, mem_vm):
+    lista = mem
     if process == None:
         return lista
-    for data in lista:
-        if data in process.pages:
-            lista.remove(data)
+    for ref in process.pages:
+        if mem_vm[ref][0] in lista:
+            lista.remove(mem_vm[ref][0])
     return lista
 
 
@@ -25,7 +26,7 @@ class Page():
 class RAM():
     SIZE = 50
 
-    def __init__(self, disk):
+    def __init__(self, disk, vm):
         self.algorithm = 'FIFO'
         self.queue = []
         for i in range(RAM.SIZE):
@@ -33,6 +34,7 @@ class RAM():
             self.queue.append(page)
         self.ram_pointer = 0
         self.disk = disk
+        self.vm = vm
 
     def setAlgorithm(self, algorithm):
         self.algorithm = algorithm
@@ -58,6 +60,9 @@ class RAM():
                     self.ram_pointer = 0
                 ref_ram = self.ram_pointer
 
+            if not hadSubstitution:
+                self.disk.putProcess(self.queue[ref_ram].num, 1)
+
             oldIndex = self.queue[ref_ram].index
             self.queue[ref_ram].num = process.id
             self.queue[ref_ram].freq = 0
@@ -67,36 +72,36 @@ class RAM():
             if self.ram_pointer >= RAM.SIZE:
                 self.ram_pointer = 0
 
-            if not hadSubstitution:
-                self.disk.putProcess(self.queue[ref_ram].num, 1)
-
             return ref_ram, oldIndex
         elif self.algorithm == 'LRU':
-            selec_list = transformList(list(range(0, RAM.SIZE - 1)), cpuProcess.pages)
-            selec_list = list(filter(lambda page: page.num != process.id, selec_list))
+            selec_list = transformList(list(range(RAM.SIZE)), cpuProcess, self.vm)
+            selec_list = list(filter(lambda page: self.queue[page].num != process.id, selec_list))
 
             leastFreq = self.queue[0]
-            index = 0
             for page in selec_list:
-                if leastFreq.freq > page.freq:
-                    leastFreq = page
+                if leastFreq.freq > self.queue[page].freq:
+                    leastFreq = self.queue[page]
 
             ref_ram = self.queue.index(leastFreq)
             oldIndex = self.queue[ref_ram].index
+
+            if not hadSubstitution:
+                self.disk.putProcess(self.queue[ref_ram].num, 1)
 
             self.queue[ref_ram].num = process.id
             self.queue[ref_ram].freq = 0
             self.queue[ref_ram].index = ind
 
-            if not hadSubstitution:
-                self.disk.putProcess(self.queue[ref_ram].num, 1)
-
             return ref_ram, oldIndex
 
     def allocatePage(self, process, ind, cpuProcess=None, hadSubstitution=False):
-        if self.hasClear():
-            selec_list = transformList(list(range(0, RAM.SIZE - 1)), cpuProcess)
-            rand = random.choice(list(filter(lambda page: not self.isAllocated(self.queue[page]), selec_list)))
+        print('a')
+        selec_list = transformList(list(range(RAM.SIZE)), cpuProcess, self.vm)
+        free_list = list(filter(lambda page: not self.isAllocated(self.queue[page]), selec_list))
+        print(len(free_list))
+        print(free_list)
+        if len(free_list) > 0:
+            rand = random.choice(free_list)
 
             self.queue[rand].num = process.id
             self.queue[rand].freq = 0
@@ -115,7 +120,7 @@ class VirtualMemory():
         self.mem_vm = []
         for i in range(VirtualMemory.SIZE):
             self.mem_vm.append([None, 0])
-        self.mem_ram = RAM(disk)
+        self.mem_ram = RAM(disk, self.mem_vm)
         self.vm_pointer = 0
         self.disk = disk
 
@@ -132,6 +137,8 @@ class VirtualMemory():
         if self.mem_vm[ref][0] == None:
             return False
         elif self.mem_ram.queue[self.mem_vm[ref][0]].num != process.id:
+            return False
+        elif not self.mem_ram.isAllocated(self.mem_ram.queue[self.mem_vm[ref][0]]):
             return False
 
         return True
@@ -167,11 +174,12 @@ class VirtualMemory():
 
             return ind
         elif self.algorithm == 'LRU':
-            selec_list = list(filter(lambda page: page.num != process.id and page not in cpuProcess.pages,
-                                     list(range(0, VirtualMemory.SIZE - 1))))
+            selec_list = list(filter(lambda page: self.mem_ram.queue[self.mem_vm[page]].num != process.id and page not in cpuProcess.pages,
+                                     list(range(VirtualMemory.SIZE))))
 
-            leastFreq = min(selec_list, default=self.mem_vm[0], key=lambda x: x[1])
-            ind = random.choice(list(filter(lambda page: page[1] == leastFreq[1], selec_list)))
+            select_pages = list(self.mem_vm[i] for i in selec_list)
+            leastFreq = min(select_pages, default=select_pages[0], key=lambda x: x[1])
+            ind = random.choice(list(filter(lambda page: self.mem_vm[page][1] == leastFreq[1], selec_list)))
 
             self.disk.putProcess(self.mem_ram.queue[self.mem_vm[ind][0]].num, 1)
 
@@ -182,12 +190,11 @@ class VirtualMemory():
 
         if ref == None:
             if self.hasClear():
-                # selec_list = transformList(list(range(0, RAM.SIZE-1)), cpuProcess.pages)
                 rand = random.choice(list(
                     filter(lambda page: self.mem_vm[page][0] == None and page not in cpuProcess.pages,
                            list(range(VirtualMemory.SIZE)))))
 
-                ram_ind, oldIndex = self.mem_ram.allocatePage(process, rand, hadSubstitution=False)
+                ram_ind, oldIndex = self.mem_ram.allocatePage(process, rand, cpuProcess=cpuProcess, hadSubstitution=False)
                 if oldIndex != -1 and oldIndex != None:
                     self.mem_vm[oldIndex] = [None, 0]
 
@@ -250,42 +257,6 @@ class MMU():
         for ref in process.pages:
             self.vm.mem_vm[ref][1] += 1
             self.vm.mem_ram.queue[self.vm.mem_vm[ref][0]].freq += 1
-
-    def allocate(self, process):
-        pages = []
-
-        if process.pages == []:
-            for i in range(process.numpages):
-                ref = self.vm.allocatePage(process, None)
-                # print(self.vm.mem_ram.queue[self.vm.mem_vm[ref][0]].num, end=':')
-                # print(self.vm.mem_vm[ref][0], end='-')
-                pages.append(ref)
-        else:
-            for ref in process.pages:
-                if self.vm.isPageAllocated(process, ref) == False:
-                    self.vm.allocatePage(process, ref)
-                    # print('not alloc')
-                else:
-                    self.vm.mem_vm[ref][1] += 1
-
-        # print('allocate: ', end='')
-        # for ref in process.getPages():
-        #     if self.vm.mem_ram.queue[self.vm.mem_vm[ref][0]].num != process.id:
-        #         ind, oldIndex = self.vm.mem_ram.allocatePage(process, ref)
-        #         print("old: %d" %oldIndex)
-        #         if oldIndex != -1:
-        #             self.vm.mem_vm[oldIndex] = [None, 0]
-        #         self.vm.mem_vm[ref][0] = ind
-        #         self.vm.mem_vm[ref][1] = 1
-        #         print(self.vm.mem_vm[ref], end='1-')
-        #     else:
-        #         self.vm.mem_vm[ref][1] += 1
-        #         print(self.vm.mem_vm[ref], end='2-')
-
-        # print(pages, end='-')
-
-        # print(pages)
-        return pages
 
     def deallocate(self, process):
         self.disk.putProcess(process.id, len(process.pages))

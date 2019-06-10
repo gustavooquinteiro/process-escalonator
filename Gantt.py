@@ -225,6 +225,13 @@ class Window_Gantt(QWidget):
             self.tableWidget.setColumnCount(self.tableWidget.columnCount()+1)
 
     def updateMem(self):
+        print("Ram:", end=' ')
+        for page in self.cpu.mmu.vm.mem_ram.queue:
+            print(page.num, " ", page.freq, " ", page.index, end=', ')
+        print()
+        print("VM:", end=' ')
+        print(self.cpu.mmu.vm.mem_vm)
+
         index = 0
         for i in self.cpu.mmu.vm.mem_ram.queue:
             if self.cpu.mmu.vm.mem_ram.isAllocated(i):
@@ -277,6 +284,7 @@ class Window_Gantt(QWidget):
         self.updategantt(self.cpu.clock, self.escalonator, self.io, self.cpu)
         self.updateMem()
         self.updateDisk()
+        print(self.cpu.clock)
         self.cpu.clock += 1
         self.tickClock = self.cpu.clock
 
