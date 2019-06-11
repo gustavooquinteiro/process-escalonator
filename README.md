@@ -1,6 +1,6 @@
 # process-escalonator
 
-![Supported Python Version](https://img.shields.io/pypi/pyversions/django.svg) ![PyQt version](https://img.shields.io/badge/pyqt-5.11.3-brightgreen.svg) ![Supported Platforms](https://img.shields.io/badge/platform-win--64%20%7C%20linux--64-red.svg) ![License](https://img.shields.io/cocoapods/l/afn.svg)
+![Supported Python Version](https://img.shields.io/pypi/pyversions/django.svg) ![Supported Platforms](https://img.shields.io/badge/platform-win--64%20%7C%20linux--64-red.svg) ![License](https://img.shields.io/cocoapods/l/afn.svg) ![](https://img.shields.io/badge/build-passing-brightgreen.svg) ![GitHub release](https://img.shields.io/github/release/gustavooquinteiro/process-escalonator.svg?color=yellow) 
 
 Simulador de execução de processos de um sistema operacional em Python desenvolvido como parte da avaliação da matéria MATA58 - Sistemas Operacionais, do Departamento de Ciência da Computação da Universidade Federal da Bahia, ministrada por Maycon Leone Maciel Peixoto.
 
@@ -177,7 +177,9 @@ Para acrescentar tanto em conhecimento sobre escalonamento de processos quanto e
 ## :gear: Uso do programa
 
 É suposto que esse trabalho funcione em qualquer plataforma que tenha Python, porém a  [release](https://github.com/gustavooquinteiro/process-escalonator/releases/) mais recente só funciona em plataforma Windows, pois o requisito: `pyqt5-tools` somente pode ser instalado pelo `pip` da plataforma, mas que para o escopo do trabalho é mais que o suficiente.
-Futuras releases tratarão esse problema.    
+
+E ao remover o requisito `pyqt5-tools`, o programa funciona no Linux. 
+> :exclamation: Testes ainda são requeridos na plataforma Windows
 
 <div id='Requisitos'/>
 
@@ -196,7 +198,6 @@ Futuras releases tratarão esse problema.
 > :warning: É recomendado que se instale as bibliotecas em um ambiente virtual, evitando conflitos de versões das bibliotecas instaladas localmente no seu computador. Para tal siga as instruções a seguir, de acordo sua plataforma.
 
 - UNIX:  
-![Requirements UNIX](https://img.shields.io/badge/requirements-1%20not%20found-red.svg) ![Build UNIX](https://img.shields.io/badge/build-failing-orange.svg)
 ```sh
   python3 -m venv env
   source env/bin/activate  
@@ -204,7 +205,6 @@ Futuras releases tratarão esse problema.
 ```
 
 - Windows:  
-![Requirements Windows](https://img.shields.io/badge/requirements-up%20to%20date-brightgreen.svg) ![Build Windows](https://img.shields.io/badge/build-passing-green.svg)
 ```sh
   python -m venv env
   env\Scripts\activate
