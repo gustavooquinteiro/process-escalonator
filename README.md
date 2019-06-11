@@ -178,7 +178,6 @@ Para acrescentar tanto em conhecimento sobre escalonamento de processos quanto e
 
 É suposto que esse trabalho funcione em qualquer plataforma que tenha Python, porém a  [release](https://github.com/gustavooquinteiro/process-escalonator/releases/) mais recente só funciona em plataforma Windows, pois o requisito: `pyqt5-tools` somente pode ser instalado pelo `pip` da plataforma, mas que para o escopo do trabalho é mais que o suficiente.
 
-Essa branch visa resolver esse problema.   
 E ao remover o requisito `pyqt5-tools`, o programa funciona no Linux. 
 > :exclamation: Testes ainda são requeridos na plataforma Windows
 
