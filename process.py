@@ -41,10 +41,6 @@ class Process():
         actual_index = self.States.index(self.state)
         index = (actual_index +1) % len(self.States)
         self.state = self.States[index]
-        # while mmu.isAllocated(self) == False:
-            # continue
-        if self.state == self.States[0]:
-            self.io.enqueue(self)                  
      
     def prevState(self):
         """ Estado prévio do processo """
