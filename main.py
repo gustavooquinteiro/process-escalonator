@@ -57,7 +57,7 @@ class main():
 
         turnaround = sum(cpu.concluded_process_time)/n
         print("Turnaround == {0:.2f}" .format(turnaround))
-
+        
 if __name__ == "__main__":
     main()
     

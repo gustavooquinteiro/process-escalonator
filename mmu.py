@@ -1,6 +1,5 @@
 import random
 
-
 def transformList(mem, process, mem_vm):
     lista = mem
     if process == None:
@@ -22,7 +21,6 @@ class Page():
             return False
         return True
 
-
 class RAM():
     SIZE = 50
 
@@ -38,6 +36,7 @@ class RAM():
 
     def setAlgorithm(self, algorithm):
         self.algorithm = algorithm
+
 
     def isAllocated(self, page):
         if page.isAllocated():
@@ -112,7 +111,6 @@ class RAM():
         
         if len(free_list) > 0:
             rand = random.choice(free_list)
-
             self.queue[rand].num = process.id
             self.queue[rand].freq = 0
             self.queue[rand].index = ind
@@ -155,7 +153,6 @@ class VirtualMemory():
             return False
         elif not self.mem_ram.isAllocated(self.mem_ram.queue[self.mem_vm[ref][0]]):
             return False
-
         return True
 
     def isAllocated(self, process):
@@ -175,8 +172,7 @@ class VirtualMemory():
         if self.algorithm == 'FIFO':
             ind = self.vm_pointer
 
-            while self.mem_ram.queue[self.mem_vm[ind][0]].num == process.id or (
-                    cpuProcess != None and ind in cpuProcess.pages):
+            while self.mem_ram.queue[self.mem_vm[ind][0]].num == process.id or (cpuProcess != None and ind in cpuProcess.pages):
                 self.vm_pointer += 1
                 if self.vm_pointer >= VirtualMemory.SIZE: self.vm_pointer = 0
                 ind = self.vm_pointer
@@ -184,7 +180,6 @@ class VirtualMemory():
             self.vm_pointer += 1
             if self.vm_pointer >= VirtualMemory.SIZE:
                 self.vm_pointer = 0
-
             self.disk.putProcess(self.mem_ram.queue[self.mem_vm[ind][0]].num, 1)
 
             return ind
@@ -265,7 +260,6 @@ class MMU():
                 if self.vm.isPageAllocated(process, ref) == False:
                     self.vm.allocatePage(process, ref, cpuProcess)
                     break
-
         self.disk.remProcess(process, 1)
         return pages
 

@@ -7,7 +7,7 @@ class CPU():
     """ Classe responsável pela execução dos processos """
     State = ['Ocioso', 'Executando', 'Pronto', 'Sobrecarga', 'PosSobrecarga', 'PreSobrecarga']
     
-    def __init__(self, escalonator, mmu, ioqueue, quantum=0, process=None, disk=None): 
+    def __init__(self, escalonator, mmu, ioqueue, quantum=0, process=None, disk=None):
         """ Inicialização com as caracteristicas de uma CPU
         Args:
             escalonator (Escalonator): tipo de escalonador utilizado na CPU
@@ -42,6 +42,7 @@ class CPU():
             self.override_time = 0
             self.state = CPU.State[0]
             
+
         while self.state == CPU.State[0]:
             if self.escalonator.ready_queue:
                 self.state = CPU.State[1]
@@ -101,6 +102,4 @@ class CPU():
         """ Método para executar um processo """
         self.process.nextState(self.mmu)
         self.processing_time += 1
-        #time.sleep(self.processing_time)
-        #print ("CPU executou {} que precisa de {}s por {}s" .format(self.process.id, self.process.execution_time, self.processing_time))
         self.process.execution_time -= 1

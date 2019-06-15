@@ -23,15 +23,13 @@ class Escalonator():
         self.algorithm = typeof
         self.override = override
         self.cpu = cpu
-
-
+        
     def insertProcess(self, process):
         if process.isArrived(self.cpu.clock):
             self.ready_queue.append(process)
         else:
             self.not_arrived.append(process)
-
-
+            
     def queue(self):
         """ Ordena a fila de prontos de acordo com o algoritmo escolhido """
         if self.algorithm == "RR" or self.algorithm == "FCFS":
@@ -60,6 +58,7 @@ class Escalonator():
             Args:
                 process (Process): processo a ser removido da fila
         """
+
         if process.finished(self.cpu.mmu):
             self.ready_queue.remove(process)
             self.cpu.concluded_process_time.append(self.cpu.clock - process.start)

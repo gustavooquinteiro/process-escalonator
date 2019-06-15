@@ -176,11 +176,6 @@ Para acrescentar tanto em conhecimento sobre escalonamento de processos quanto e
 
 ## :gear: Uso do programa
 
-É suposto que esse trabalho funcione em qualquer plataforma que tenha Python, porém a  [release](https://github.com/gustavooquinteiro/process-escalonator/releases/) mais recente só funciona em plataforma Windows, pois o requisito: `pyqt5-tools` somente pode ser instalado pelo `pip` da plataforma, mas que para o escopo do trabalho é mais que o suficiente.
-
-E ao remover o requisito `pyqt5-tools`, o programa funciona no Linux. 
-> :exclamation: Testes ainda são requeridos na plataforma Windows
-
 <div id='Requisitos'/>
 
 ### Requisitos
@@ -198,6 +193,7 @@ E ao remover o requisito `pyqt5-tools`, o programa funciona no Linux.
 > :warning: É recomendado que se instale as bibliotecas em um ambiente virtual, evitando conflitos de versões das bibliotecas instaladas localmente no seu computador. Para tal siga as instruções a seguir, de acordo sua plataforma.
 
 - UNIX:  
+
 ```sh
   python3 -m venv env
   source env/bin/activate  
@@ -205,6 +201,7 @@ E ao remover o requisito `pyqt5-tools`, o programa funciona no Linux.
 ```
 
 - Windows:  
+
 ```sh
   python -m venv env
   env\Scripts\activate
