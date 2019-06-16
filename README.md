@@ -156,6 +156,13 @@ A resposta deve ser dada em função do **turn-around médio** (tempo de espera 
 
     -   `W ` é a **quantidade de páginas, escritas na RAM, por segundo**, em nossa implementação, escolhemos o valor de ```2 páginas por segundo```  
 
+- Para organizar o repositório, foram criadas as pastas:
+
+    -   ```sample```: contendo todo o código-fonte criado
+    -   ```sample/images```: contendo todas as imagens utilizadas na interface gráfica
+    -   ```tests/```: contendo todos os casos de testes utilizados
+    > Em prol da organização do ambiente de trabalho, pedimos ao usuário que continue salvando seus casos de teste nessa pasta
+
 <div id='Adicionais'/>
 
 ## :heavy_plus_sign: Adicionais
@@ -175,6 +182,8 @@ Para acrescentar tanto em conhecimento sobre escalonamento de processos quanto e
 <div id='Uso'/>
 
 ## :gear: Uso do programa
+
+O programa pode ser utilizado em qualquer plataforma que tenha Python 3.x 
 
 <div id='Requisitos'/>
 
@@ -217,23 +226,19 @@ Para acrescentar tanto em conhecimento sobre escalonamento de processos quanto e
 Para executar basta dar o comando:
 
 ```sh
-  python InterFace.py
+  python sample/InterFace.py
 ```
 
 Em plataformas UNIX é bom especificar a versão do Python, já que em algumas o Python 2.x ainda vem como padrão, com o comando:
 
 ```sh
-  python3 InterFace.py
+  python3 sample/InterFace.py
 ```
 
-Em plataformas Windows, também é válido dar duplo-clique no arquivo ``` InterFace.py ```
+Em plataformas Windows, também é válido dar duplo-clique no arquivo ``` InterFace.py ``` dentro da pasta ```sample```
 
 <div id='Autores'/>
 
 ## :octocat: Desenvolvimento
 
-Maiores detalhes e/ou dúvidas sobre o desenvolvimento desse trabalho, considere ver o [log](https://github.com/gustavooquinteiro/process-escalonator/commits/master) desse repositório, ou entrar em contato com os autores abaixo listados:
-
-- [Giuseppe Mareschi](https://github.com/GiuseppeXD)
-- [Gustavo Quinteiro](https://github.com/gustavooquinteiro)
-- [Victor Pinheiro](https://github.com/vpinheiro38)
+Maiores detalhes e/ou dúvidas sobre o desenvolvimento desse trabalho, considere ver o [log](https://github.com/gustavooquinteiro/process-escalonator/commits/master) desse repositório, ou entrar em contato com os autores listados em [AUTHORS](AUTHORS)
