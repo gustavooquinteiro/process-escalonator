@@ -42,7 +42,6 @@ class CPU():
             self.override_time = 0
             self.state = CPU.State[0]
             
-
         while self.state == CPU.State[0]:
             if self.escalonator.ready_queue:
                 self.state = CPU.State[1]
@@ -75,28 +74,24 @@ class CPU():
             elif self.quantum - self.processing_time == 0:
                 if self.escalonator.override == 0:
                     self.state = CPU.State[2]
-                    self.escalonator.updateDeadline()
+                    self.escalonator.update_attributes()
                     self.escalonator.ready_queue.append(self.process)
                     self.override_time = 0
                 
                 elif self.escalonator.override - self.override_time == 0:
                     self.state = CPU.State[4]
-                    self.escalonator.updateDeadline()
+                    self.escalonator.update_attributes()
                     self.escalonator.ready_queue.append(self.process)
                     self.override_time = 0
                 else:
                     self.override_time += 1
                     return
-                # self.removeProcess()
         else:
             self.execute()
             if self.process.finished(self.mmu):
                 self.mmu.deallocate(self.process)
                 self.concluded_process_time.append((self.clock+1) - self.process.start)
-                self.state = CPU.State[2]
-                #self.removeProcess()
-                
-                
+                self.state = CPU.State[2]            
         
     def execute(self):
         """ Método para executar um processo """

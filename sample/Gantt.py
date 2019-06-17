@@ -193,9 +193,8 @@ class Window_Gantt(QWidget):
             self.tableWidget.setItem(i, tick, QTableWidgetItem())
             self.tableWidget.item(i, tick,).setBackground(Qt.gray)
             self.tableWidget.item(i, tick).setFlags(Qt.NoItemFlags)
-
         for i in escalonator.ready_queue:
-            if i.deadline <= 0 and escalonator.algorithm == "EDF":
+            if escalonator.real_time_over(i):
                 self.tableWidget.setItem(self.dicionary[i.id], tick, QTableWidgetItem())
                 self.tableWidget.item(self.dicionary[i.id], tick).setBackground(QColor(189,183,107))
                 self.tableWidget.item(self.dicionary[i.id], tick).setFlags(Qt.NoItemFlags)
@@ -209,7 +208,7 @@ class Window_Gantt(QWidget):
             self.tableWidget.item(self.dicionary[i.id], tick).setFlags(Qt.NoItemFlags)
 
         if cpu.state == "Executando" or cpu.state == "PreSobrecarga" or cpu.state == "Pronto" :
-            if cpu.process.deadline <= 0 and escalonator.algorithm == "EDF":
+            if escalonator.real_time_over(cpu.process):
                 self.tableWidget.setItem(self.dicionary[cpu.process.id], tick, QTableWidgetItem())
                 self.tableWidget.item(self.dicionary[cpu.process.id], tick).setBackground(QColor(0,100,0))
                 self.tableWidget.item(self.dicionary[cpu.process.id], tick).setFlags(Qt.NoItemFlags)

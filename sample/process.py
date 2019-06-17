@@ -27,6 +27,7 @@ class Process():
         self.start = start
         self.numpages = numpages
         self.pages = []
+        self.laxity = 0
 
     def getPages(self): return self.pages
     def setPages(self, list_pages): self.pages = list_pages

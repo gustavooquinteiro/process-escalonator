@@ -56,7 +56,8 @@ class Main_Window(QMainWindow):
         self.comboCPU.addItem("SPN")
         self.comboCPU.addItem("PRIO")
         self.comboCPU.addItem("LOT")
-
+        self.comboCPU.addItem("MLF")
+        
         self.comboMem = QComboBox()
         self.comboMem.addItem("FIFO")
         self.comboMem.addItem("LRU")

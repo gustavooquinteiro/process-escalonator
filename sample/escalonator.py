@@ -7,7 +7,7 @@ class Escalonator():
     """ Classe responsável pela  gerência da fila de prontos """
 
     NON_PREEMPTIVE_ALGORITHMS = ["FCFS", "SJF"]
-    PREEMPTIVE_ALGORITHMS = ["RR", "EDF", "SPN", "PRIO", "LOT"]
+    PREEMPTIVE_ALGORITHMS = ["RR", "EDF", "SPN", "PRIO", "LOT", "MLF"]
 
     def __init__(self, typeof="FCFS", override=.015, cpu=None):
         """ Método de inicialização de um escalonador.
@@ -25,6 +25,7 @@ class Escalonator():
         self.cpu = cpu
         
     def insertProcess(self, process):
+        process.laxity = process.deadline - self.cpu.clock - process.execution_time
         if process.isArrived(self.cpu.clock):
             self.ready_queue.append(process)
         else:
@@ -47,11 +48,22 @@ class Escalonator():
         elif self.algorithm == "LOT":
             random.shuffle(self.ready_queue)
             self.not_arrived.sort(key=lambda x: x.start)
+        elif self.algorithm == "MLF":
+            self.ready_queue.sort(key=lambda x: (x.start, x.laxity))
+            self.not_arrived.sort(key=lambda x: (x.start, x.laxity))
 
-    def updateDeadline(self):
-        """ Atualiza o deadline de todos os processos na fila de prontos """
+    def update_attributes(self):
+        """ Atualiza o deadline e o laxity de todos os processos na fila de prontos """
         for process in self.ready_queue:
             process.deadline = process.deadline - self.cpu.clock + process.start
+            process.laxity = process.deadline - self.cpu.clock - process.execution_time
+
+    def real_time_over(self, process):
+        if self.algorithm == "EDF" and process.deadline <= 0:
+            return True
+        if self.algorithm == "MLF" and process.laxity < 0:
+            return True
+        return False
 
     def manageQueue(self, process):
         """ Gerencia a fila de prontos de acordo o estado do processo no inicio da fila
@@ -98,3 +110,5 @@ class Escalonator():
                 self.ready_queue.sort(key=lambda x: x.priority, reverse=True)
             elif self.algorithm == "LOT":
                 random.shuffle(self.ready_queue)
+            elif self.algorithm == "MLF":
+                self.ready_queue.sort(key=lambda x: x.laxity)    
