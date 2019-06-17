@@ -1,4 +1,3 @@
-
 import sys
 import os
 from PyQt5.QtCore import Qt
@@ -7,14 +6,12 @@ from PyQt5.QtGui import QColor, QIcon
 from process import Process
 from WProcess import Window_Process
 from escalonator import Escalonator
-from process import Process
 from ioqueue import IO
 from cpu import CPU
 from disk import Disk
 from mmu import MMU, VirtualMemory
-import random
-import time
 from Gantt import Window_Gantt
+from pathlib import Path
 
 
 class Main_Window(QMainWindow):
@@ -24,26 +21,30 @@ class Main_Window(QMainWindow):
         self.idProcess = 1
         self.process = None
         self.listProcess = []
+        images = Path("sample/images/")
+        icon = os.path.join(images, "computer.png")
 
-        self.setWindowIcon(QIcon('images/computer.png'))
+        self.setWindowIcon(QIcon(icon))
 
         self.setGeometry(300, 300, 900, 400)
         self.setWindowTitle('OS SIMULATOR')
         self.show()
 
         self.statusBar()
+        open_icon = os.path.join(images, "openThing.jpg")
 
-        openFile = QAction(QIcon('images/openThing.jpg'), '&Open', self)
+        openFile = QAction(QIcon(open_icon), '&Open', self)
         openFile.setShortcut('Ctrl+O')
         openFile.setStatusTip('Open File')
         openFile.triggered.connect(self.file_open)
 
-        saveFile = QAction(QIcon('images/saveThing.jpg'), '&Save', self)
+        save_icon = os.path.join(images, "saveThing.jpg")
+        saveFile = QAction(QIcon(save_icon), '&Save', self)
         saveFile.setShortcut("Ctrl+S")
         saveFile.setStatusTip('Save File')
         saveFile.triggered.connect(self.file_save)
-
-        addProcess = QAction(QIcon('images/newThing.png'), '&NewProcess', self)
+        new_icon = os.path.join(images, "newThing.png")
+        addProcess = QAction(QIcon(new_icon), '&NewProcess', self)
         addProcess.setShortcut('Ctrl+N')
         addProcess.setStatusTip('New Process')
         addProcess.triggered.connect(self.new_Process)
@@ -57,7 +58,7 @@ class Main_Window(QMainWindow):
         self.comboCPU.addItem("PRIO")
         self.comboCPU.addItem("LOT")
         self.comboCPU.addItem("MLF")
-        
+
         self.comboMem = QComboBox()
         self.comboMem.addItem("FIFO")
         self.comboMem.addItem("LRU")
@@ -106,8 +107,8 @@ class Main_Window(QMainWindow):
 
         Override = QWidget()
         Override.setLayout(OverrideLayout)
-
-        Run = QAction(QIcon('images/run.png'), '&Run', self)
+        run_icon = os.path.join(images, "run.png")
+        Run = QAction(QIcon(run_icon), '&Run', self)
         Run.triggered.connect(self.run)
 
         self.toolbar = self.addToolBar('Process')
@@ -124,16 +125,15 @@ class Main_Window(QMainWindow):
 
         self.path = os.path.abspath("Interface.py")
 
-
         menuBar = self.menuBar()
         fileMenu = menuBar.addMenu('&File')
         fileMenu.addAction(openFile)
         fileMenu.addAction(saveFile)
 
-
     def run(self):
         if self.listProcess == []:
-            reply = QMessageBox.information(self, 'NO PROCESSES', "Insert Processes to Run", QMessageBox.Ok)
+            reply = QMessageBox.information(
+                self, 'NO PROCESSES', "Insert Processes to Run", QMessageBox.Ok)
             return
         self.file_open(True)
 
@@ -153,35 +153,37 @@ class Main_Window(QMainWindow):
         n = len(self.processes)
         for i in self.processes:
             i.io = io
-            escalonator.insertProcess(i)
+            escalonator.insert_process(i)
             disk.insertProcess(i.id, i.numpages)
 
         escalonator.not_arrived.sort(key=lambda x: x.start)
         escalonator.queue()
         self.hide()
-        self.gantt = Window_Gantt(n, cpu, escalonator, io, self.processes, self)
+        self.gantt = Window_Gantt(
+            n, cpu, escalonator, io, self.processes, self)
 
     def file_save(self, auto=False):
         if not auto:
             name = QFileDialog.getSaveFileName(self, 'Save File')
         else:
-            name = "('" + self.path[:-12] + 'autosave' + "', " + "'All Files (*)')"
+            name = "('" + self.path[:-12] + \
+                'autosave' + "', " + "'All Files (*)')"
 
         if name[0]:
-
 
             file = open(name[0], 'w')
             with file:
                 for i in self.listProcess:
                     file.write(str(i.id) + ' ' + str(i.start) + ' ' + str(i.execution_time) + ' ' + str(
                         i.numpages) + ' ' + str(i.deadline) + ' ' +
-                               "None" + ' ' + str(i.need_io) + ' ' + str(i.priority) + '\n')
+                        "None" + ' ' + str(i.need_io) + ' ' + str(i.priority) + '\n')
 
     def file_open(self, auto=False):
         if not auto:
             fname = QFileDialog.getOpenFileName(self, 'Open file', '/home')
         else:
-            fname = "('" + self.path[:-12] + 'autosave' + "', " + "'All Files (*)')"
+            fname = "('" + self.path[:-12] + \
+                'autosave' + "', " + "'All Files (*)')"
 
         self.listProcess = []
 
@@ -195,7 +197,8 @@ class Main_Window(QMainWindow):
                         break
                     i = a.split(' ')
 
-                    processo = Process(int(i[0]), int(i[1]), int(i[2]), int(i[3]), int(i[4]))
+                    processo = Process(int(i[0]), int(
+                        i[1]), int(i[2]), int(i[3]), int(i[4]))
                     if i[6] == "True":
                         processo.need_io = True
                     else:
@@ -271,8 +274,10 @@ class Main_Window(QMainWindow):
         linhaPages.setText(str(processo.numpages))
         layout.addRow("Pages", linhaPages)
 
-        btnEdit = QPushButton('Edit ' + str(self.numberTab) + ' ' + '° Process', self.janela)
-        btnRemove = QPushButton('Remove ' + str(self.numberTab) + ' ' + '° Process', self.janela)
+        btnEdit = QPushButton(
+            'Edit ' + str(self.numberTab) + ' ' + '° Process', self.janela)
+        btnRemove = QPushButton(
+            'Remove ' + str(self.numberTab) + ' ' + '° Process', self.janela)
 
         btnEdit.clicked.connect(self.editProcess)
         btnRemove.clicked.connect(self.removeProcess)
