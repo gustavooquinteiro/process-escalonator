@@ -14,7 +14,7 @@ class Disk():
             if count == 0:
                 break
 
-            if self.memory[index].proc_id == id and self.memory[index].isAllocated == False:
+            if self.memory[index].proc_id == id and not self.memory[index].isAllocated:
                 self.memory[index].isAllocated = True
                 count -= 1
 
@@ -30,6 +30,6 @@ class Disk():
             if count == 0:
                 break
 
-            if self.memory[index].proc_id == process.id and self.memory[index].isAllocated == True:
+            if self.memory[index].proc_id == process.id and self.memory[index].isAllocated:
                 self.memory[index].isAllocated = False
                 count -= 1
