@@ -162,6 +162,9 @@ A resposta deve ser dada em função do **turn-around médio** (tempo de espera 
     -   ```sample/images```: contendo todas as imagens utilizadas na interface gráfica
     -   ```tests/```: contendo todos os casos de testes utilizados
     > Em prol da organização do ambiente de trabalho, pedimos ao usuário que continue salvando seus casos de teste nessa pasta
+    
+    > O arquivo ``` test-generator.py ``` é capaz de gerar casos de testes aleatórios. 
+    > Para saber como usar, digite ``` test-generator.py --help ``` no seu Terminal ou Prompt de Comando 
 
 <div id='Adicionais'/>
 
@@ -183,7 +186,8 @@ Para acrescentar tanto em conhecimento sobre escalonamento de processos quanto e
 
 ## :gear: Uso do programa
 
-O programa pode ser utilizado em qualquer plataforma que tenha Python 3.x 
+O programa pode ser utilizado em qualquer plataforma que tenha Python 3.x
+> É aconselhado a utilizar a [release](https://github.com/gustavooquinteiro/process-escalonator/releases) mais recente 
 
 <div id='Requisitos'/>
 
@@ -239,6 +243,6 @@ Em plataformas Windows, também é válido dar duplo-clique no arquivo ``` Inter
 
 <div id='Autores'/>
 
-## :octocat: Desenvolvimento
+## :octocat: Desenvolvimento  
 
 Maiores detalhes e/ou dúvidas sobre o desenvolvimento desse trabalho, considere ver o [log](https://github.com/gustavooquinteiro/process-escalonator/commits/master) desse repositório, ou entrar em contato com os autores listados em [AUTHORS](AUTHORS)
