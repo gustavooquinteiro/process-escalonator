@@ -9,7 +9,7 @@ REQUIRES_PYTHON = '>=3.7.2'
 here = os.path.abspath(os.path.dirname(__file__))
 
 requirements = []
-with open (os.path.join(here, 'requirements.txt')) as required:
+with open(os.path.join(here, 'requirements.txt')) as required:
     requirements = required.read().split('\n')
 
 try:
@@ -17,7 +17,7 @@ try:
         long_description = '\n'+readme.read()
 except FileNotFoundError:
     long_description = DESCRIPTION
-    
+
 setup(
     name=NAME,
     version='1.0.2',
@@ -32,9 +32,8 @@ setup(
     install_requires=requirements,
     include_package_data=True,
     package_data={
-        'sample':[
-            'images/**'],
+        'sample': [
+            'images/**']
         },
-        zip_safe=False
-        )
-    
+    zip_safe=False
+    )

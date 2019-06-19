@@ -1,15 +1,17 @@
 import random
 import sys
 import os
+
+
 class Test():
-    def __init__(self, casos=random.randint(1,10),
+    def __init__(self, casos=random.randint(1,10), 
                  processes=random.randint(2, 10)):
         self.casos = casos
         self.processes = processes
         self.generate()
-                
+
     def generate(self):
-        for i in range(self.casos):    
+        for i in range(self.casos):
             files = list(filter(lambda file: 
                                 (file.split('.')[-1] == "txt"),
                                 os.listdir()))
@@ -29,32 +31,44 @@ class Test():
                                         pages, deadline, priority))
         print("[ OK ]\t{} test files generated with {} processes each" 
               .format(self.casos, self.processes))
-    
-
 
 if __name__ == "__main__":
     parameters = ["-n", "-p", "-r"]
     help_parameter = "--help"
     if not any(parameter in sys.argv for parameter in parameters):
-        print("Usage: python test-generator.py\nUse one or more of these arguments\n-n (number of files)\n-p (number of processes in each file)\n-r (complete random)")
-        sys.exit(not help_parameter in sys.argv)
-    else:   
+        arguments = ["-n (number of files)", 
+                     "-p (number of processes in each file)", 
+                     "-r (for complete randomness)"]
+        print("Usage: python test-generator.py [OPTIONS]")
+        print(*arguments, sep='\n')
+        sys.exit(help_parameter not in sys.argv)
+    else:
         has_n = False
         has_p = False
+        error = False
 
         if "-n" in sys.argv:
-            casos = int(sys.argv[sys.argv.index("-n") + 1])
-            has_n = True
+            try:
+                casos = int(sys.argv[sys.argv.index("-n") + 1])
+                has_n = True
+            except ValueError:
+                has_n = False
+                error = True
             
+
         if "-p" in sys.argv:
-            processes = int(sys.argv[sys.argv.index("-p") + 1])
-            has_p = True
-            
+            try:
+                processes = int(sys.argv[sys.argv.index("-p") + 1])
+                has_p = True
+            except ValueError:
+                has_p = False
+                error = True
+
         if has_n and has_p:
             Test(casos, processes)
-        elif "-r" in sys.argv and len(sys.argv) == 2:
-            Test()
         elif not has_n and has_p:
             Test(processes=processes)
         elif has_n and not has_p:
             Test(casos=casos)
+        elif ("-r" in sys.argv and len(sys.argv) == 2) or error:
+            Test()
