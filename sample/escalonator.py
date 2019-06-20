@@ -24,7 +24,7 @@ class Escalonator():
         self.cpu = cpu
 
     def insert_process(self, process):
-        """ Insere processos em sua respectiva fila: fila de prontos ou fila de não chegados.
+        """ Insere processos em sua respectiva fila
         Args:
             process (Process): processo que será inserido em uma fila
 
@@ -59,7 +59,8 @@ class Escalonator():
             process.laxity = process.deadline - self.cpu.clock - process.execution_time
 
     def real_time_over(self, process):
-        """ Verifica se um processo de um escalonamento de tempo real ultrapassou seu limite de execução
+        """ Verifica se um processo ultrapassou seu limite de execução.
+        Somente válido para algoritmos de escalonamento de tempo real
         Args:
             process (Process): processo que será averiguado
         """

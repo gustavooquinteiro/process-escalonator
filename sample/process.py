@@ -5,7 +5,8 @@ class Process():
     """ Classe responsável pela instanciação dos processos """
     States = ["Bloqueado", "Pronto", "Executando"]  # Estados de um processo
 
-    def __init__(self, id, start, execution_time, numpages, deadline=0, io=None, need_io=False, priority=0):
+    def __init__(self, id, start, execution_time,
+                 numpages, deadline=0, io=None, need_io=False, priority=0):
         """ Inicialização de um processo.
         Args:
             id (int): indentificador do processo

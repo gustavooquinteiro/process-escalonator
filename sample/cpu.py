@@ -27,16 +27,14 @@ class CPU():
         self.override_time = 0
         self.state = CPU.State[0]
         self.disk = disk
-
-    def runClock(self):
-        """ Método para execução de um clock da CPU """
-
         # Verificação de preemptividade
-
-        if self.escalonator.algorithm in self.escalonator.NON_PREEMPTIVE_ALGORITHMS:
+        if escalonator.algorithm in escalonator.NON_PREEMPTIVE_ALGORITHMS:
             self.preemptiveness = False
         else:
             self.preemptiveness = True
+
+    def runClock(self):
+        """ Método para execução de um clock da CPU """
 
         if self.state == CPU.State[5]:
             self.state = CPU.State[3]

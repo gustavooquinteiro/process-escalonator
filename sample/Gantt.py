@@ -63,13 +63,13 @@ class Window_Gantt(QWidget):
             "Quantum": self.SO.quantum,
             "Override": self.SO.override
             }
-        
+
         labels = []
         for x, y in self.info.items():
             labels.append("{}: {}\n" .format(x, y))
         label = ''.join(labels)
         self.Info = QLabel(label)
-                               
+
         self.Info.setStyleSheet("color: red;")
         self.Info.setAlignment(Qt.AlignCenter)
 
@@ -225,7 +225,7 @@ class Window_Gantt(QWidget):
                                       tick).setBackground(Qt.yellow)
                 self.tableWidget.item(self.dicionary[i.id],
                                       tick).setFlags(Qt.NoItemFlags)
-        
+
         for i in io.queue:
             self.tableWidget.setItem(self.dicionary[i.id],
                                      tick,
@@ -255,7 +255,7 @@ class Window_Gantt(QWidget):
                                       tick).setBackground(Qt.green)
                 self.tableWidget.item(self.dicionary[cpu.process.id],
                                       tick).setFlags(Qt.NoItemFlags)
-        
+
         if cpu.state in override_states:
             self.tableWidget.setItem(self.dicionary[cpu.process.id],
                                      tick,

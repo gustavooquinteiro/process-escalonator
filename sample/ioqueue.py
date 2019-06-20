@@ -26,11 +26,16 @@ class IO():
                     process.addPages(self.mmu.allocatePage(
                         process, cpuProcess=cpu.process))
             else:
-                for __ in range(min(2, len(list(filter(lambda ref: not self.mmu.vm.isPageAllocated(process, ref), process.pages))))):
+                vm = self.mmu.vm
+                non_allocated_pages = list(filter(lambda ref: 
+                                                      (not vm.isPageAllocated(
+                                                          process,ref)),
+                                                      process.pages))
+                for __ in range(min(2, len(non_allocated_pages))):
                     process.addPages(self.mmu.allocatePage(
                         process, cpuProcess=cpu.process))
 
             if self.mmu.isAllocated(process):
-                process.next_state(self.mmu)
+                process.next_state()
                 self.escalonator.ready_queue.append(process)
                 del self.queue[0]
