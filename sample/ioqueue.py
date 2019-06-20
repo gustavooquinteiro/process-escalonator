@@ -1,6 +1,4 @@
-import escalonator
 import process
-import mmu
 
 
 class IO():

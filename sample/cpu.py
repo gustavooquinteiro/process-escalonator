@@ -1,7 +1,3 @@
-from process import Process
-from escalonator import Escalonator
-
-
 class CPU():
     """ Classe responsável pela execução dos processos """
     State = ['Ocioso', 'Executando', 'Pronto',
@@ -67,7 +63,7 @@ class CPU():
                 if self.quantum - self.processing_time == 0:
                     self.state = CPU.State[5]
 
-            if self.process.finished(self.mmu):
+            if self.process.is_finished():
                 self.mmu.deallocate(self.process)
                 self.concluded_process_time.append(
                     (self.clock + 1) - self.process.start)
@@ -90,7 +86,7 @@ class CPU():
                     return
         else:
             self.execute()
-            if self.process.is_finished(self.mmu):
+            if self.process.is_finished():
                 self.mmu.deallocate(self.process)
                 self.concluded_process_time.append(
                     (self.clock + 1) - self.process.start)

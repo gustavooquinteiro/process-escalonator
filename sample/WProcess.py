@@ -1,9 +1,13 @@
-import sys
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import (QWidget, QPushButton, QLineEdit, QLayout, QGridLayout, QHBoxLayout,
-                             QInputDialog,QFrame, QColorDialog, QApplication, QFontDialog, QMessageBox,
-                             QSizePolicy,QDialog,  QLabel, QTextEdit, QAction, QFileDialog, QMainWindow, QVBoxLayout, QSpinBox)
-from PyQt5.QtGui import QColor, QIcon
+from PyQt5.QtWidgets import (QWidget, QPushButton, QLineEdit,
+                             QLayout, QGridLayout, QHBoxLayout,
+                             QInputDialog, QFrame, QColorDialog,
+                             QApplication, QFontDialog,
+                             QMessageBox,
+                             QSizePolicy, QDialog, QLabel,
+                             QTextEdit, QAction, QFileDialog,
+                             QMainWindow, QVBoxLayout, QSpinBox)
+from PyQt5.QtGui import QIcon
 from process import Process
 
 class Window_Process(QDialog):

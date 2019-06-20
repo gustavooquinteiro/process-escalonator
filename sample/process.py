@@ -1,6 +1,3 @@
-import ioqueue
-
-
 class Process():
     """ Classe responsável pela instanciação dos processos """
     States = ["Bloqueado", "Pronto", "Executando"]  # Estados de um processo

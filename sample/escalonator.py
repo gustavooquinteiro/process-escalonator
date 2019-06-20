@@ -1,5 +1,4 @@
 import random
-import process
 
 
 class Escalonator():

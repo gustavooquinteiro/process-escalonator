@@ -131,7 +131,7 @@ class VirtualMemory():
     def __init__(self, max, disk):
         self.algorithm = 'FIFO'
         self.mem_vm = []
-        for i in range(VirtualMemory.SIZE):
+        for __ in range(VirtualMemory.SIZE):
             self.mem_vm.append([None, 0])
         self.mem_ram = RAM(disk, self.mem_vm)
         self.vm_pointer = 0
@@ -196,15 +196,17 @@ class VirtualMemory():
             return ind
 
     def allocatePage(self, process, ref, cpuProcess=None):
-        page = None
-
         if ref == None:
             if self.hasClear():
                 rand = random.choice(list(
-                    filter(lambda page: self.mem_vm[page][0] == None and page not in cpuProcess.pages,
-                           list(range(VirtualMemory.SIZE)))))
+                    filter(lambda page: 
+                               (self.mem_vm[page][0] == None
+                                and page not in cpuProcess.pages),
+                               list(range(VirtualMemory.SIZE)))))
 
-                ram_ind, oldIndex = self.mem_ram.allocatePage(process, rand, cpuProcess=cpuProcess, hadSubstitution=False)
+                ram_ind, oldIndex = self.mem_ram.allocatePage(process, rand,
+                                                              cpuProcess=cpuProcess,
+                                                              hadSubstitution=False)
                 if oldIndex != -1 and oldIndex != None:
                     self.mem_vm[oldIndex] = [None, 0]
 

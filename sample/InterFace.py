@@ -1,6 +1,5 @@
 import sys
 import os
-from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QColor, QIcon
 from process import Process
@@ -132,8 +131,10 @@ class Main_Window(QMainWindow):
 
     def run(self):
         if self.listProcess == []:
-            reply = QMessageBox.information(
-                self, 'NO PROCESSES', "Insert Processes to Run", QMessageBox.Ok)
+            QMessageBox.information(self,
+                                    'NO PROCESSES',
+                                    "Insert Processes to Run",
+                                    QMessageBox.Ok)
             return
         self.file_open(True)
 
