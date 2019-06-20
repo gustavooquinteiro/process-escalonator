@@ -1,8 +1,6 @@
 # process-escalonator
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/1bc8ca14b6e640d181b6b4f0c202efd2)](https://app.codacy.com/app/gustavooquinteiro/process-escalonator?utm_source=github.com&utm_medium=referral&utm_content=gustavooquinteiro/process-escalonator&utm_campaign=Badge_Grade_Settings)
-
-![Supported Python Version](https://img.shields.io/pypi/pyversions/django.svg) ![Supported Platforms](https://img.shields.io/badge/platform-win--64%20%7C%20linux--64-red.svg) ![License](https://img.shields.io/cocoapods/l/afn.svg) ![](https://img.shields.io/badge/build-passing-brightgreen.svg) ![GitHub release](https://img.shields.io/github/release/gustavooquinteiro/process-escalonator.svg?color=yellow) 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/1bc8ca14b6e640d181b6b4f0c202efd2)](https://app.codacy.com/app/gustavooquinteiro/process-escalonator?utm_source=github.com&utm_medium=referral&utm_content=gustavooquinteiro/process-escalonator&utm_campaign=Badge_Grade_Settings) ![Supported Python Version](https://img.shields.io/pypi/pyversions/django.svg) ![Supported Platforms](https://img.shields.io/badge/platform-win--64%20%7C%20linux--64-red.svg) ![License](https://img.shields.io/cocoapods/l/afn.svg) ![](https://img.shields.io/badge/build-passing-brightgreen.svg) ![GitHub release](https://img.shields.io/github/release/gustavooquinteiro/process-escalonator.svg?color=yellow) 
 
 Simulador de execução de processos de um sistema operacional em Python desenvolvido como parte da avaliação da matéria MATA58 - Sistemas Operacionais, do Departamento de Ciência da Computação da Universidade Federal da Bahia, ministrada por Maycon Leone Maciel Peixoto.
 
