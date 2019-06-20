@@ -98,12 +98,12 @@ class Window_Process(QDialog):
         self.deadline_sp.setMinimum(self.executionTime)
 
     def deadlinevalue(self):
-        self.deadline.setText("Deadline Value : {}" 
+        self.deadline.setText("Deadline Value : {}"
                               .format(self.deadline_sp.value()))
         self.deadlineTime = self.deadline_sp.value()
 
     def priorityvalue(self):
-        self.priority.setText("Priority Value : {}" 
+        self.priority.setText("Priority Value : {}"
                               .format(self.priority_sp.value()))
         self.priorityTime = self.priority_sp.value()
 
