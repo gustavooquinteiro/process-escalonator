@@ -11,7 +11,7 @@ class Test():
         self.generate()
 
     def generate(self):
-        for i in range(self.casos):
+        for __ in range(self.casos):
             files = list(filter(lambda file:
                                 (file.split('.')[-1] == "txt"),
                                 os.listdir()))
