@@ -3,6 +3,8 @@ from PyQt5.QtCore import Qt, QTime, QSize
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QColor, QIcon, QBrush, QPalette
 from escalonator import Escalonator
+from pathlib import Path
+import os
 
 
 class Window_Gantt(QWidget):
@@ -55,8 +57,19 @@ class Window_Gantt(QWidget):
         self.checkAutoTick.setChecked(False)
         self.checkAutoTick.stateChanged.connect(self.autoTick)
         self.checkAutoTick.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        self.Info = QLabel("Algoritmo CPU: " + self.SO.type + "\n Algoritmo Mem: " + self.SO.typeMMU + "\n Quantum: " + str(self.SO.quantum) + "\n Sobrecarga: "
-                           + str(self.SO.override))
+        self.info = {
+            "CPU Scheduler": self.SO.type,
+            "Pagination Algorithm": self.SO.typeMMU,
+            "Quantum": self.SO.quantum,
+            "Override": self.SO.override
+            }
+        
+        labels = []
+        for x, y in self.info.items():
+            labels.append("{}: {}\n" .format(x, y))
+        label = ''.join(labels)
+        self.Info = QLabel(label)
+                               
         self.Info.setStyleSheet("color: red;")
         self.Info.setAlignment(Qt.AlignCenter)
 
@@ -69,7 +82,7 @@ class Window_Gantt(QWidget):
         self.layout2.addWidget(C)
 
         self.layout3 = QVBoxLayout()
-        labelCheck = QLabel("Time in MSec to AutoRun")
+        labelCheck = QLabel("Time in ms to AutoRun")
         self.layout3.addWidget(labelCheck)
         self.layout3.addWidget(self.AutoTickQuant)
         D = QWidget()
@@ -77,8 +90,8 @@ class Window_Gantt(QWidget):
         self.layout2.addWidget(D)
 
         self.layout3 = QVBoxLayout()
-        self.labelCheck1 = QLabel(
-            "Click to Run " + str(self.ticksQuant.value()) + " ticks")
+        self.labelCheck1 = QLabel("Click to Run {} ticks"
+                                  .format(self.ticksQuant.value()))
         self.layout3.addWidget(self.labelCheck1)
         self.layout3.addWidget(self.tickRun)
         E = QWidget()
@@ -174,7 +187,9 @@ class Window_Gantt(QWidget):
         self.layout.addWidget(self.LastLabel)
         self.setGeometry(300, 300, 1400, 1000)
         self.setLayout(self.layout)
-        self.setWindowIcon(QIcon('edit-image.png'))
+        images = Path("sample/images/")
+        edit_image = os.path.join(images, "edit-image.png")
+        self.setWindowIcon(QIcon(edit_image))
         self.show()
 
         self.cpu = cpu
@@ -183,62 +198,76 @@ class Window_Gantt(QWidget):
         self.n = n
 
     def ticksQuantUpdate(self):
-        self.labelCheck1.setText(
-            "Click to Run " + str(self.ticksQuant.value()) + " ticks")
+        self.labelCheck1.setText("Click to Run {} ticks"
+                                 .format(self.ticksQuant.value()))
 
     def updategantt(self, tick, escalonator, io, cpu):
-
         for i in range(self.tableWidget.rowCount()):
             self.tableWidget.setItem(i, tick, QTableWidgetItem())
             self.tableWidget.item(i, tick,).setBackground(Qt.gray)
             self.tableWidget.item(i, tick).setFlags(Qt.NoItemFlags)
+
         for i in escalonator.ready_queue:
             if escalonator.real_time_over(i):
-                self.tableWidget.setItem(
-                    self.dicionary[i.id], tick, QTableWidgetItem())
-                self.tableWidget.item(self.dicionary[i.id], tick).setBackground(
-                    QColor(189, 183, 107))
-                self.tableWidget.item(
-                    self.dicionary[i.id], tick).setFlags(Qt.NoItemFlags)
+                self.tableWidget.setItem(self.dicionary[i.id],
+                                         tick,
+                                         QTableWidgetItem())
+                self.tableWidget.item(self.dicionary[i.id],
+                                      tick).setBackground(
+                                          QColor(189, 183, 107))
+                self.tableWidget.item(self.dicionary[i.id],
+                                      tick).setFlags(Qt.NoItemFlags)
             else:
-                self.tableWidget.setItem(
-                    self.dicionary[i.id], tick, QTableWidgetItem())
-                self.tableWidget.item(
-                    self.dicionary[i.id], tick).setBackground(Qt.yellow)
-                self.tableWidget.item(
-                    self.dicionary[i.id], tick).setFlags(Qt.NoItemFlags)
+                self.tableWidget.setItem(self.dicionary[i.id],
+                                         tick,
+                                         QTableWidgetItem())
+                self.tableWidget.item(self.dicionary[i.id],
+                                      tick).setBackground(Qt.yellow)
+                self.tableWidget.item(self.dicionary[i.id],
+                                      tick).setFlags(Qt.NoItemFlags)
+        
         for i in io.queue:
-            self.tableWidget.setItem(
-                self.dicionary[i.id], tick, QTableWidgetItem())
-            self.tableWidget.item(
-                self.dicionary[i.id], tick).setBackground(QColor(139, 0, 0))
-            self.tableWidget.item(
-                self.dicionary[i.id], tick).setFlags(Qt.NoItemFlags)
+            self.tableWidget.setItem(self.dicionary[i.id],
+                                     tick,
+                                     QTableWidgetItem())
+            self.tableWidget.item(self.dicionary[i.id],
+                                  tick).setBackground(QColor(139, 0, 0))
+            self.tableWidget.item(self.dicionary[i.id],
+                                  tick).setFlags(Qt.NoItemFlags)
 
-        if cpu.state == "Executando" or cpu.state == "PreSobrecarga" or cpu.state == "Pronto":
+        executing_states = ["Executando", "PreSobrecarga", "Pronto"]
+        override_states = ["PosSobrecarga", "Sobrecarga"]
+
+        if cpu.state in executing_states:
             if escalonator.real_time_over(cpu.process):
-                self.tableWidget.setItem(
-                    self.dicionary[cpu.process.id], tick, QTableWidgetItem())
-                self.tableWidget.item(
-                    self.dicionary[cpu.process.id], tick).setBackground(QColor(0, 100, 0))
-                self.tableWidget.item(
-                    self.dicionary[cpu.process.id], tick).setFlags(Qt.NoItemFlags)
+                self.tableWidget.setItem(self.dicionary[cpu.process.id],
+                                         tick,
+                                         QTableWidgetItem())
+                self.tableWidget.item(self.dicionary[cpu.process.id],
+                                      tick).setBackground(QColor(0, 100, 0))
+                self.tableWidget.item(self.dicionary[cpu.process.id],
+                                      tick).setFlags(Qt.NoItemFlags)
             else:
-                self.tableWidget.setItem(
-                    self.dicionary[cpu.process.id], tick, QTableWidgetItem())
-                self.tableWidget.item(
-                    self.dicionary[cpu.process.id], tick).setBackground(Qt.green)
-                self.tableWidget.item(
-                    self.dicionary[cpu.process.id], tick).setFlags(Qt.NoItemFlags)
-        if cpu.state == "PosSobrecarga" or cpu.state == "Sobrecarga":
-            self.tableWidget.setItem(
-                self.dicionary[cpu.process.id], tick, QTableWidgetItem())
-            self.tableWidget.item(
-                self.dicionary[cpu.process.id], tick).setBackground(Qt.red)
-            self.tableWidget.item(
-                self.dicionary[cpu.process.id], tick).setFlags(Qt.NoItemFlags)
+                self.tableWidget.setItem(self.dicionary[cpu.process.id],
+                                         tick,
+                                         QTableWidgetItem())
+                self.tableWidget.item(self.dicionary[cpu.process.id],
+                                      tick).setBackground(Qt.green)
+                self.tableWidget.item(self.dicionary[cpu.process.id],
+                                      tick).setFlags(Qt.NoItemFlags)
+        
+        if cpu.state in override_states:
+            self.tableWidget.setItem(self.dicionary[cpu.process.id],
+                                     tick,
+                                     QTableWidgetItem())
+            self.tableWidget.item(self.dicionary[cpu.process.id],
+                                  tick).setBackground(Qt.red)
+            self.tableWidget.item(self.dicionary[cpu.process.id],
+                                  tick).setFlags(Qt.NoItemFlags)
+
         if self.n != len(self.cpu.concluded_process_time):
-            self.tableWidget.setColumnCount(self.tableWidget.columnCount()+1)
+            self.tableWidget.setColumnCount(
+                self.tableWidget.columnCount() + 1)
 
     def updateMem(self):
 
@@ -246,8 +275,8 @@ class Window_Gantt(QWidget):
         for i in self.cpu.mmu.vm.mem_ram.queue:
             if self.cpu.mmu.vm.mem_ram.isAllocated(i):
                 self.tableMem.setItem(index, 0, QTableWidgetItem())
-                self.tableMem.item(index, 0).setBackground(
-                    QColor(30, 144, 255))
+                self.tableMem.item(index,
+                                   0).setBackground(QColor(30, 144, 255))
                 self.tableMem.item(index, 0).setForeground(Qt.yellow)
                 self.tableMem.item(index, 0).setTextAlignment(Qt.AlignHCenter)
                 self.tableMem.item(index, 0).setText(str(i.num))
@@ -264,10 +293,11 @@ class Window_Gantt(QWidget):
         for i in self.cpu.disk.memory:
             if i.isAllocated:
                 self.tableDisk.setItem(index, 0, QTableWidgetItem())
-                self.tableDisk.item(index, 0).setBackground(
-                    QColor(30, 144, 255))
+                self.tableDisk.item(index,
+                                    0).setBackground(QColor(30, 144, 255))
                 self.tableDisk.item(index, 0).setForeground(Qt.yellow)
-                self.tableDisk.item(index, 0).setTextAlignment(Qt.AlignHCenter)
+                self.tableDisk.item(index,
+                                    0).setTextAlignment(Qt.AlignHCenter)
                 self.tableDisk.item(index, 0).setText(str(i.proc_id))
                 self.tableDisk.item(index, 0).setFlags(Qt.NoItemFlags)
             else:
@@ -284,12 +314,20 @@ class Window_Gantt(QWidget):
                 self.ticksQuant.setValue(1)
             self.checkAutoTick.setChecked(False)
             turnaround = sum(self.cpu.concluded_process_time) / self.n
-            self.LastLabel.setText("TURNAROUND: " + str(turnaround))
-            text = " Algoritmo CPU: " + self.SO.type + "\n Algoritmo Mem: " + self.SO.typeMMU + "\n Quantum: " + \
-                str(self.SO.quantum) + "\n Sobrecarga: " + \
-                str(self.SO.override) + "\n TURNAROUND: " + str(turnaround)
-            reply = QMessageBox.information(
-                self, 'FINISHED', text, QMessageBox.Ok)
+            self.LastLabel.setText("TURNAROUND: {:.2f} " .format(turnaround))
+            self.info["TURNAROUND"] = turnaround
+            labels = []
+            for x, y in self.info.items():
+                if x == "TURNAROUND":
+                    labels.append("{}: {:.2f}\n" .format(x, y))
+                else:
+                    labels.append("{}: {}\n" .format(x, y))
+            text = ''.join(labels)
+
+            reply = QMessageBox.information(self,
+                                            'FINISHED',
+                                            text,
+                                            QMessageBox.Ok)
 
             return
         self.escalonator.next_process()
@@ -304,7 +342,7 @@ class Window_Gantt(QWidget):
         self.tickClock = self.cpu.clock
 
         if self.ticksQuant.value() > 1:
-            self.ticksQuant.setValue(self.ticksQuant.value()-1)
+            self.ticksQuant.setValue(self.ticksQuant.value() - 1)
             self.tick()
 
     def autoTick(self):
