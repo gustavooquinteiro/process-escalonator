@@ -8,20 +8,20 @@ class Disk():
     def __init__(self):
         self.memory = []
 
-    def putProcess(self, id, qnt):
+    def putProcess(self, pid, qnt):
         count = qnt
         for index in range(len(self.memory)):
             if count == 0:
                 break
             allocated = self.memory[index].isAllocated
-            if self.memory[index].proc_id == id and not allocated:
+            if self.memory[index].proc_id == pid and not allocated:
                 self.memory[index].isAllocated = True
                 count -= 1
 
-    def insertProcess(self, id, qnt):
+    def insertProcess(self, pid, qnt):
         count = qnt
         for __ in range(count):
-            page = Page(id, allocated=True)
+            page = Page(pid, allocated=True)
             self.memory.append(page)
 
     def remProcess(self, process, qnt):
@@ -30,6 +30,6 @@ class Disk():
             if count == 0:
                 break
             allocated = self.memory[index].isAllocated
-            if self.memory[index].proc_id == process.id and allocated:
+            if self.memory[index].proc_id == process.pid and allocated:
                 self.memory[index].isAllocated = False
                 count -= 1

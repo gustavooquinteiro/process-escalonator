@@ -1,7 +1,7 @@
 from PyQt5 import QtTest
 from PyQt5.QtCore import Qt, QTime
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import QColor, QIcon, QBrush, QPalette
+from PyQt5.QtGui import QColor, QIcon, QBrush
 from pathlib import Path
 import os
 
@@ -323,10 +323,10 @@ class Window_Gantt(QWidget):
                     labels.append("{}: {}\n" .format(x, y))
             text = ''.join(labels)
 
-            reply = QMessageBox.information(self,
-                                            'FINISHED',
-                                            text,
-                                            QMessageBox.Ok)
+            QMessageBox.information(self,
+                                    'FINISHED',
+                                    text,
+                                    QMessageBox.Ok)
 
             return
         self.escalonator.next_process()

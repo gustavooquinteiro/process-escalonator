@@ -1,7 +1,7 @@
 import sys
 import os
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import QColor, QIcon
+from PyQt5.QtGui import QIcon
 from process import Process
 from WProcess import Window_Process
 from escalonator import Escalonator
@@ -192,7 +192,6 @@ class Main_Window(QMainWindow):
             f = open(fname[0], 'r')
             with f:
                 data = f.read().split('\n')
-                index = 0
                 for a in data:
                     if a == '':
                         break

@@ -2,8 +2,9 @@ class Process():
     """ Classe responsável pela instanciação dos processos """
     States = ["Bloqueado", "Pronto", "Executando"]  # Estados de um processo
 
-    def __init__(self, id, start, execution_time,
-                 numpages, deadline=0, io=None, need_io=False, priority=0):
+    def __init__(self, pid, start, execution_time,
+                 numpages, deadline=0,
+                 io=None, need_io=False, priority=0):
         """ Inicialização de um processo.
         Args:
             id (int): indentificador do processo
@@ -14,7 +15,7 @@ class Process():
             need_io (bool): necessidade de IO
             priority (int): prioridade do processo
         """
-        self.id = id
+        self.pid = pid
         self.priority = priority
         self.deadline = deadline
         self.execution_time = execution_time
@@ -81,4 +82,4 @@ class Process():
 
     def __repr__(self):
         """ Representação do processo. Útil em print() """
-        return ("Processo {}\n\tStart: {}\n\tDeadline: {}\n\tTempo de execução: {}" .format(self.id, self.start, self.deadline, self.execution_time))
+        return ("Processo {}\n\tStart: {}\n\tDeadline: {}\n\tTempo de execução: {}" .format(self.pid, self.start, self.deadline, self.execution_time))

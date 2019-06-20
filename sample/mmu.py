@@ -27,7 +27,7 @@ class RAM():
     def __init__(self, disk, vm):
         self.algorithm = 'FIFO'
         self.queue = []
-        for i in range(RAM.SIZE):
+        for __ in range(RAM.SIZE):
             page = Page()
             self.queue.append(page)
         self.ram_pointer = 0
@@ -36,7 +36,6 @@ class RAM():
 
     def setAlgorithm(self, algorithm):
         self.algorithm = algorithm
-
 
     def isAllocated(self, page):
         if page.isAllocated():
@@ -49,7 +48,8 @@ class RAM():
                 return True
         return False
 
-    def substitutePage(self, process, ind, cpuProcess=None, hadSubstitution=False):
+    def substitutePage(self, process,
+                       ind, cpuProcess=None, hadSubstitution=False):
         if self.algorithm == 'FIFO':
             ref_ram = self.ram_pointer
 
@@ -105,10 +105,10 @@ class RAM():
 
     def allocatePage(self, process, ind, cpuProcess=None, hadSubstitution=False):
         selec_list = transformList(list(range(RAM.SIZE)), cpuProcess, self.vm)
-        free_list = list(filter(lambda page: not self.isAllocated(self.queue[page]), selec_list))
+        free_list = list(filter(
+            lambda page: not self.isAllocated(self.queue[page]), selec_list))
         print(len(free_list))
         print(free_list)
-        
         if len(free_list) > 0:
             rand = random.choice(free_list)
             self.queue[rand].num = process.id
@@ -199,7 +199,7 @@ class VirtualMemory():
         if ref == None:
             if self.hasClear():
                 rand = random.choice(list(
-                    filter(lambda page: 
+                    filter(lambda page:
                                (self.mem_vm[page][0] == None
                                 and page not in cpuProcess.pages),
                                list(range(VirtualMemory.SIZE)))))
