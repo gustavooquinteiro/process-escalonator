@@ -28,8 +28,7 @@ class IO():
             else:
                 vm = self.mmu.vm
                 non_allocated_pages = list(filter(lambda ref:
-                                                      (not vm.isPageAllocated(
-                                                          process,ref)),
+                                                      (not vm.isPageAllocated(process, ref)),
                                                       process.pages))
                 for __ in range(min(2, len(non_allocated_pages))):
                     process.addPages(self.mmu.allocatePage(
