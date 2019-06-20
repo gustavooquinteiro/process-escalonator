@@ -22,7 +22,8 @@ class Test():
                     begin = random.randint(0, 10)
                     execute = random.randint(1, 20)
                     pages = random.randint(1, 10)
-                    offset = max(random.randint(20, 50), random.randint(10, 60))
+                    offset = max(random.randint(20, 50),
+                                 random.randint(10, 60))
                     deadline = random.randint(execute, execute + offset)
                     priority = random.randint(1, 30)
                     file.write("{} {} {} {} {} None False {}\n"
