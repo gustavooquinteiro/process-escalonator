@@ -31,7 +31,7 @@ class CPU():
         # Verificação de preemptividade
         if escalonator.algorithm in escalonator.NON_PREEMPTIVE_ALGORITHMS:
             self.preemptiveness = False
-        else
+        else:
             self.preemptiveness = True
 
     def runClock(self):
@@ -50,10 +50,10 @@ class CPU():
                 self.process = self.escalonator.ready_queue.pop(0)
             else:
                 return
-            isAlloc = self.mmu.isAllocated(self.process)
-            self.process.nextState(self.mmu)
+            allocated = self.mmu.isAllocated(self.process)
+            self.process.next_state()
 
-            if isAlloc == False:
+            if not allocated:
                 self.ioqueue.enqueue(self.process)
                 self.state = CPU.State[0]
             else:
@@ -66,7 +66,6 @@ class CPU():
                 self.execute()
                 if self.quantum - self.processing_time == 0:
                     self.state = CPU.State[5]
-
 
             if self.process.finished(self.mmu):
                 self.mmu.deallocate(self.process)
@@ -91,7 +90,7 @@ class CPU():
                     return
         else:
             self.execute()
-            if self.process.finished(self.mmu):
+            if self.process.is_finished(self.mmu):
                 self.mmu.deallocate(self.process)
                 self.concluded_process_time.append(
                     (self.clock + 1) - self.process.start)
@@ -99,6 +98,6 @@ class CPU():
 
     def execute(self):
         """ Método para executar um processo """
-        self.process.nextState(self.mmu)
+        self.process.next_state()
         self.processing_time += 1
         self.process.execution_time -= 1

@@ -1,4 +1,3 @@
-import time
 import random
 import process
 
@@ -23,34 +22,35 @@ class Escalonator():
         self.algorithm = typeof
         self.override = override
         self.cpu = cpu
-        
-    def insertProcess(self, process):
-        process.laxity = process.deadline - self.cpu.clock - process.execution_time
-        if process.isArrived(self.cpu.clock):
+
+    def insert_process(self, process):
+        """ Insere processos em sua respectiva fila
+        Args:
+            process (Process): processo que será inserido em uma fila
+
+        """
+        if process.is_arrived(self.cpu.clock):
             self.ready_queue.append(process)
         else:
             self.not_arrived.append(process)
-            
+
     def queue(self):
         """ Ordena a fila de prontos de acordo com o algoritmo escolhido """
         if self.algorithm == "RR" or self.algorithm == "FCFS":
             self.ready_queue.sort(key=lambda x: x.start)
-            self.not_arrived.sort(key=lambda x: x.start)
         elif self.algorithm == "EDF":
             self.ready_queue.sort(key=lambda x: (x.start, x.deadline))
-            self.not_arrived.sort(key=lambda x: (x.start, x.deadline))
         elif self.algorithm == "SJF" or self.algorithm == "SPN":
             self.ready_queue.sort(key=lambda x: (x.start, x.execution_time))
-            self.not_arrived.sort(key=lambda x: (x.start, x.execution_time))
         elif self.algorithm == "PRIO":
-            self.ready_queue.sort(key=lambda x: (x.start, x.priority), reverse=True)
-            self.not_arrived.sort(key=lambda x: (x.start, x.priority), reverse=True)
+            self.ready_queue.sort(key=lambda x: (
+                x.start, x.priority), reverse=True)
         elif self.algorithm == "LOT":
             random.shuffle(self.ready_queue)
-            self.not_arrived.sort(key=lambda x: x.start)
         elif self.algorithm == "MLF":
             self.ready_queue.sort(key=lambda x: (x.start, x.laxity))
-            self.not_arrived.sort(key=lambda x: (x.start, x.laxity))
+        # Os processos que não chegaram são ordenados por seu tempo de chegada
+        self.not_arrived.sort(key=lambda x: x.start)
 
     def update_attributes(self):
         """ Atualiza o deadline e o laxity de todos os processos na fila de prontos """
@@ -59,40 +59,22 @@ class Escalonator():
             process.laxity = process.deadline - self.cpu.clock - process.execution_time
 
     def real_time_over(self, process):
-        if self.algorithm == "EDF" and process.deadline <= 0:
-            return True
-        if self.algorithm == "MLF" and process.laxity < 0:
-            return True
-        return False
-
-    def manageQueue(self, process):
-        """ Gerencia a fila de prontos de acordo o estado do processo no inicio da fila
-            Args:
-                process (Process): processo a ser removido da fila
+        """ Verifica se um processo ultrapassou seu limite de execução.
+        Somente válido para algoritmos de escalonamento de tempo real
+        Args:
+            process (Process): processo que será averiguado
         """
-
-        if process.finished(self.cpu.mmu):
-            self.ready_queue.remove(process)
-            self.cpu.concluded_process_time.append(self.cpu.clock - process.start)
-            self.nextProcess()
+        if self.algorithm == "EDF" and process.is_out_deadline():
             return True
-
-        if self.algorithm in self.PREEMPTIVE_ALGORITHMS:
-            self.nextProcess()
-            #time.sleep(self.override)
-            self.cpu.clock += self.override
-            self.updateDeadline()
+        if self.algorithm == "MLF" and process.is_out_laxity():
+            return True
         return False
 
-    def forceRemove(self, process):
-        self.ready_queue.remove(process)
-        self.nextProcess()
-
-    def nextProcess(self):
+    def next_process(self):
         """ Adiciona processos, que chegaram, à fila de prontos e reordena-a, se necessário  """
 
         arrived = list(filter(
-            lambda x: x.isArrived(self.cpu.clock),
+            lambda x: x.is_arrived(self.cpu.clock),
             self.not_arrived))
 
         for process in arrived:
@@ -100,9 +82,7 @@ class Escalonator():
             self.not_arrived.remove(process)
 
         if len(self.ready_queue) > 1:
-            if self.algorithm == "FCFS":
-                self.ready_queue.sort(key=lambda x: x.start)
-            elif self.algorithm == "SJF" or self.algorithm == "SPN":
+            if self.algorithm == "SJF" or self.algorithm == "SPN":
                 self.ready_queue.sort(key=lambda x: x.execution_time)
             elif self.algorithm == "EDF":
                 self.ready_queue.sort(key=lambda x: x.deadline)
@@ -111,4 +91,4 @@ class Escalonator():
             elif self.algorithm == "LOT":
                 random.shuffle(self.ready_queue)
             elif self.algorithm == "MLF":
-                self.ready_queue.sort(key=lambda x: x.laxity)    
+                self.ready_queue.sort(key=lambda x: x.laxity)
