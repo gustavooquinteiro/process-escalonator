@@ -82,4 +82,13 @@ class Process():
 
     def __repr__(self):
         """ Representação do processo. Útil em print() """
-        return ("Processo {}\n\tStart: {}\n\tDeadline: {}\n\tTempo de execução: {}" .format(self.pid, self.start, self.deadline, self.execution_time))
+        process_info = {
+            "PID": self.pid,
+            "Start time": self.start,
+            "Execution time": self.execution_time,
+            "Deadline": self.deadline
+            }
+        info_array = [""]
+        for x, y in process_info.items():
+            info_array.append("\t{}: {}\n" .format(x, y))
+        return (''.join(info_array))
