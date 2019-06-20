@@ -1,7 +1,7 @@
 from PyQt5 import QtTest
 from PyQt5.QtCore import Qt, QTime
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import QColor, QIcon, QBrush
+from PyQt5.QtGui import QColor, QIcon
 from pathlib import Path
 import os
 

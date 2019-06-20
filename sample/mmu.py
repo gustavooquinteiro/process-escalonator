@@ -199,14 +199,12 @@ class VirtualMemory():
         if ref == None:
             if self.hasClear():
                 rand = random.choice(list(
-                    filter(lambda page:
-                               (self.mem_vm[page][0] == None
-                                and page not in cpuProcess.pages),
+                    filter(lambda page: 
+                               self.mem_vm[page][0] is None and page not in cpuProcess.pages,
                                list(range(VirtualMemory.SIZE)))))
 
-                ram_ind, oldIndex = self.mem_ram.allocatePage(process, rand,
-                                                              cpuProcess=cpuProcess,
-                                                              hadSubstitution=False)
+                ram_ind, oldIndex = self.mem_ram.allocatePage(
+                    process, rand, cpuProcess=cpuProcess, hadSubstitution=False)
                 if oldIndex != -1 and oldIndex != None:
                     self.mem_vm[oldIndex] = [None, 0]
 
