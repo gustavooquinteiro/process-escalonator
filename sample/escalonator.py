@@ -41,7 +41,7 @@ class Escalonator():
         elif self.algorithm == "EDF":
             self.ready_queue.sort(key=lambda x: (x.start, x.deadline))
         elif self.algorithm == "SJF" or self.algorithm == "SPN":
-            self.ready_queue.sort(key=lambda x: (x.start, x.execution_time))            
+            self.ready_queue.sort(key=lambda x: (x.start, x.execution_time))
         elif self.algorithm == "PRIO":
             self.ready_queue.sort(key=lambda x: (
                 x.start, x.priority), reverse=True)
@@ -50,7 +50,7 @@ class Escalonator():
         elif self.algorithm == "MLF":
             self.ready_queue.sort(key=lambda x: (x.start, x.laxity))
         # Os processos que não chegaram são ordenados por seu tempo de chegada
-        self.not_arrived.sort(key=lambda x: x.start) 
+        self.not_arrived.sort(key=lambda x: x.start)
 
     def update_attributes(self):
         """ Atualiza o deadline e o laxity de todos os processos na fila de prontos """

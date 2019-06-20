@@ -14,7 +14,7 @@ class Process():
             execution_time (int): tempo necessário para o processo ser concluido
             deadline (int): tempo limite máximo que o processo deve ser executado
             io (IO): Objeto responsável pela fila de IO
-            need_io (bool): necessidade de IO 
+            need_io (bool): necessidade de IO
             priority (int): prioridade do processo
         """
         self.id = id
@@ -29,17 +29,17 @@ class Process():
         self.pages = []
         self.laxity = 0
 
-    def getPages(self): 
+    def getPages(self):
         return self.pages
 
-    def setPages(self, list_pages): 
+    def setPages(self, list_pages):
         self.pages = list_pages
 
     def addPages(self, list_pages):
         for data in list_pages:
             self.pages.append(data)
 
-    def getNumPages(self): 
+    def getNumPages(self):
         return self.numpages
 
     def next_state(self):
@@ -75,7 +75,7 @@ class Process():
         return self.laxity < 0
 
     def is_arrived(self, clock):
-        """ Verificação se um processo está apto a entrar na CPU 
+        """ Verificação se um processo está apto a entrar na CPU
         Args:
             clock (int): clock atual da CPU
         """

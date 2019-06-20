@@ -27,7 +27,7 @@ class IO():
                         process, cpuProcess=cpu.process))
             else:
                 vm = self.mmu.vm
-                non_allocated_pages = list(filter(lambda ref: 
+                non_allocated_pages = list(filter(lambda ref:
                                                       (not vm.isPageAllocated(
                                                           process,ref)),
                                                       process.pages))
