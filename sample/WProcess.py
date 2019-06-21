@@ -79,7 +79,7 @@ class Window_Process(QDialog):
 
         self.setLayout(layout)
         self.setWindowTitle("Process {}" .format(pid))
-        
+
     def startvalue(self):
         self.start.setText("Start Value : {} " .format(self.start_sp.value()))
         self.startTime = self.start_sp.value()

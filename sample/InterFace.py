@@ -130,14 +130,13 @@ class Main_Window(QMainWindow):
         fileMenu.addAction(saveFile)
 
     def run(self):
-        if self.listProcess == []:
+        if not self.listProcess:
             QMessageBox.information(self,
                                     'NO PROCESSES',
                                     "Insert Processes to Run",
                                     QMessageBox.Ok)
             return
         self.file_open(True)
-
         self.quantum = self.quantum_sp.value()
         self.override = self.override_sp.value()
         self.type = self.comboCPU.currentText()
@@ -145,7 +144,7 @@ class Main_Window(QMainWindow):
         escalonator = Escalonator(self.type.upper(), self.override)
         self.processes = self.listProcess
         disk = Disk()
-        vm = VirtualMemory(100, disk)
+        vm = VirtualMemory(disk)
         mmu = MMU(vm, self.typeMMU.upper(), disk)
         io = IO(mmu, disk)
         io.escalonator = escalonator
@@ -155,13 +154,13 @@ class Main_Window(QMainWindow):
         for i in self.processes:
             i.io = io
             escalonator.insert_process(i)
-            disk.insertProcess(i.id, i.numpages)
+            disk.insertProcess(i.pid, i.numpages)
 
         escalonator.not_arrived.sort(key=lambda x: x.start)
         escalonator.queue()
         self.hide()
-        self.gantt = Window_Gantt(
-            n, cpu, escalonator, io, self.processes, self)
+        self.gantt = Window_Gantt(n, cpu, escalonator,
+                                  io, self.processes, self)
 
     def file_save(self, auto=False):
         if not auto:
@@ -171,13 +170,12 @@ class Main_Window(QMainWindow):
                 'autosave' + "', " + "'All Files (*)')"
 
         if name[0]:
-
-            file = open(name[0], 'w')
-            with file:
+            with open(name[0], 'w') as file:
                 for i in self.listProcess:
-                    file.write(str(i.id) + ' ' + str(i.start) + ' ' + str(i.execution_time) + ' ' + str(
-                        i.numpages) + ' ' + str(i.deadline) + ' ' +
-                        "None" + ' ' + str(i.need_io) + ' ' + str(i.priority) + '\n')
+                    file.write("{} {} {} {} {} None {} {}\n"
+                               .format(i.pid, i.start, i.execution_time,
+                                       i.numpages, i.deadline, i.need_io,
+                                       i.priority))
 
     def file_open(self, auto=False):
         if not auto:
@@ -189,16 +187,14 @@ class Main_Window(QMainWindow):
         self.listProcess = []
 
         if fname[0]:
-            f = open(fname[0], 'r')
-            with f:
+            with open(fname[0], 'r') as f:
                 data = f.read().split('\n')
                 for a in data:
                     if a == '':
                         break
                     i = a.split(' ')
-
-                    processo = Process(int(i[0]), int(
-                        i[1]), int(i[2]), int(i[3]), int(i[4]))
+                    processo = Process(int(i[0]), int(i[1]),
+                                       int(i[2]), int(i[3]), int(i[4]))
                     if i[6] == "True":
                         processo.need_io = True
                     else:
@@ -208,7 +204,6 @@ class Main_Window(QMainWindow):
             self.printProcesses()
 
     def new_Process(self):
-
         self.processAux = Window_Process(self.idProcess, self.process, self)
         self.processAux.exec_()
         self.process = self.processAux.process
@@ -231,9 +226,9 @@ class Main_Window(QMainWindow):
         sender = self.sender()
         index = int(sender.text().split(' ')[1])
         reply = QMessageBox.question(self, 'Remove',
-                                     "Are you sure to remove ? ", QMessageBox.Yes |
-                                     QMessageBox.No, QMessageBox.Yes)
-
+                                     "Are you sure to remove ? ",
+                                     QMessageBox.Yes | QMessageBox.No,
+                                     QMessageBox.Yes)
         if reply == QMessageBox.Yes:
             self.listProcess.pop(index - 1)
             if not self.listProcess:
@@ -246,10 +241,9 @@ class Main_Window(QMainWindow):
         self.file_save(True)
         for i in self.listProcess:
             self.janela = QWidget()
-            self.lista.addTab(self.janela, "Processo " + str(i.id))
+            self.lista.addTab(self.janela, "Processo {} " .format(i.pid))
             self.janelaUi(i)
             self.numberTab += 1
-
         self.setCentralWidget(self.lista)
 
     def janelaUi(self, processo):
@@ -274,18 +268,18 @@ class Main_Window(QMainWindow):
         linhaPages.setText(str(processo.numpages))
         layout.addRow("Pages", linhaPages)
 
-        btnEdit = QPushButton(
-            'Edit ' + str(self.numberTab) + ' ' + '° Process', self.janela)
-        btnRemove = QPushButton(
-            'Remove ' + str(self.numberTab) + ' ' + '° Process', self.janela)
-
+        btnEdit = QPushButton('Edit {} ° Process'
+                              .format(self.numberTab),
+                              self.janela)
+        btnRemove = QPushButton('Remove {} ° Process'
+                                .format(self.numberTab),
+                                self.janela)
         btnEdit.clicked.connect(self.editProcess)
         btnRemove.clicked.connect(self.removeProcess)
-
         layout.addRow(btnEdit)
         layout.addRow(btnRemove)
-
-        self.lista.setTabText(self.numberTab, "Process " + str(processo.id))
+        self.lista.setTabText(self.numberTab,
+                              "Process {}" .format(processo.pid))
         self.janela.setLayout(layout)
 
 

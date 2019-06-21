@@ -35,7 +35,7 @@ class Window_Gantt(QWidget):
         self.dicionary = {}
         index = 0
         for i in processes:
-            self.dicionary[i.id] = index
+            self.dicionary[i.pid] = index
             index += 1
 
         self.setWindowTitle("Gantt Processes")
@@ -208,30 +208,30 @@ class Window_Gantt(QWidget):
 
         for i in escalonator.ready_queue:
             if escalonator.real_time_over(i):
-                self.tableWidget.setItem(self.dicionary[i.id],
+                self.tableWidget.setItem(self.dicionary[i.pid],
                                          tick,
                                          QTableWidgetItem())
-                self.tableWidget.item(self.dicionary[i.id],
+                self.tableWidget.item(self.dicionary[i.pid],
                                       tick).setBackground(
                                           QColor(189, 183, 107))
-                self.tableWidget.item(self.dicionary[i.id],
+                self.tableWidget.item(self.dicionary[i.pid],
                                       tick).setFlags(Qt.NoItemFlags)
             else:
-                self.tableWidget.setItem(self.dicionary[i.id],
+                self.tableWidget.setItem(self.dicionary[i.pid],
                                          tick,
                                          QTableWidgetItem())
-                self.tableWidget.item(self.dicionary[i.id],
+                self.tableWidget.item(self.dicionary[i.pid],
                                       tick).setBackground(Qt.yellow)
-                self.tableWidget.item(self.dicionary[i.id],
+                self.tableWidget.item(self.dicionary[i.pid],
                                       tick).setFlags(Qt.NoItemFlags)
 
         for i in io.queue:
-            self.tableWidget.setItem(self.dicionary[i.id],
+            self.tableWidget.setItem(self.dicionary[i.pid],
                                      tick,
                                      QTableWidgetItem())
-            self.tableWidget.item(self.dicionary[i.id],
+            self.tableWidget.item(self.dicionary[i.pid],
                                   tick).setBackground(QColor(139, 0, 0))
-            self.tableWidget.item(self.dicionary[i.id],
+            self.tableWidget.item(self.dicionary[i.pid],
                                   tick).setFlags(Qt.NoItemFlags)
 
         executing_states = ["Executando", "PreSobrecarga", "Pronto"]
@@ -239,29 +239,29 @@ class Window_Gantt(QWidget):
 
         if cpu.state in executing_states:
             if escalonator.real_time_over(cpu.process):
-                self.tableWidget.setItem(self.dicionary[cpu.process.id],
+                self.tableWidget.setItem(self.dicionary[cpu.process.pid],
                                          tick,
                                          QTableWidgetItem())
-                self.tableWidget.item(self.dicionary[cpu.process.id],
+                self.tableWidget.item(self.dicionary[cpu.process.pid],
                                       tick).setBackground(QColor(0, 100, 0))
-                self.tableWidget.item(self.dicionary[cpu.process.id],
+                self.tableWidget.item(self.dicionary[cpu.process.pid],
                                       tick).setFlags(Qt.NoItemFlags)
             else:
-                self.tableWidget.setItem(self.dicionary[cpu.process.id],
+                self.tableWidget.setItem(self.dicionary[cpu.process.pid],
                                          tick,
                                          QTableWidgetItem())
-                self.tableWidget.item(self.dicionary[cpu.process.id],
+                self.tableWidget.item(self.dicionary[cpu.process.pid],
                                       tick).setBackground(Qt.green)
-                self.tableWidget.item(self.dicionary[cpu.process.id],
+                self.tableWidget.item(self.dicionary[cpu.process.pid],
                                       tick).setFlags(Qt.NoItemFlags)
 
         if cpu.state in override_states:
-            self.tableWidget.setItem(self.dicionary[cpu.process.id],
+            self.tableWidget.setItem(self.dicionary[cpu.process.pid],
                                      tick,
                                      QTableWidgetItem())
-            self.tableWidget.item(self.dicionary[cpu.process.id],
+            self.tableWidget.item(self.dicionary[cpu.process.pid],
                                   tick).setBackground(Qt.red)
-            self.tableWidget.item(self.dicionary[cpu.process.id],
+            self.tableWidget.item(self.dicionary[cpu.process.pid],
                                   tick).setFlags(Qt.NoItemFlags)
 
         if self.n != len(self.cpu.concluded_process_time):
