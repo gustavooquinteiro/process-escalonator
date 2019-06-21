@@ -1,10 +1,10 @@
+sys.path.append("../sample")
+from InterFace import Main_Window
+from process import Process
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon
 import unittest
 import sys
-sys.path.append("../sample")
-from InterFace import Main_Window
-from process import Process
 
 
 class TestApp(unittest.TestCase):
@@ -12,7 +12,7 @@ class TestApp(unittest.TestCase):
 
     def setUp(self, interface=QApplication(sys.argv), file="test0.txt"):
         self.interface = Main_Window()
-        with open(file,'r') as target:
+        with open(file, 'r') as target:
             lines = target.read().split('\n')
             for line in lines:
                 if not line:
@@ -35,6 +35,7 @@ class TestApp(unittest.TestCase):
         result = round(self.interface.gantt.info["TURNAROUND"], 0)
         self.assertEqual(result, 33.0)
 
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(
@@ -42,5 +43,6 @@ def suite():
     )
     return suite
 
+
 if __name__ == "__main__":
-   unittest.TextTestRunner(verbosity=2).run(suite())
+    unittest.TextTestRunner(verbosity=2).run(suite())
