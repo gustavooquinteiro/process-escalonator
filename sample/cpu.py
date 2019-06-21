@@ -30,7 +30,7 @@ class CPU():
         else:
             self.preemptiveness = True
 
-    def runClock(self):
+    def run_clock(self):
         """ Método para execução de um clock da CPU """
 
         if self.state == CPU.State[5]:
@@ -46,7 +46,7 @@ class CPU():
                 self.process = self.escalonator.ready_queue.pop(0)
             else:
                 return
-            allocated = self.mmu.isAllocated(self.process)
+            allocated = self.mmu.is_allocated(self.process)
             self.process.next_state()
 
             if not allocated:

@@ -152,9 +152,8 @@ class Main_Window(QMainWindow):
         escalonator.cpu = cpu
         n = len(self.processes)
         for i in self.processes:
-            i.io = io
             escalonator.insert_process(i)
-            disk.insertProcess(i.pid, i.numpages)
+            disk.insert_process(i.pid, i.numpages)
 
         escalonator.not_arrived.sort(key=lambda x: x.start)
         escalonator.queue()
@@ -172,9 +171,9 @@ class Main_Window(QMainWindow):
         if name[0]:
             with open(name[0], 'w') as file:
                 for i in self.listProcess:
-                    file.write("{} {} {} {} {} None {} {}\n"
+                    file.write("{} {} {} {} {} {}\n"
                                .format(i.pid, i.start, i.execution_time,
-                                       i.numpages, i.deadline, i.need_io,
+                                       i.numpages, i.deadline,
                                        i.priority))
 
     def file_open(self, auto=False):
@@ -194,12 +193,8 @@ class Main_Window(QMainWindow):
                         break
                     i = a.split(' ')
                     processo = Process(int(i[0]), int(i[1]),
-                                       int(i[2]), int(i[3]), int(i[4]))
-                    if i[6] == "True":
-                        processo.need_io = True
-                    else:
-                        processo.need_io = False
-                    processo.priority = int(i[7])
+                                       int(i[2]), int(i[3]),
+                                       int(i[4]), int(i[5]))
                     self.listProcess.append(processo)
             self.printProcesses()
 

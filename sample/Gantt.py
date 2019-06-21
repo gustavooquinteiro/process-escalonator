@@ -272,7 +272,7 @@ class Window_Gantt(QWidget):
 
         index = 0
         for i in self.cpu.mmu.vm.mem_ram.queue:
-            if self.cpu.mmu.vm.mem_ram.isAllocated(i):
+            if self.cpu.mmu.vm.mem_ram.is_allocated(i):
                 self.tableMem.setItem(index, 0, QTableWidgetItem())
                 self.tableMem.item(index,
                                    0).setBackground(QColor(30, 144, 255))
@@ -290,7 +290,7 @@ class Window_Gantt(QWidget):
         index = 0
 
         for i in self.cpu.disk.memory:
-            if i.isAllocated:
+            if i.is_allocated:
                 self.tableDisk.setItem(index, 0, QTableWidgetItem())
                 self.tableDisk.item(index,
                                     0).setBackground(QColor(30, 144, 255))
@@ -331,7 +331,7 @@ class Window_Gantt(QWidget):
             return
         self.escalonator.next_process()
         self.io.wait_for_resource(self.cpu)
-        self.cpu.runClock()
+        self.cpu.run_clock()
 
         self.updategantt(self.cpu.clock, self.escalonator, self.io, self.cpu)
         self.updateMem()
