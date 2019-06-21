@@ -1,10 +1,10 @@
-sys.path.append("../sample")
-from InterFace import Main_Window
-from process import Process
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon
 import unittest
 import sys
+sys.path.append("../sample")
+from InterFace import Main_Window
+from process import Process
 
 
 class TestApp(unittest.TestCase):
@@ -22,10 +22,10 @@ class TestApp(unittest.TestCase):
                                    int(params[2]), int(params[3]),
                                    int(params[4]), int(params[5]))
                 self.interface.listProcess.append(processo)
-
-    def test_RR_FIFO(self):
         self.interface.quantum_sp.setValue(2)
         self.interface.override_sp.setValue(1)
+
+    def test_RR_FIFO(self):
         self.interface.comboCPU.setCurrentText("RR")
         self.interface.comboMem.setCurrentText("FIFO")
         self.interface.run()
@@ -34,6 +34,46 @@ class TestApp(unittest.TestCase):
         self.interface.gantt.checkAutoTick.setChecked(True)
         result = round(self.interface.gantt.info["TURNAROUND"], 0)
         self.assertEqual(result, 33.0)
+    
+    def test_FCFS_FIFO(self):
+        self.interface.comboCPU.setCurrentText("FCFS")
+        self.interface.comboMem.setCurrentText("FIFO")
+        self.interface.run()
+        self.interface.gantt.hide()
+        self.interface.gantt.AutoTickQuant.setValue(1)
+        self.interface.gantt.checkAutoTick.setChecked(True)
+        result = round(self.interface.gantt.info["TURNAROUND"], 0)
+        self.assertEqual(result, 19.0)
+
+    def test_SJF_FIFO(self):
+        self.interface.comboCPU.setCurrentText("SJF")
+        self.interface.comboMem.setCurrentText("FIFO")
+        self.interface.run()
+        self.interface.gantt.hide()
+        self.interface.gantt.AutoTickQuant.setValue(1)
+        self.interface.gantt.checkAutoTick.setChecked(True)
+        result = round(self.interface.gantt.info["TURNAROUND"], 0)
+        self.assertEqual(result, 19.0)
+    
+    def test_EDF_FIFO(self):
+        self.interface.comboCPU.setCurrentText("EDF")
+        self.interface.comboMem.setCurrentText("FIFO")
+        self.interface.run()
+        self.interface.gantt.hide()
+        self.interface.gantt.AutoTickQuant.setValue(1)
+        self.interface.gantt.checkAutoTick.setChecked(True)
+        result = round(self.interface.gantt.info["TURNAROUND"], 0)
+        self.assertEqual(result, 33.0)
+    
+    def test_PRIO_FIFO(self):
+        self.interface.comboCPU.setCurrentText("PRIO")
+        self.interface.comboMem.setCurrentText("FIFO")
+        self.interface.run()
+        self.interface.gantt.hide()
+        self.interface.gantt.AutoTickQuant.setValue(1)
+        self.interface.gantt.checkAutoTick.setChecked(True)
+        result = round(self.interface.gantt.info["TURNAROUND"], 0)
+        self.assertEqual(result, 27.0)
 
 
 def suite():
@@ -42,7 +82,6 @@ def suite():
         unittest.TestLoader().loadTestsFromTestCase(TestApp)
     )
     return suite
-
 
 if __name__ == "__main__":
     unittest.TextTestRunner(verbosity=2).run(suite())
