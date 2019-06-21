@@ -1,14 +1,9 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import (QWidget, QPushButton, QLineEdit,
-                             QLayout, QGridLayout, QHBoxLayout,
-                             QInputDialog, QFrame, QColorDialog,
-                             QApplication, QFontDialog,
-                             QMessageBox,
-                             QSizePolicy, QDialog, QLabel,
-                             QTextEdit, QAction, QFileDialog,
-                             QMainWindow, QSpinBox)
+from PyQt5.QtWidgets import (QPushButton, QGridLayout,
+                             QMessageBox, QSizePolicy, QDialog, QLabel, QSpinBox)
 from PyQt5.QtGui import QIcon
 from process import Process
+from pathlib import Path
 
 
 class Window_Process(QDialog):
@@ -22,8 +17,9 @@ class Window_Process(QDialog):
         self.priorityTime = 0
         self.pagesNumber = 1
         self.process = process
-
-        self.setWindowIcon(QIcon('feature.png'))
+        images = Path("sample/images/")
+        icon = os.path.join(images, "feature.png")
+        self.setWindowIcon(QIcon(icon))
 
         layout = QGridLayout()
 
@@ -83,8 +79,7 @@ class Window_Process(QDialog):
 
         self.setLayout(layout)
         self.setWindowTitle("Process {}" .format(pid))
-
-
+        
     def startvalue(self):
         self.start.setText("Start Value : {} " .format(self.start_sp.value()))
         self.startTime = self.start_sp.value()
@@ -125,7 +120,6 @@ class Window_Process(QDialog):
                                    self.pagesNumber,
                                    self.deadlineTime,
                                    priority=self.priorityTime)
-
             self.close()
 
 
