@@ -318,7 +318,7 @@ class Window_Gantt(QWidget):
             labels = []
             for x, y in self.info.items():
                 if x == "TURNAROUND":
-                    labels.append("{}: {:.2f}\n" .format(x, y))
+                    labels.append("{}: {:.2f}\n" .format(x, round(y, 0)))
                 else:
                     labels.append("{}: {}\n" .format(x, y))
             text = ''.join(labels)
