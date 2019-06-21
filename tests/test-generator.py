@@ -8,9 +8,13 @@ class Test():
                  processes=random.randint(2, 10)):
         self.casos = casos
         self.processes = processes
+        self.path = os.path.dirname(os.path.relpath(__file__))
         self.generate()
 
     def generate(self):
+        if self.path:
+            print("Error:\tCurrent path is not appropriated path for tests")
+            sys.exit(1)
         for __ in range(self.casos):
             files = list(filter(lambda file:
                                 (file.split('.')[-1] == "txt"),
@@ -22,9 +26,9 @@ class Test():
                     begin = random.randint(0, 10)
                     execute = random.randint(1, 20)
                     pages = random.randint(1, 10)
-                    offset = max(random.randint(20, 50),
-                                 random.randint(10, 60))
-                    deadline = random.randint(execute, execute + offset)
+                    offset = random.randint(10, 60)
+                    start = round(pages/2, 0) + execute + begin
+                    deadline = random.randint(start, start + offset)
                     priority = random.randint(1, 30)
                     file.write("{} {} {} {} {} {}\n"
                                 .format(pid, begin, execute,
