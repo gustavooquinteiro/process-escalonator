@@ -3,16 +3,13 @@ class Process():
     States = ["Bloqueado", "Pronto", "Executando"]  # Estados de um processo
 
     def __init__(self, pid, start, execution_time,
-                 numpages, deadline=0,
-                 io=None, need_io=False, priority=0):
+                 numpages, deadline, priority):
         """ Inicialização de um processo.
         Args:
             id (int): indentificador do processo
             start (int): tempo de inicio do processo
             execution_time (int): tempo necessário para o processo ser concluido
             deadline (int): tempo limite máximo que o processo deve ser executado
-            io (IO): Objeto responsável pela fila de IO
-            need_io (bool): necessidade de IO
             priority (int): prioridade do processo
         """
         self.pid = pid
@@ -20,25 +17,15 @@ class Process():
         self.deadline = deadline
         self.execution_time = execution_time
         self.state = self.States[2]
-        self.need_io = need_io
-        self.io = io
         self.start = start
         self.numpages = numpages
         self.pages = []
         self.laxity = 0
 
-    def getPages(self):
-        return self.pages
-
-    def setPages(self, list_pages):
-        self.pages = list_pages
-
-    def addPages(self, list_pages):
+    def add_pages(self, list_pages):
+        """" Insere páginas no processo """
         for data in list_pages:
             self.pages.append(data)
-
-    def getNumPages(self):
-        return self.numpages
 
     def next_state(self):
         """ Próximo estado do processo """

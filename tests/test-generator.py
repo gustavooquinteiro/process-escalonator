@@ -26,7 +26,7 @@ class Test():
                                  random.randint(10, 60))
                     deadline = random.randint(execute, execute + offset)
                     priority = random.randint(1, 30)
-                    file.write("{} {} {} {} {} None False {}\n"
+                    file.write("{} {} {} {} {} {}\n"
                                 .format(pid, begin, execute,
                                         pages, deadline, priority))
         print("[ OK ]\t{} test files generated with {} processes each"
