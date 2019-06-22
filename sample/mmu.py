@@ -104,7 +104,8 @@ class RAM():
     def allocate_page(self, process,
                      ind, cpu_process=None, had_substitution=False):
 
-        selec_list = transform_list(list(range(RAM.SIZE)), cpu_process, self.vm)
+        selec_list = transform_list(list(range(RAM.SIZE)), 
+                                    cpu_process, self.vm)
         free_list = list(filter(
             lambda page: not self.is_allocated(self.queue[page]), selec_list))
         print(len(free_list))
