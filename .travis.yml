@@ -1,12 +1,13 @@
-dist: xenial   # required for Python >= 3.7
-addons:
-  apt:
-    packages:
-    - libxkbcommon-x11-0
-sudo: true
+--- 
+addons: 
+  apt: 
+    packages: 
+      - libxkbcommon-x11-0
+dist: xenial
 language: python
-python:
+python: 
   - "3.5"
   - "3.6"
   - "3.7"
-script: cd ./tests/ && python3 -m coverage run test.py
+script: "cd ./tests/ && python3 -m coverage run test.py"
+sudo: true
