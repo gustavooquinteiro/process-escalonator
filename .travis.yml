@@ -4,3 +4,4 @@ python:
   - "3.5"
   - "3.6"
   - "3.7"
+script: cd ./tests/ && python3 -m coverage run test.py
