@@ -50,7 +50,7 @@ class RAM():
         return False
 
     def substitute_page(self, process,
-                       ind, cpu_process=None, had_substitution=False):
+                        ind, cpu_process=None, had_substitution=False):
         if self.algorithm == 'FIFO':
             ref_ram = self.ram_pointer
             is_in_ram = (self.queue[ref_ram].num == process.pid)
@@ -103,7 +103,7 @@ class RAM():
             return ref_ram, old_index
 
     def allocate_page(self, process,
-                     ind, cpu_process=None, had_substitution=False):
+                      ind, cpu_process=None, had_substitution=False):
 
         selec_list = transform_list(list(range(RAM.SIZE)),
                                     cpu_process, self.vm)
@@ -119,7 +119,7 @@ class RAM():
             return rand, -1
         else:
             return self.substitute_page(process, ind,
-                                       cpu_process, had_substitution)
+                                        cpu_process, had_substitution)
 
     def clear(self):
         for ind in range(RAM.SIZE):
@@ -195,8 +195,8 @@ class VirtualMemory():
                     list(range(VirtualMemory.SIZE))))
             select_pages = list(self.mem_vm[i] for i in selec_list)
             least_freq = min(select_pages,
-                            default=select_pages[0],
-                            key=lambda x: x[1])
+                             default=select_pages[0],
+                             key=lambda x: x[1])
             ind = random.choice(list(filter(
                 lambda page: self.mem_vm[page][1] == least_freq[1],
                 selec_list)))
