@@ -1,12 +1,11 @@
 language: python
-dist: xenial
 python:
     - "3.5"
     - "3.6"
-    - "3.7.3"
-virtualenv:
-  system_site_packages: true
+    - "3.7"
+      dist: xenial
+      sudo: true
 install:
     - pip install -r requirements.txt
 script:
-    make test
+    - make test
