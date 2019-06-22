@@ -9,6 +9,4 @@ python:
   - "3.5"
   - "3.6"
   - "3.7"
-before_script:
-  - sudo apt-get install -qq libegl1-mesa
 script: cd ./tests/ && python3 -m coverage run test.py
