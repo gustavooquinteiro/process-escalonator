@@ -1,6 +1,7 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (QPushButton, QGridLayout,
-                             QMessageBox, QSizePolicy, QDialog, QLabel, QSpinBox)
+                             QMessageBox, QSizePolicy, QDialog,
+                             QLabel, QSpinBox)
 from PyQt5.QtGui import QIcon
 from process import Process
 from pathlib import Path
