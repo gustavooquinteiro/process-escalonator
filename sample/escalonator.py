@@ -38,28 +38,30 @@ class Escalonator():
         if self.algorithm == "RR" or self.algorithm == "FCFS":
             self.ready_queue.sort(key=lambda process: process.start)
         elif self.algorithm == "EDF":
-            self.ready_queue.sort(key=lambda process:
-                                      process.start, process.deadline)
+            self.ready_queue.sort(key=lambda process: (process.start,
+                                                       process.deadline))
         elif self.algorithm == "SJF" or self.algorithm == "SPN":
-            self.ready_queue.sort(key=lambda process:
-                                      process.start, process.execution_time)
+            self.ready_queue.sort(key=lambda process: (process.start,
+                                                       process.execution_time))
         elif self.algorithm == "PRIO":
-            self.ready_queue.sort(key=lambda process:
-                                      process.start, process.priority,
-                                      reverse=True)
+            self.ready_queue.sort(key=lambda process: (process.start,
+                                                       process.priority),
+                                  reverse=True)
         elif self.algorithm == "LOT":
             random.shuffle(self.ready_queue)
         elif self.algorithm == "MLF":
-            self.ready_queue.sort(key=lambda process:
-                                      process.start, process.laxity)
+            self.ready_queue.sort(key=lambda process: (process.start,
+                                                       process.laxity))
         # Os processos que não chegaram são ordenados por seu tempo de chegada
         self.not_arrived.sort(key=lambda process: process.start)
 
     def update_attributes(self):
         """ Atualiza o deadline e o laxity de todos os processos na fila de prontos """
         for process in self.ready_queue:
-            process.deadline = process.deadline - self.cpu.clock + process.start
-            process.laxity = process.deadline - self.cpu.clock - process.execution_time
+            up_dead = process.deadline - self.cpu.clock
+            process.deadline = up_dead + process.start
+            up_dead = process.deadline - self.cpu.clock
+            process.laxity = up_dead - process.execution_time
 
     def real_time_over(self, process):
         """ Verifica se um processo ultrapassou seu limite de execução.
@@ -86,14 +88,13 @@ class Escalonator():
 
         if len(self.ready_queue) > 1:
             if self.algorithm == "SJF" or self.algorithm == "SPN":
-                self.ready_queue.sort(key=lambda process:
-                                          process.execution_time)
+                self.ready_queue.sort(
+                    key=lambda process: process.execution_time)
             elif self.algorithm == "EDF":
                 self.ready_queue.sort(key=lambda process: process.deadline)
             elif self.algorithm == "PRIO":
-                self.ready_queue.sort(key=lambda process:
-                                          process.priority,
-                                          reverse=True)
+                self.ready_queue.sort(key=lambda process: process.priority,
+                                      reverse=True)
             elif self.algorithm == "LOT":
                 random.shuffle(self.ready_queue)
             elif self.algorithm == "MLF":
