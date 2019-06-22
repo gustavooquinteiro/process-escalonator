@@ -3,6 +3,7 @@ addons:
   apt: 
     packages: 
       - libxkbcommon-x11-0
+      - python3-pyqt5
 dist: xenial
 language: python
 python: 
