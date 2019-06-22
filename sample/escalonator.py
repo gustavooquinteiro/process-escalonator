@@ -38,19 +38,19 @@ class Escalonator():
         if self.algorithm == "RR" or self.algorithm == "FCFS":
             self.ready_queue.sort(key=lambda process: process.start)
         elif self.algorithm == "EDF":
-            self.ready_queue.sort(key=lambda process: 
+            self.ready_queue.sort(key=lambda process:
                                       (process.start, process.deadline))
         elif self.algorithm == "SJF" or self.algorithm == "SPN":
-            self.ready_queue.sort(key=lambda process: 
+            self.ready_queue.sort(key=lambda process:
                                       (process.start, process.execution_time))
         elif self.algorithm == "PRIO":
-            self.ready_queue.sort(key=lambda process: 
+            self.ready_queue.sort(key=lambda process:
                                       (process.start, process.priority),
                                       reverse=True)
         elif self.algorithm == "LOT":
             random.shuffle(self.ready_queue)
         elif self.algorithm == "MLF":
-            self.ready_queue.sort(key=lambda process: 
+            self.ready_queue.sort(key=lambda process:
                                       (process.start, process.laxity))
         # Os processos que não chegaram são ordenados por seu tempo de chegada
         self.not_arrived.sort(key=lambda process: process.start)
