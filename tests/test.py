@@ -33,7 +33,7 @@ class TestApp(unittest.TestCase):
         self.interface.gantt.checkAutoTick.setChecked(True)
         result = round(self.interface.gantt.info["TURNAROUND"], 0)
         self.assertEqual(result, 33.0)
-    
+
     def test_FCFS_FIFO(self):
         self.interface.comboCPU.setCurrentText("FCFS")
         self.interface.comboMem.setCurrentText("FIFO")
@@ -53,7 +53,7 @@ class TestApp(unittest.TestCase):
         self.interface.gantt.checkAutoTick.setChecked(True)
         result = round(self.interface.gantt.info["TURNAROUND"], 0)
         self.assertEqual(result, 19.0)
-        
+
     def test_SPN_FIFO(self):
         self.interface.comboCPU.setCurrentText("SPN")
         self.interface.comboMem.setCurrentText("FIFO")
@@ -63,7 +63,7 @@ class TestApp(unittest.TestCase):
         self.interface.gantt.checkAutoTick.setChecked(True)
         result = round(self.interface.gantt.info["TURNAROUND"], 0)
         self.assertEqual(result, 27.0)
-    
+
     def test_EDF_FIFO(self):
         self.interface.comboCPU.setCurrentText("EDF")
         self.interface.comboMem.setCurrentText("FIFO")
@@ -103,7 +103,7 @@ class TestApp(unittest.TestCase):
         self.interface.gantt.checkAutoTick.setChecked(True)
         result = round(self.interface.gantt.info["TURNAROUND"], 0)
         self.assertEqual(result, 33.0)
-    
+
     def test_FCFS_LRU(self):
         self.interface.comboCPU.setCurrentText("FCFS")
         self.interface.comboMem.setCurrentText("LRU")
@@ -123,7 +123,7 @@ class TestApp(unittest.TestCase):
         self.interface.gantt.checkAutoTick.setChecked(True)
         result = round(self.interface.gantt.info["TURNAROUND"], 0)
         self.assertEqual(result, 19.0)
-    
+
     def test_SPN_LRU(self):
         self.interface.comboCPU.setCurrentText("SPN")
         self.interface.comboMem.setCurrentText("LRU")
@@ -133,7 +133,7 @@ class TestApp(unittest.TestCase):
         self.interface.gantt.checkAutoTick.setChecked(True)
         result = round(self.interface.gantt.info["TURNAROUND"], 0)
         self.assertEqual(result, 27.0)
-    
+
     def test_EDF_LRU(self):
         self.interface.comboCPU.setCurrentText("EDF")
         self.interface.comboMem.setCurrentText("LRU")
@@ -153,7 +153,7 @@ class TestApp(unittest.TestCase):
         self.interface.gantt.checkAutoTick.setChecked(True)
         result = round(self.interface.gantt.info["TURNAROUND"], 0)
         self.assertEqual(result, 27.0)
-    
+
     def test_MLF_LRU(self):
         self.interface.comboCPU.setCurrentText("MLF")
         self.interface.comboMem.setCurrentText("LRU")
@@ -170,6 +170,7 @@ def suite():
     suite.addTest(
         unittest.TestLoader().loadTestsFromTestCase(TestApp))
     return suite
+
 
 if __name__ == "__main__":
     unittest.TextTestRunner(verbosity=3).run(suite())
