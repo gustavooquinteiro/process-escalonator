@@ -1,5 +1,6 @@
 import random
 
+
 def transform_list(mem, process, mem_vm):
     lista = mem
     if process is None:
@@ -271,7 +272,7 @@ class MMU():
             pages.append(ref)
         else:
             for ref in process.pages:
-                if self.vm.is_page_allocated(process, ref) == False:
+                if not self.vm.is_page_allocated(process, ref):
                     self.vm.allocate_page(process, ref, cpu_process)
                     break
         self.disk.remove_process(process, 1)
