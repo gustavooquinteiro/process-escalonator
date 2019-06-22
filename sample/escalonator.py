@@ -86,7 +86,8 @@ class Escalonator():
 
         if len(self.ready_queue) > 1:
             if self.algorithm == "SJF" or self.algorithm == "SPN":
-                self.ready_queue.sort(key=lambda process: process.execution_time)
+                self.ready_queue.sort(key=lambda process:
+                                          process.execution_time)
             elif self.algorithm == "EDF":
                 self.ready_queue.sort(key=lambda process: process.deadline)
             elif self.algorithm == "PRIO":
