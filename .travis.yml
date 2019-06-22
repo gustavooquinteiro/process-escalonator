@@ -6,12 +6,12 @@ python:
   - "3.6"
   - "3.7"
 before_script:
-  - export DISPLAY=:99.0
+  - sudo apt-get install -qq libegl1-mesa
   - sh -e /etc/init.d/xvfb start
   - sleep 3
   # Export ALIGNAKAPP_APP_DIR, only needed for Travis.
-  - export ALIGNAKAPP_APP_DIR=$HOME/.local/alignak_app
-  - export ALIGNAKAPP_USR_DIR=$HOME/.local/alignak_app
-  - export ALIGNAKAPP_LOG_DIR=$HOME/.local/alignak_app
+  - export ALIGNAKAPP_APP_DIR=$HOME/.local/process-escalonator
+  - export ALIGNAKAPP_USR_DIR=$HOME/.local/process-escalonator
+  - export ALIGNAKAPP_LOG_DIR=$HOME/.local/process-escalonator
 
 script: cd ./tests/ && python3 -m coverage run test.py
