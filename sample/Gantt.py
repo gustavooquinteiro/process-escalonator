@@ -323,10 +323,10 @@ class Window_Gantt(QWidget):
                     labels.append("{}: {}\n" .format(x, y))
             text = ''.join(labels)
 
-            QMessageBox.information(self,
-                                    'FINISHED',
-                                    text,
-                                    QMessageBox.Ok)
+            #QMessageBox.information(self,
+                                    #'FINISHED',
+                                    #text,
+                                    #QMessageBox.Ok)
 
             return
         self.escalonator.next_process()
