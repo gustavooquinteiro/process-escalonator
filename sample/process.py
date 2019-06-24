@@ -1,46 +1,31 @@
-import ioqueue
-
-
 class Process():
     """ Classe responsável pela instanciação dos processos """
     States = ["Bloqueado", "Pronto", "Executando"]  # Estados de um processo
 
-    def __init__(self, id, start, execution_time,
-                 numpages, deadline=0, io=None, need_io=False, priority=0):
+    def __init__(self, pid, start, execution_time,
+                 numpages, deadline, priority):
         """ Inicialização de um processo.
         Args:
             id (int): indentificador do processo
             start (int): tempo de inicio do processo
             execution_time (int): tempo necessário para o processo ser concluido
             deadline (int): tempo limite máximo que o processo deve ser executado
-            io (IO): Objeto responsável pela fila de IO
-            need_io (bool): necessidade de IO
             priority (int): prioridade do processo
         """
-        self.id = id
+        self.pid = pid
         self.priority = priority
         self.deadline = deadline
         self.execution_time = execution_time
         self.state = self.States[2]
-        self.need_io = need_io
-        self.io = io
         self.start = start
         self.numpages = numpages
         self.pages = []
         self.laxity = 0
 
-    def getPages(self):
-        return self.pages
-
-    def setPages(self, list_pages):
-        self.pages = list_pages
-
-    def addPages(self, list_pages):
+    def add_pages(self, list_pages):
+        """" Insere páginas no processo """
         for data in list_pages:
             self.pages.append(data)
-
-    def getNumPages(self):
-        return self.numpages
 
     def next_state(self):
         """ Próximo estado do processo """
@@ -84,4 +69,13 @@ class Process():
 
     def __repr__(self):
         """ Representação do processo. Útil em print() """
-        return ("Processo {}\n\tStart: {}\n\tDeadline: {}\n\tTempo de execução: {}" .format(self.id, self.start, self.deadline, self.execution_time))
+        process_info = {
+            "PID": self.pid,
+            "Start time": self.start,
+            "Execution time": self.execution_time,
+            "Deadline": self.deadline
+            }
+        info_array = [""]
+        for x, y in process_info.items():
+            info_array.append("\t{}: {}\n" .format(x, y))
+        return (''.join(info_array))

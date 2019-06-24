@@ -1,10 +1,10 @@
 from PyQt5 import QtTest
-from PyQt5.QtCore import Qt, QTime, QSize
+from PyQt5.QtCore import Qt, QTime
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import QColor, QIcon, QBrush, QPalette
-from escalonator import Escalonator
+from PyQt5.QtGui import QColor, QIcon
 from pathlib import Path
 import os
+import sys
 
 
 class Window_Gantt(QWidget):
@@ -36,7 +36,7 @@ class Window_Gantt(QWidget):
         self.dicionary = {}
         index = 0
         for i in processes:
-            self.dicionary[i.id] = index
+            self.dicionary[i.pid] = index
             index += 1
 
         self.setWindowTitle("Gantt Processes")
@@ -187,7 +187,10 @@ class Window_Gantt(QWidget):
         self.layout.addWidget(self.LastLabel)
         self.setGeometry(300, 300, 1400, 1000)
         self.setLayout(self.layout)
-        images = Path("sample/images/")
+        if sys.version_info.minor >= 6:
+            images = Path("sample/images/")
+        else:
+            images = "sample/images/"
         edit_image = os.path.join(images, "edit-image.png")
         self.setWindowIcon(QIcon(edit_image))
         self.show()
@@ -209,30 +212,30 @@ class Window_Gantt(QWidget):
 
         for i in escalonator.ready_queue:
             if escalonator.real_time_over(i):
-                self.tableWidget.setItem(self.dicionary[i.id],
+                self.tableWidget.setItem(self.dicionary[i.pid],
                                          tick,
                                          QTableWidgetItem())
-                self.tableWidget.item(self.dicionary[i.id],
+                self.tableWidget.item(self.dicionary[i.pid],
                                       tick).setBackground(
                                           QColor(189, 183, 107))
-                self.tableWidget.item(self.dicionary[i.id],
+                self.tableWidget.item(self.dicionary[i.pid],
                                       tick).setFlags(Qt.NoItemFlags)
             else:
-                self.tableWidget.setItem(self.dicionary[i.id],
+                self.tableWidget.setItem(self.dicionary[i.pid],
                                          tick,
                                          QTableWidgetItem())
-                self.tableWidget.item(self.dicionary[i.id],
+                self.tableWidget.item(self.dicionary[i.pid],
                                       tick).setBackground(Qt.yellow)
-                self.tableWidget.item(self.dicionary[i.id],
+                self.tableWidget.item(self.dicionary[i.pid],
                                       tick).setFlags(Qt.NoItemFlags)
 
         for i in io.queue:
-            self.tableWidget.setItem(self.dicionary[i.id],
+            self.tableWidget.setItem(self.dicionary[i.pid],
                                      tick,
                                      QTableWidgetItem())
-            self.tableWidget.item(self.dicionary[i.id],
+            self.tableWidget.item(self.dicionary[i.pid],
                                   tick).setBackground(QColor(139, 0, 0))
-            self.tableWidget.item(self.dicionary[i.id],
+            self.tableWidget.item(self.dicionary[i.pid],
                                   tick).setFlags(Qt.NoItemFlags)
 
         executing_states = ["Executando", "PreSobrecarga", "Pronto"]
@@ -240,29 +243,29 @@ class Window_Gantt(QWidget):
 
         if cpu.state in executing_states:
             if escalonator.real_time_over(cpu.process):
-                self.tableWidget.setItem(self.dicionary[cpu.process.id],
+                self.tableWidget.setItem(self.dicionary[cpu.process.pid],
                                          tick,
                                          QTableWidgetItem())
-                self.tableWidget.item(self.dicionary[cpu.process.id],
+                self.tableWidget.item(self.dicionary[cpu.process.pid],
                                       tick).setBackground(QColor(0, 100, 0))
-                self.tableWidget.item(self.dicionary[cpu.process.id],
+                self.tableWidget.item(self.dicionary[cpu.process.pid],
                                       tick).setFlags(Qt.NoItemFlags)
             else:
-                self.tableWidget.setItem(self.dicionary[cpu.process.id],
+                self.tableWidget.setItem(self.dicionary[cpu.process.pid],
                                          tick,
                                          QTableWidgetItem())
-                self.tableWidget.item(self.dicionary[cpu.process.id],
+                self.tableWidget.item(self.dicionary[cpu.process.pid],
                                       tick).setBackground(Qt.green)
-                self.tableWidget.item(self.dicionary[cpu.process.id],
+                self.tableWidget.item(self.dicionary[cpu.process.pid],
                                       tick).setFlags(Qt.NoItemFlags)
 
         if cpu.state in override_states:
-            self.tableWidget.setItem(self.dicionary[cpu.process.id],
+            self.tableWidget.setItem(self.dicionary[cpu.process.pid],
                                      tick,
                                      QTableWidgetItem())
-            self.tableWidget.item(self.dicionary[cpu.process.id],
+            self.tableWidget.item(self.dicionary[cpu.process.pid],
                                   tick).setBackground(Qt.red)
-            self.tableWidget.item(self.dicionary[cpu.process.id],
+            self.tableWidget.item(self.dicionary[cpu.process.pid],
                                   tick).setFlags(Qt.NoItemFlags)
 
         if self.n != len(self.cpu.concluded_process_time):
@@ -273,7 +276,7 @@ class Window_Gantt(QWidget):
 
         index = 0
         for i in self.cpu.mmu.vm.mem_ram.queue:
-            if self.cpu.mmu.vm.mem_ram.isAllocated(i):
+            if self.cpu.mmu.vm.mem_ram.is_allocated(i):
                 self.tableMem.setItem(index, 0, QTableWidgetItem())
                 self.tableMem.item(index,
                                    0).setBackground(QColor(30, 144, 255))
@@ -291,7 +294,7 @@ class Window_Gantt(QWidget):
         index = 0
 
         for i in self.cpu.disk.memory:
-            if i.isAllocated:
+            if i.is_allocated:
                 self.tableDisk.setItem(index, 0, QTableWidgetItem())
                 self.tableDisk.item(index,
                                     0).setBackground(QColor(30, 144, 255))
@@ -319,20 +322,20 @@ class Window_Gantt(QWidget):
             labels = []
             for x, y in self.info.items():
                 if x == "TURNAROUND":
-                    labels.append("{}: {:.2f}\n" .format(x, y))
+                    labels.append("{}: {:.2f}\n" .format(x, round(y, 0)))
                 else:
                     labels.append("{}: {}\n" .format(x, y))
             text = ''.join(labels)
 
-            reply = QMessageBox.information(self,
-                                            'FINISHED',
-                                            text,
-                                            QMessageBox.Ok)
+            #QMessageBox.information(self,
+                                    #'FINISHED',
+                                    #text,
+                                    #QMessageBox.Ok)
 
             return
         self.escalonator.next_process()
         self.io.wait_for_resource(self.cpu)
-        self.cpu.runClock()
+        self.cpu.run_clock()
 
         self.updategantt(self.cpu.clock, self.escalonator, self.io, self.cpu)
         self.updateMem()

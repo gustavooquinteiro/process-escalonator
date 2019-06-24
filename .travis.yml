@@ -1,0 +1,16 @@
+--- 
+addons: 
+  apt: 
+    packages: 
+      - libxkbcommon-x11-0
+      - python3-pyqt5
+dist: xenial
+language: python
+python: 
+  - "3.5"
+  - "3.6"
+  - "3.7"
+script: "cd ./tests/ && xvfb-run -a python3 -m coverage run test.py"
+services: 
+  - xvfb
+sudo: true
