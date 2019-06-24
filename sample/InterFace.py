@@ -136,7 +136,7 @@ class Main_Window(QMainWindow):
                                     "Insert Processes to Run",
                                     QMessageBox.Ok)
             return
-        self.file_open(True)
+        #self.file_open(True)
         self.quantum = self.quantum_sp.value()
         self.override = self.override_sp.value()
         self.type = self.comboCPU.currentText()
