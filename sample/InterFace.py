@@ -1,5 +1,6 @@
 import sys
 import os
+import platform
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon
 from process import Process
@@ -20,7 +21,10 @@ class Main_Window(QMainWindow):
         self.idProcess = 1
         self.process = None
         self.listProcess = []
-        images = Path("sample/images/")
+        if sys.version_info.minor >= 6:
+            images = Path("sample/images/")
+        else:
+            images = "sample/images/"
         icon = os.path.join(images, "computer.png")
 
         self.setWindowIcon(QIcon(icon))
