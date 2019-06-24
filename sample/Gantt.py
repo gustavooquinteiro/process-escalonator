@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QColor, QIcon
 from pathlib import Path
 import os
+import sys
 
 
 class Window_Gantt(QWidget):
@@ -186,7 +187,10 @@ class Window_Gantt(QWidget):
         self.layout.addWidget(self.LastLabel)
         self.setGeometry(300, 300, 1400, 1000)
         self.setLayout(self.layout)
-        images = Path("sample/images/")
+        if sys.version_info.minor >= 6:
+            images = Path("sample/images/")
+        else:
+            images = "sample/images/"
         edit_image = os.path.join(images, "edit-image.png")
         self.setWindowIcon(QIcon(edit_image))
         self.show()
