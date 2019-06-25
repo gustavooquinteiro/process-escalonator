@@ -10,7 +10,7 @@ python:
   - "3.5"
   - "3.6"
   - "3.7"
-script: "cd ./tests/ && xvfb-run -a python3 -m coverage run test.py"
+script: "xvfb-run -a python3 -m coverage run tests/test.py"
 services: 
   - xvfb
 sudo: true
