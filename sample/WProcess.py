@@ -1,10 +1,11 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (QPushButton, QGridLayout,
                              QMessageBox, QSizePolicy, QDialog,
-                             QLabel, QSpinBox)
+                             QLabel, QSpinBox, QHBoxLayout)
 from PyQt5.QtGui import QIcon
 from process import Process
 from pathlib import Path
+import os
 
 
 class Window_Process(QDialog):
@@ -120,7 +121,7 @@ class Window_Process(QDialog):
                                    self.executionTime,
                                    self.pagesNumber,
                                    self.deadlineTime,
-                                   priority=self.priorityTime)
+                                   self.priorityTime)
             self.close()
 
 

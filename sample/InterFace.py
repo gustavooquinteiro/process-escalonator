@@ -23,8 +23,12 @@ class Main_Window(QMainWindow):
         self.listProcess = []
         if sys.version_info.minor >= 6:
             images = Path("sample/images/")
+            self.path = Path().absolute()
+            self.test_folder = self.path / "tests"
         else:
             images = "sample/images/"
+            self.path = os.path.abspath(__file__)
+            self.test_folder = self.path[:-20] + "tests"
         icon = os.path.join(images, "computer.png")
 
         self.setWindowIcon(QIcon(icon))
@@ -125,8 +129,9 @@ class Main_Window(QMainWindow):
         self.toolbar.addSeparator()
         self.toolbar.addWidget(Override)
         self.toolbar.addAction(Run)
-
-        self.path = os.path.abspath("Interface.py")
+        
+        self.saved = False
+        self.index = 0
 
         menuBar = self.menuBar()
         fileMenu = menuBar.addMenu('&File')
@@ -140,7 +145,7 @@ class Main_Window(QMainWindow):
                                     "Insert Processes to Run",
                                     QMessageBox.Ok)
             return
-        #self.file_open(True)
+        self.file_save(True)
         self.quantum = self.quantum_sp.value()
         self.override = self.override_sp.value()
         self.type = self.comboCPU.currentText()
@@ -168,38 +173,49 @@ class Main_Window(QMainWindow):
     def file_save(self, auto=False):
         if not auto:
             name = QFileDialog.getSaveFileName(self, 'Save File')
-        else:
-            name = "('" + self.path[:-12] + \
-                'autosave' + "', " + "'All Files (*)')"
+        elif not self.saved:
+            self.index = len(list(filter(lambda file: file.split('.')[-1] == "txt", os.listdir(self.test_folder))))
+            self.saved = True
+        name = self.test_folder / "test{}.txt" .format(self.index)
 
-        if name[0]:
-            with open(name[0], 'w') as file:
+        if name:
+            with open(name, 'w') as file:
                 for i in self.listProcess:
                     file.write("{} {} {} {} {} {}\n"
                                .format(i.pid, i.start, i.execution_time,
                                        i.numpages, i.deadline,
                                        i.priority))
 
-    def file_open(self, auto=False):
-        if not auto:
-            fname = QFileDialog.getOpenFileName(self, 'Open file', '/home')
-        else:
-            fname = "('" + self.path[:-12] + \
-                'autosave' + "', " + "'All Files (*)')"
-
+    def file_open(self):
+        fname = QFileDialog.getOpenFileName(self, 'Open file', str(self.test_folder))
         self.listProcess = []
+        self.saved = True
+        self.index = fname[0].split('.')[0].split('test')[-1]
 
         if fname[0]:
             with open(fname[0], 'r') as f:
                 data = f.read().split('\n')
-                for a in data:
-                    if a == '':
-                        break
-                    i = a.split(' ')
-                    processo = Process(int(i[0]), int(i[1]),
-                                       int(i[2]), int(i[3]),
-                                       int(i[4]), int(i[5]))
-                    self.listProcess.append(processo)
+                if not data:
+                    QMessageBox.information(self,
+                                            'Empty file',
+                                            'This file havent any process',
+                                            QMessageBox.Ok)
+                else:
+                    for a in data:
+                        if not a.strip():
+                            break;
+                        i = a.split(' ')
+                        try:
+                            processo = Process(int(i[0]), int(i[1]),
+                                               int(i[2]), int(i[3]),
+                                               int(i[4]), int(i[5]))
+                            self.listProcess.append(processo)
+                        except ValueError:
+                            QMessageBox.information(self,
+                                                    'Invalid file',
+                                                    'This file havent the correct format',
+                                                    QMessageBox.Ok)
+                            break
             self.printProcesses()
 
     def new_Process(self):
@@ -237,7 +253,6 @@ class Main_Window(QMainWindow):
     def printProcesses(self):
         self.lista = QTabWidget()
         self.numberTab = 1
-        self.file_save(True)
         for i in self.listProcess:
             self.janela = QWidget()
             self.lista.addTab(self.janela, "Processo {} " .format(i.pid))
