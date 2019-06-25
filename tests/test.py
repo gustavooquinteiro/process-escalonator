@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QApplication
 import unittest
 import sys
-sys.path.append("../sample")
+sys.path.append("sample")
 from InterFace import Main_Window
 from process import Process
 
@@ -9,8 +9,8 @@ from process import Process
 class TestApp(unittest.TestCase):
     def setUp(self):
         self.app = QApplication(sys.argv)
-        self.testfile = "test0.txt"
         self.interface = Main_Window()
+        self.testfile = self.interface.test_folder / "test0.txt"
         with open(self.testfile, 'r') as target:
             lines = target.read().split('\n')
             for line in lines:
