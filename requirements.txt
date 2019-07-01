@@ -3,5 +3,5 @@ PyQt5==5.12.2
 PyQt5-sip==4.19.17
 PySide2==5.12.3
 python-dotenv==0.10.3
-shiboken2==5.12.3
+shiboken2==5.13.0
 sip==4.19.8
