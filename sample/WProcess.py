@@ -1,10 +1,11 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import (QPushButton, QGridLayout,
-                             QMessageBox, QSizePolicy, QDialog,
-                             QLabel, QSpinBox)
-from PyQt5.QtGui import QIcon
+from PySide2 import *
+from PySide2.QtCore import *
+from PySide2.QtWidgets import *
+from PySide2.QtGui import *
 from process import Process
 from pathlib import Path
+import sys
+import os
 
 
 class Window_Process(QDialog):
