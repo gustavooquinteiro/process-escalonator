@@ -1,8 +1,8 @@
-import sys
-import os
 import platform
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import QIcon
+from PySide2 import *
+from PySide2.QtCore import *
+from PySide2.QtWidgets import *
+from PySide2.QtGui import *
 from process import Process
 from WProcess import Window_Process
 from escalonator import Escalonator
@@ -12,6 +12,9 @@ from disk import Disk
 from mmu import MMU, VirtualMemory
 from Gantt import Window_Gantt
 from pathlib import Path
+import sys
+import os
+
 
 
 class Main_Window(QMainWindow):
