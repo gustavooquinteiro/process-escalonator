@@ -1,8 +1,8 @@
-from PyQt5 import QtTest
-from PyQt5.QtCore import Qt, QTime
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import QColor, QIcon
+from PySide2.QtCore import *
+from PySide2.QtWidgets import *
+from PySide2.QtGui import *
 from pathlib import Path
+from PyQt5 import QtTest
 import os
 import sys
 
